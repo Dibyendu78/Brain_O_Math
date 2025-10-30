@@ -18,7 +18,9 @@ const createTransporter = () => {
     greetingTimeout: 10000,
     socketTimeout: 10000,
     pool: true,
-    maxMessages: 1
+    maxConnections:3,
+    maxMessages: 10
+    
   });
 
   // Verify connection on first use
@@ -43,7 +45,7 @@ const sendCoordinatorWelcomeEmail = async (data) => {
     const transporter = createTransporter();
     
     const mailOptions = {
-      from: process.env.EMAIL_USER,
+      from: process.env.EMAIL_FROM,
       to: data.coordinatorEmail,
       subject: 'Welcome to Brain-O-Math Olympiad - Registration Successful',
       html: `
@@ -103,7 +105,7 @@ const sendStudentSubmissionEmail = async (coordinatorData, studentCount, totalAm
     const transporter = createTransporter();
     
     const mailOptions = {
-      from: process.env.EMAIL_USER,
+      from: process.env.EMAIL_FROM,
       to: coordinatorData.coordinatorEmail,
       subject: 'Student Registration Submitted - Brain-O-Math Olympiad',
       html: `
@@ -172,7 +174,7 @@ const sendPaymentVerificationEmail = async (coordinatorData, status, totalAmount
       : 'Unfortunately, your payment could not be verified. Please contact us for assistance.';
     
     const mailOptions = {
-      from: process.env.EMAIL_USER,
+      from: process.env.EMAIL_FROM,
       to: coordinatorData.coordinatorEmail,
       subject: `Payment ${statusText} - Brain-O-Math Olympiad`,
       html: `
