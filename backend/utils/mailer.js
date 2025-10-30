@@ -16,10 +16,10 @@ async function sendEmail({ to, subject, htmlContent }) {
     };
 
     const response = await client.sendTransacEmail(emailData);
-    console.log(`Email sent to ${to}:`, response.messageId || 'Success');
+    console.log(`✅ Email sent to ${to}:`, response.messageId || 'Success');
     return response;
   } catch (error) {
-    console.error(` Failed to send email to ${to}:`, error.message);
+    console.error(`❌ Failed to send email to ${to}:`, error.message);
     if (error.response) {
       console.error('Error details:', error.response.body);
     }
@@ -58,23 +58,53 @@ async function sendCoordinatorWelcomeEmail(data) {
   });
 }
 
-// Student Submission Email
-async function sendStudentSubmissionEmail(coordinatorData, studentCount, totalAmount) {
+// 📝 Student Submission Email (with student list)
+async function sendStudentSubmissionEmail(coordinatorData, students, totalAmount) {
+  const studentRows = students.map((s, index) => `
+    <tr style="border-bottom:1px solid #ddd;">
+      <td style="padding:8px;">${index + 1}</td>
+      <td style="padding:8px;">${s.studentId}</td>
+      <td style="padding:8px;">${s.name}</td>
+      <td style="padding:8px;">${s.class}</td>
+      <td style="padding:8px;">${s.category}</td>
+      <td style="padding:8px;">₹${s.fee}</td>
+    </tr>
+  `).join('');
+
   const html = `
-    <div style="font-family: Arial, sans-serif; max-width:600px; margin:auto;">
+    <div style="font-family: Arial, sans-serif; max-width:700px; margin:auto;">
       <h2 style="color:#2c3e50;">Student Registration Submitted Successfully!</h2>
       <p>Dear ${coordinatorData.coordinatorName},</p>
       <p>Your student registration for Brain-O-Math Olympiad 2025 has been submitted.</p>
-      <div style="background:#f8f9fa;padding:20px;border-radius:5px;">
+      
+      <div style="background:#f8f9fa;padding:20px;border-radius:5px;margin:20px 0;">
         <h3>Registration Summary:</h3>
         <p><strong>School:</strong> ${coordinatorData.schoolName}</p>
         <p><strong>Registration ID:</strong> ${coordinatorData.registrationId}</p>
-        <p><strong>Total Students:</strong> ${studentCount}</p>
+        <p><strong>Total Students:</strong> ${students.length}</p>
         <p><strong>Total Amount:</strong> ₹${totalAmount}</p>
         <p><strong>Status:</strong> Pending Payment Verification</p>
       </div>
-      <p>You’ll receive another email once your payment is verified.</p>
-      <p>Regards,<br>Brain-O-Math Olympiad Team</p>
+
+      <h3>Registered Students:</h3>
+      <table style="width:100%;border-collapse:collapse;margin:20px 0;">
+        <thead>
+          <tr style="background:#3b82f6;color:white;">
+            <th style="padding:10px;text-align:left;">#</th>
+            <th style="padding:10px;text-align:left;">Student ID</th>
+            <th style="padding:10px;text-align:left;">Name</th>
+            <th style="padding:10px;text-align:left;">Class</th>
+            <th style="padding:10px;text-align:left;">Category</th>
+            <th style="padding:10px;text-align:left;">Fee</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${studentRows}
+        </tbody>
+      </table>
+
+      <p>You'll receive another email once your payment is verified.</p>
+      <p>Best regards,<br>Brain-O-Math Olympiad Team</p>
     </div>
   `;
 
@@ -85,34 +115,70 @@ async function sendStudentSubmissionEmail(coordinatorData, studentCount, totalAm
   });
 }
 
-// Payment Verification Email
-async function sendPaymentVerificationEmail(coordinatorData, status, totalAmount, studentCount) {
+// ✅ Payment Verification Email (with student list)
+async function sendPaymentVerificationEmail(coordinatorData, students, status, totalAmount) {
   const isApproved = status === 'approved' || status === 'verified';
   const color = isApproved ? '#27ae60' : '#e74c3c';
-  const text = isApproved ? 'Payment Verified' : 'Payment Rejected';
+  const statusText = isApproved ? 'Payment Verified ✅' : 'Payment Rejected ❌';
   const message = isApproved
-    ? 'Your payment has been verified and your students are now registered!'
-    : 'Unfortunately, your payment could not be verified. Please contact us.';
+    ? 'Your payment has been verified and your students are now officially registered for Brain-O-Math Olympiad 2025!'
+    : 'Unfortunately, your payment could not be verified. Please contact us at doonheritageschool@brainomath.online for assistance.';
+
+  const studentRows = students.map((s, index) => `
+    <tr style="border-bottom:1px solid #ddd;">
+      <td style="padding:8px;">${index + 1}</td>
+      <td style="padding:8px;">${s.studentId}</td>
+      <td style="padding:8px;">${s.name}</td>
+      <td style="padding:8px;">${s.class}</td>
+      <td style="padding:8px;">${s.category}</td>
+      <td style="padding:8px;">₹${s.fee}</td>
+    </tr>
+  `).join('');
 
   const html = `
-    <div style="font-family: Arial, sans-serif; max-width:600px; margin:auto;">
-      <h2 style="color:#2c3e50;">${text}</h2>
+    <div style="font-family: Arial, sans-serif; max-width:700px; margin:auto;">
+      <h2 style="color:${color};">${statusText}</h2>
       <p>Dear ${coordinatorData.coordinatorName},</p>
       <p>${message}</p>
-      <div style="background:#f8f9fa;padding:20px;border-radius:5px;">
+      
+      <div style="background:#f8f9fa;padding:20px;border-radius:5px;margin:20px 0;">
         <p><strong>School:</strong> ${coordinatorData.schoolName}</p>
         <p><strong>Registration ID:</strong> ${coordinatorData.registrationId}</p>
-        <p><strong>Total Students:</strong> ${studentCount}</p>
+        <p><strong>Total Students:</strong> ${students.length}</p>
         <p><strong>Total Amount:</strong> ₹${totalAmount}</p>
-        <p><strong>Status:</strong> <span style="color:${color};font-weight:bold;">${text}</span></p>
+        <p><strong>Status:</strong> <span style="color:${color};font-weight:bold;">${statusText}</span></p>
       </div>
-      <p>Regards,<br>Brain-O-Math Olympiad Team</p>
+
+      <h3>${isApproved ? 'Verified' : 'Submitted'} Students:</h3>
+      <table style="width:100%;border-collapse:collapse;margin:20px 0;">
+        <thead>
+          <tr style="background:${color};color:white;">
+            <th style="padding:10px;text-align:left;">#</th>
+            <th style="padding:10px;text-align:left;">Student ID</th>
+            <th style="padding:10px;text-align:left;">Name</th>
+            <th style="padding:10px;text-align:left;">Class</th>
+            <th style="padding:10px;text-align:left;">Category</th>
+            <th style="padding:10px;text-align:left;">Fee</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${studentRows}
+        </tbody>
+      </table>
+
+      ${isApproved ? '<p><strong>Next Steps:</strong> You will receive the exam schedule and venue details shortly.</p>' : ''}
+      
+      <p>For any queries, contact us at:<br>
+      📧 doonheritageschool@brainomath.online<br>
+      📞 +91 XXX XXX XXXX</p>
+      
+      <p>Best regards,<br>Brain-O-Math Olympiad Team</p>
     </div>
   `;
 
   return sendEmail({
     to: coordinatorData.coordinatorEmail,
-    subject: `Payment ${text} - Brain-O-Math Olympiad`,
+    subject: `${statusText} - Brain-O-Math Olympiad`,
     htmlContent: html
   });
 }
