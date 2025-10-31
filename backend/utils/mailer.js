@@ -117,8 +117,38 @@ async function sendPaymentVerificationEmail(coordinatorData, status, totalAmount
   });
 }
 
+// 🔑 Coordinator Credentials (Forgot Password) Email
+async function sendCoordinatorCredentialsEmail(coordinatorData) {
+  const html = `
+    <div style="font-family: Arial, sans-serif; max-width:600px; margin:auto;">
+      <h2 style="color:#2c3e50;">Your Coordinator Login Details</h2>
+      <p>Dear ${coordinatorData.coordinatorName},</p>
+      <p>As requested, here are your login credentials for the Brain-O-Math Olympiad 2025 coordinator portal.</p>
+      <div style="background:#f8f9fa;padding:20px;border-radius:5px;">
+        <h3>Account Details</h3>
+        <p><strong>Registration ID:</strong> ${coordinatorData.registrationId}</p>
+        <p><strong>School:</strong> ${coordinatorData.schoolName}</p>
+      </div>
+      <div style="background:#e8f5e8;padding:15px;border-radius:5px;margin-top:10px;">
+        <h4>Login Credentials</h4>
+        <p><strong>Email:</strong> ${coordinatorData.coordinatorEmail}</p>
+        <p><strong>Password:</strong> ${String(coordinatorData.coordinatorPhone).slice(-4)} (last 4 digits of your phone)</p>
+      </div>
+      <p style="margin-top:16px;">You can log in at the coordinator portal and change your password by updating your registered phone number with the organizers if needed.</p>
+      <p>Regards,<br>Brain-O-Math Olympiad Team</p>
+    </div>
+  `;
+
+  return sendEmail({
+    to: coordinatorData.coordinatorEmail,
+    subject: 'Your Coordinator Login Credentials - Brain-O-Math Olympiad',
+    htmlContent: html
+  });
+}
+
 module.exports = {
   sendCoordinatorWelcomeEmail,
   sendStudentSubmissionEmail,
-  sendPaymentVerificationEmail
+  sendPaymentVerificationEmail,
+  sendCoordinatorCredentialsEmail
 };

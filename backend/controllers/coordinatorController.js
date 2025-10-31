@@ -3,7 +3,7 @@ const Registration = require('../models/Registration');
 const Student = require('../models/Student');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const { sendCoordinatorWelcomeEmail } = require('../utils/mailer');
+const { sendCoordinatorWelcomeEmail, sendCoordinatorCredentialsEmail } = require('../utils/mailer');
 
 
 // ============================================
@@ -588,9 +588,6 @@ const removeStudent = async (req, res) => {
 };
 
 
-// ============================================
-// UPLOAD PAYMENT WITH UTR (TEXT INPUT - NO FILE)
-// ============================================
 
 const uploadPayment = async (req, res) => {
     try {
@@ -715,9 +712,6 @@ const uploadPayment = async (req, res) => {
 };
 
 
-// ============================================
-// HEALTH CHECK
-// ============================================
 
 const healthCheck = async (req, res) => {
     try {
@@ -742,9 +736,6 @@ const healthCheck = async (req, res) => {
 };
 
 
-// ============================================
-// FORGOT PASSWORD
-// ============================================
 
 const forgotPassword = async (req, res) => {
     try {
@@ -766,10 +757,18 @@ const forgotPassword = async (req, res) => {
             });
         }
 
-        // For now, just return success (in a real app, you'd send an email)
+        // Send credentials email (registrationId and last 4 digits of phone)
+        await sendCoordinatorCredentialsEmail({
+            coordinatorName: coordinator.coordinatorName,
+            coordinatorEmail: coordinator.coordinatorEmail,
+            coordinatorPhone: coordinator.coordinatorPhone,
+            registrationId: coordinator.registrationId,
+            schoolName: coordinator.schoolName
+        });
+
         res.status(200).json({
             success: true,
-            message: 'Password reset instructions have been sent to your email'
+            message: 'Recovery email sent with your Registration ID and password'
         });
 
     } catch (error) {
@@ -780,10 +779,6 @@ const forgotPassword = async (req, res) => {
         });
     }
 };
-
-// ============================================
-// EXPORTS
-// ============================================
 
 module.exports = {
     signupCoordinator,
