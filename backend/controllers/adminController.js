@@ -86,13 +86,26 @@ exports.getStats = async (req, res) => {
 // Get all students
 exports.getAllStudents = async (req, res) => {
   try {
-    const students = await Student.find()
+    const { page = 1, status = '', class: studentClass = '' } = req.query;
+    const limit = 20;
+    const skip = (page - 1) * limit;
+
+    // Build filter query
+    const filter = {};
+    if (status) filter.status = status;
+    if (studentClass) filter.class = studentClass;
+
+    const students = await Student.find(filter)
       .populate({
         path: 'school',
         select: 'schoolName coordinatorName coordinatorEmail coordinatorPhone'
       })
       .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
       .lean();
+
+    const total = await Student.countDocuments(filter);
 
     const transformedStudents = students.map(student => ({
       ...student,
@@ -105,7 +118,13 @@ exports.getAllStudents = async (req, res) => {
     res.status(200).json({
       success: true,
       data: transformedStudents,
-      count: transformedStudents.length
+      count: transformedStudents.length,
+      pagination: {
+        page: parseInt(page),
+        limit: limit,
+        total,
+        pages: Math.ceil(total / limit)
+      }
     });
   } catch (error) {
     console.error('Get All Students Error:', error);
@@ -119,19 +138,43 @@ exports.getAllStudents = async (req, res) => {
 // Get all registrations
 exports.getAllRegistrations = async (req, res) => {
   try {
-    const registrations = await Registration.find()
+    const { page = 1, status = '' } = req.query;
+    const limit = 20;
+    const skip = (page - 1) * limit;
+
+    // Build filter query
+    const filter = {};
+    if (status) {
+      // Filter by paymentStatus or status
+      filter.$or = [
+        { paymentStatus: status },
+        { status: status }
+      ];
+    }
+
+    const registrations = await Registration.find(filter)
       .populate({
         path: 'school',
         select: 'schoolName coordinatorName coordinatorEmail coordinatorPhone'
       })
       .populate('students')
       .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
       .lean();
+
+    const total = await Registration.countDocuments(filter);
 
     res.status(200).json({
       success: true,
       data: registrations,
-      count: registrations.length
+      count: registrations.length,
+      pagination: {
+        page: parseInt(page),
+        limit: limit,
+        total,
+        pages: Math.ceil(total / limit)
+      }
     });
   } catch (error) {
     console.error('Get All Registrations Error:', error);
