@@ -1,0 +1,3203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+{% load static %}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Brain-O-Math Admin - UTR Payment System</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  color: #2d3748;
+}
+
+.main-container {
+  background: #f8fafc;
+  min-height: 100vh;
+  position: relative;
+}
+
+header {
+  background: linear-gradient(135deg, #4c51bf 0%, #667eea 50%, #764ba2 100%);
+  color: white;
+  padding: 1.5rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+h1 {
+  font-size: 1.8rem;
+  margin: 0;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+h1 i {
+  font-size: 1.5rem;
+  color: #ffd700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.tab-nav {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.tab-nav button {
+  background: transparent;
+  border: none;
+  padding: 1rem 2rem;
+  cursor: pointer;
+  font-weight: 600;
+  color: #64748b;
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.tab-nav button.active {
+  color: #667eea;
+  border-bottom-color: #667eea;
+}
+
+.tab-nav button:hover {
+  color: #667eea;
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+main {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  padding: 2rem;
+  margin-bottom: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.12);
+}
+
+.card h2 {
+  color: #2d3748;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.stat-item {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+  transition: transform 0.3s ease;
+}
+
+.stat-item:hover {
+  transform: translateY(-3px);
+}
+
+.stat-item i {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  opacity: 0.9;
+}
+
+.stat-item h3 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.stat-item p {
+  font-size: 0.9rem;
+  opacity: 0.9;
+  font-weight: 500;
+}
+
+.controls {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.filter-group label {
+  font-weight: 500;
+  color: #4a5568;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+}
+
+th, td {
+  padding: 1rem 1.2rem;
+  text-align: left;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 0.9rem;
+}
+
+th {
+  background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+  font-weight: 600;
+  color: #2d3748;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.5px;
+}
+
+tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+tbody tr:hover {
+  background: #f8fafc;
+}
+
+.status {
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: inline-block;
+  min-width: 80px;
+  text-align: center;
+}
+
+.pending, .submitted {
+  background: linear-gradient(135deg, #fed7aa 0%, #fb923c 100%);
+  color: #9a3412;
+}
+
+.verified {
+  background: linear-gradient(135deg, #bbf7d0 0%, #34d399 100%);
+  color: #065f46;
+}
+
+.rejected {
+  background: linear-gradient(135deg, #fecaca 0%, #f87171 100%);
+  color: #991b1b;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: 10px;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-success {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.btn-danger {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+}
+
+select {
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  border: 2px solid #e2e8f0;
+  background: white;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+select:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.statusSel {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.8rem;
+  border-radius: 6px;
+  border: 1px solid #cbd5e0;
+  background: white;
+}
+
+.table-container {
+  overflow-x: auto;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+}
+
+.pagination {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.pagination button {
+  background: white;
+  border: 2px solid #e2e8f0;
+  color: #4a5568;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 500;
+  min-width: 40px;
+  transition: all 0.3s ease;
+}
+
+.pagination button:hover {
+  background: #f7fafc;
+  border-color: #cbd5e0;
+}
+
+.pagination button.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-color: #667eea;
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #f0f0f0;
+  border-color: #ddd;
+  color: #999;
+}
+
+.pagination button:disabled:hover {
+  background: #f0f0f0;
+  border-color: #ddd;
+}
+
+.utr-number {
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: #4c51bf;
+  background: #f0f4ff;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: #667eea;
+  font-weight: 500;
+}
+
+.loading i {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: #718096;
+}
+
+.empty-state i {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  color: #cbd5e0;
+}
+
+/* Action buttons */
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.action-buttons button {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.8rem;
+}
+
+/* Status badge styles */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 0.4rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.status-badge.released {
+  background: rgba(16, 185, 129, 0.1);
+  color: #059669;
+}
+
+.status-badge.pending {
+  background: rgba(245, 158, 11, 0.1);
+  color: #d97706;
+}
+
+.status-badge.submitted {
+  background: rgba(59, 130, 246, 0.1);
+  color: #2563eb;
+}
+
+.status-badge.verified {
+  background: rgba(16, 185, 129, 0.1);
+  color: #059669;
+}
+
+.status-badge.rejected {
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+}
+
+/* Payment status badges */
+.status-badge.payment-pending {
+  background: rgba(245, 158, 11, 0.1);
+  color: #d97706;
+}
+
+.status-badge.payment-submitted {
+  background: rgba(59, 130, 246, 0.1);
+  color: #2563eb;
+}
+
+.status-badge.payment-verified {
+  background: rgba(16, 185, 129, 0.1);
+  color: #059669;
+}
+
+.status-badge.payment-rejected {
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+}
+
+/* Action buttons */
+.action-btn {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.8rem;
+  border: none;
+  border-radius: 0.4rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 500;
+}
+
+.action-btn.release-btn {
+  background: #10b981;
+  color: white;
+}
+
+.action-btn.release-btn:hover {
+  background: #059669;
+  transform: scale(1.05);
+}
+
+.action-btn.revoke-btn {
+  background: #ef4444;
+  color: white;
+}
+
+.action-btn.revoke-btn:hover {
+  background: #dc2626;
+  transform: scale(1.05);
+}
+
+/* Stats grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat-box {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  header {
+    padding: 1rem;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  h1 {
+    font-size: 1.5rem;
+  }
+  
+  main {
+    padding: 1rem;
+  }
+  
+  .card {
+    padding: 1.5rem;
+  }
+  
+  .stats-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  table {
+    font-size: 0.8rem;
+  }
+  
+  th, td {
+    padding: 0.75rem;
+  }
+  
+  .tab-nav {
+    flex-direction: column;
+    gap: 0;
+  }
+  
+  .tab-nav button {
+    padding: 0.75rem 1rem;
+  }
+}
+</style>
+</head>
+<body>
+<div class="main-container">
+  <header>
+    <h1><i class="fas fa-chart-line"></i> Brain-O-Math Admin Dashboard</h1>
+    <button id="logoutBtn" class="btn">
+      <i class="fas fa-sign-out-alt"></i> Logout
+    </button>
+  </header>
+
+  <main>
+    <div class="card" id="statsCard">
+      <h2><i class="fas fa-chart-line"></i> Dashboard Overview</h2>
+      <p id="statsLoading" class="loading">
+        <i class="fas fa-spinner"></i> Loading dashboard data...
+      </p>
+      <div id="statsContent" style="display:none">
+        <div class="stats-grid">
+          <div class="stat-item">
+            <i class="fas fa-clipboard-list"></i>
+            <h3 id="totalRegs">0</h3>
+            <p>Total Registrations</p>
+          </div>
+          <div class="stat-item">
+            <i class="fas fa-user-graduate"></i>
+            <h3 id="totalStudents">0</h3>
+            <p>Total Students</p>
+          </div>
+          <div class="stat-item">
+            <i class="fas fa-rupee-sign"></i>
+            <h3 id="totalRevenue">0</h3>
+            <p>Total Revenue</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Messaging Section -->
+    <div class="card" style="margin-bottom: 2rem; background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); color: white;">
+      <h2 style="color: white; margin-bottom: 1rem;">
+        <i class="fas fa-envelope"></i> Send Message to All Coordinators
+      </h2>
+      <div style="display: flex; gap: 1.5rem; flex-direction: column;">
+        <div>
+          <label for="messageContent" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Message Content:</label>
+          <textarea id="messageContent" 
+            placeholder="Write your message here... This will be sent to all coordinators via email." 
+            style="width: 100%; min-height: 120px; padding: 12px; border: 2px solid rgba(255,255,255,0.3); border-radius: 6px; font-size: 0.95rem; font-family: 'Inter', sans-serif; resize: vertical; color: #333; background: white;">
+          </textarea>
+        </div>
+        <div style="display: flex; gap: 1rem; align-items: center;">
+          <button id="sendMessageBtn" class="btn" style="background: #10b981; color: white; padding: 0.8rem 2rem; font-size: 1rem;">
+            <i class="fas fa-paper-plane"></i> Send Message to All
+          </button>
+          <div id="messageStatus" style="display: none; padding: 0.8rem 1.5rem; background: rgba(255,255,255,0.2); border-radius: 6px; font-weight: 500;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Registration Control Section -->
+    <div class="card" style="margin-bottom: 2rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+      <h2 style="color: white; margin-bottom: 1rem;">
+        <i class="fas fa-toggle-on"></i> Registration Control
+      </h2>
+      <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+        <div style="flex: 1;">
+          <p style="margin: 0; font-size: 0.95rem; opacity: 0.95;">
+            Current Status: <strong id="registrationStatusText">Checking...</strong>
+          </p>
+        </div>
+        <div style="display: flex; gap: 1rem;">
+          <button id="stopRegistrationBtn" class="btn btn-danger" style="background: #ef4444;">
+            <i class="fas fa-stop-circle"></i> Stop Registration
+          </button>
+          <button id="startRegistrationBtn" class="btn btn-success" style="background: #10b981; display: none;">
+            <i class="fas fa-play-circle"></i> Start Registration
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab Navigation -->
+    <div class="tab-nav">
+      <button class="tab-btn active" data-tab="registrations">
+        <i class="fas fa-clipboard-list"></i> Registration Management
+      </button>
+      <button class="tab-btn" data-tab="students">
+        <i class="fas fa-user-graduate"></i> Student Management
+      </button>
+      <button class="tab-btn" data-tab="results">
+        <i class="fas fa-file-alt"></i> Enter Result Details
+      </button>
+      <button class="tab-btn" data-tab="edit-students">
+        <i class="fas fa-edit"></i> Edit Student Details
+      </button>
+      <button class="tab-btn" data-tab="report-cards">
+        <i class="fas fa-certificate"></i> Report Cards & Certificates
+      </button>
+      <button class="tab-btn" data-tab="admit-cards">
+        <i class="fas fa-id-card"></i> Admit Card Management
+      </button>
+    </div>
+
+    <!-- Registration Management Tab -->
+    <div id="registrations" class="tab-content active">
+      <div class="card">
+        <h2><i class="fas fa-table"></i> Registration Management (UTR-Based)</h2>
+        
+        <div class="controls">
+          <div class="filter-group">
+            <label for="statusFilter">
+              <i class="fas fa-filter"></i> Filter by Status:
+            </label>
+            <select id="statusFilter">
+              <option value="">All Registrations</option>
+              <option value="pending">Pending</option>
+              <option value="submitted">Submitted</option>
+              <option value="verified">Verified</option>
+              <option value="rejected">Rejected</option>
+            </select>
+          </div>
+          
+          <button id="exportBtn" class="btn">
+            <i class="fas fa-download"></i> Export CSV
+          </button>
+        </div>
+
+        <div class="table-container">
+          <table id="regTable">
+            <thead>
+              <tr>
+                <th><i class="fas fa-hashtag"></i> ID</th>
+                <th><i class="fas fa-school"></i> School</th>
+                <th><i class="fas fa-user"></i> Coordinator Name</th>
+                <th><i class="fas fa-users"></i> Students</th>
+                <th><i class="fas fa-rupee-sign"></i> Amount</th>
+                <th><i class="fas fa-receipt"></i> UTR Number</th>
+                <th><i class="fas fa-flag"></i> Payment Status</th>
+                <th><i class="fas fa-cog"></i> Actions</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        
+        <div class="pagination" id="pager"></div>
+      </div>
+    </div>
+
+    <!-- Student Management Tab -->
+    <div id="students" class="tab-content">
+      <div class="card">
+        <h2><i class="fas fa-user-graduate"></i> Student Management</h2>
+        
+        <div class="controls">
+          <div class="filter-group">
+            <label for="studentStatusFilter">
+              <i class="fas fa-filter"></i> Filter by Status:
+            </label>
+            <select id="studentStatusFilter">
+              <option value="">All Students</option>
+              <option value="pending">Pending</option>
+              <option value="verified">Verified</option>
+              <option value="rejected">Rejected</option>
+            </select>
+          </div>
+          
+          <div class="filter-group">
+            <label for="classFilter">
+              <i class="fas fa-graduation-cap"></i> Filter by Class:
+            </label>
+            <select id="classFilter">
+              <option value="">All Classes</option>
+              <option value="3">Class 3</option>
+              <option value="4">Class 4</option>
+              <option value="5">Class 5</option>
+              <option value="6">Class 6</option>
+              <option value="7">Class 7</option>
+              <option value="8">Class 8</option>
+              <option value="9">Class 9</option>
+              <option value="10">Class 10</option>
+              <option value="11">Class 11</option>
+              <option value="12">Class 12</option>
+            </select>
+          </div>
+          
+          <button id="exportStudentsBtn" class="btn">
+            <i class="fas fa-download"></i> Export Students CSV
+          </button>
+        </div>
+
+        <div class="table-container">
+          <table id="studentTable">
+            <thead>
+              <tr>
+                <th><i class="fas fa-hashtag"></i> ID</th>
+                <th><i class="fas fa-user"></i> Name</th>
+                <th><i class="fas fa-graduation-cap"></i> Class</th>
+                <th><i class="fas fa-book"></i> Subjects</th>
+                <th><i class="fas fa-school"></i> School</th>
+                <th><i class="fas fa-user-tie"></i> Coordinator</th>
+                <th><i class="fas fa-envelope"></i> Email</th>
+                <th><i class="fas fa-users"></i> Parent</th>
+                <th><i class="fas fa-phone"></i> Contact</th>
+                <th><i class="fas fa-flag"></i> Status</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        
+        <div class="pagination" id="studentPager"></div>
+      </div>
+    </div>
+
+    <!-- Enter Result Details Tab -->
+    <div id="results" class="tab-content">
+      <div class="card">
+        <h2><i class="fas fa-file-alt"></i> Enter Result Details</h2>
+        
+        <div class="stats-grid" id="resultStatsContainer">
+          <div class="stat-box">
+            <div class="stat-value" id="totalResultStudents">0</div>
+            <div class="stat-label">Total Students</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value" id="marksEnteredCount">0</div>
+            <div class="stat-label">Marks Entered</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value" id="marksPendingCount">0</div>
+            <div class="stat-label">Pending</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value" id="marksPercentage">0%</div>
+            <div class="stat-label">Progress</div>
+          </div>
+        </div>
+
+        <div class="controls">
+          <div class="filter-group">
+            <label for="resultClassFilter">
+              <i class="fas fa-graduation-cap"></i> Filter by Class:
+            </label>
+            <select id="resultClassFilter">
+              <option value="">All Classes</option>
+              <option value="3">Class 3</option>
+              <option value="4">Class 4</option>
+              <option value="5">Class 5</option>
+              <option value="6">Class 6</option>
+              <option value="7">Class 7</option>
+              <option value="8">Class 8</option>
+              <option value="9">Class 9</option>
+              <option value="10">Class 10</option>
+              <option value="11">Class 11</option>
+              <option value="12">Class 12</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label for="resultSubjectFilter">
+              <i class="fas fa-book"></i> Filter by Subject:
+            </label>
+            <select id="resultSubjectFilter">
+              <option value="">All Subjects</option>
+              <option value="math">Math</option>
+              <option value="science">Science</option>
+              <option value="all">Both</option>
+            </select>
+          </div>
+
+          <button id="refreshResultStatsBtn" class="btn" style="background: #3b82f6; color: white;">
+            <i class="fas fa-sync"></i> Refresh Stats
+          </button>
+
+          <button id="saveAllMarksBtn" class="btn" style="background: #10b981; color: white;">
+            <i class="fas fa-save"></i> Save All on This Page
+          </button>
+        </div>
+
+        <div class="table-container">
+          <table id="resultTable">
+            <thead>
+              <tr>
+                <th><i class="fas fa-hashtag"></i> Roll Number</th>
+                <th><i class="fas fa-user"></i> Student Name</th>
+                <th><i class="fas fa-graduation-cap"></i> Class</th>
+                <th><i class="fas fa-book"></i> Subjects</th>
+                <th><i class="fas fa-school"></i> School</th>
+                <th><i class="fas fa-user-tie"></i> Coordinator</th>
+                <th><i class="fas fa-calculator"></i> Math Marks</th>
+                <th><i class="fas fa-flask"></i> Science Marks</th>
+                <th><i class="fas fa-cog"></i> Actions</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        
+        <div class="pagination" id="resultPager"></div>
+      </div>
+    </div>
+
+    <!-- Edit Student Details Tab -->
+    <div id="edit-students" class="tab-content">
+      <div class="card">
+        <h2><i class="fas fa-edit"></i> Edit Student Details</h2>
+        
+        <div class="stats-grid" id="editStudentStatsContainer">
+          <div class="stat-box">
+            <div class="stat-value" id="totalEditStudents">0</div>
+            <div class="stat-label">Total Students</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value" id="editedCount">0</div>
+            <div class="stat-label">Modified</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value" id="pendingEditCount">0</div>
+            <div class="stat-label">Pending Save</div>
+          </div>
+        </div>
+
+        <div class="controls">
+          <div class="filter-group">
+            <label for="editStudentClassFilter">
+              <i class="fas fa-graduation-cap"></i> Filter by Class:
+            </label>
+            <select id="editStudentClassFilter">
+              <option value="">All Classes</option>
+              <option value="3">Class 3</option>
+              <option value="4">Class 4</option>
+              <option value="5">Class 5</option>
+              <option value="6">Class 6</option>
+              <option value="7">Class 7</option>
+              <option value="8">Class 8</option>
+              <option value="9">Class 9</option>
+              <option value="10">Class 10</option>
+              <option value="11">Class 11</option>
+              <option value="12">Class 12</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label for="editStudentSubjectFilter">
+              <i class="fas fa-book"></i> Filter by Subject:
+            </label>
+            <select id="editStudentSubjectFilter">
+              <option value="">All Subjects</option>
+              <option value="math">Math</option>
+              <option value="science">Science</option>
+              <option value="all">Both</option>
+            </select>
+          </div>
+
+          <button id="refreshEditStatsBtn" class="btn" style="background: #3b82f6; color: white;">
+            <i class="fas fa-sync"></i> Refresh Stats
+          </button>
+
+          <button id="saveAllEditBtn" class="btn" style="background: #10b981; color: white;">
+            <i class="fas fa-save"></i> Save All Changes on This Page
+          </button>
+        </div>
+
+        <div class="table-container">
+          <table id="editStudentTable">
+            <thead>
+              <tr>
+                <th><i class="fas fa-hashtag"></i> Roll Number</th>
+                <th><i class="fas fa-user"></i> Student Name</th>
+                <th><i class="fas fa-graduation-cap"></i> Class</th>
+                <th><i class="fas fa-book"></i> Subjects</th>
+                <th><i class="fas fa-school"></i> School</th>
+                <th><i class="fas fa-cog"></i> Actions</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        
+        <div class="pagination" id="editStudentPager"></div>
+      </div>
+    </div>
+
+    <!-- Report Cards & Certificates Tab -->
+    <div id="report-cards" class="tab-content">
+      <div class="card">
+        <h2><i class="fas fa-certificate"></i> Report Cards & Certificates Management</h2>
+        
+        <!-- Release/Stop Options -->
+        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px; padding: 40px; margin-bottom: 20px; color: white;">
+          <h3 style="margin-top: 0; display: flex; align-items: center; gap: 8px; text-align: center; justify-content: center;">
+            <i class="fas fa-paper-plane"></i> Release & Control Results
+          </h3>
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; max-width: 600px; margin: 40px auto;">
+            <!-- Release Button -->
+            <div style="border: 2px solid rgba(255,255,255,0.5); border-radius: 8px; padding: 30px; background: rgba(0,0,0,0.1); text-align: center;">
+              <h4 style="margin: 0 0 15px 0; font-size: 1.1rem;">
+                <i class="fas fa-unlock"></i> Release
+              </h4>
+              <p style="margin: 0 0 20px 0; font-size: 0.9rem; opacity: 0.95;">
+                Release both Report Cards & Certificates to all students
+              </p>
+              <button id="releaseAllBtn" class="btn" style="background: #10b981; color: white; width: 100%; cursor: pointer; border: none; padding: 12px; border-radius: 4px; font-size: 1rem; font-weight: 600;">
+                <i class="fas fa-unlock"></i> Release
+              </button>
+            </div>
+
+            <!-- Stop Button -->
+            <div style="border: 2px solid rgba(255,255,255,0.5); border-radius: 8px; padding: 30px; background: rgba(0,0,0,0.1); text-align: center;">
+              <h4 style="margin: 0 0 15px 0; font-size: 1.1rem;">
+                <i class="fas fa-lock"></i> Stop
+              </h4>
+              <p style="margin: 0 0 20px 0; font-size: 0.9rem; opacity: 0.95;">
+                Stop both Report Cards & Certificates access from students
+              </p>
+              <button id="stopAllBtn" class="btn" style="background: #ef4444; color: white; width: 100%; cursor: pointer; border: none; padding: 12px; border-radius: 4px; font-size: 1rem; font-weight: 600;">
+                <i class="fas fa-lock"></i> Stop
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Status Message -->
+        <div id="reportStatusMessage" style="display: none; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-weight: 500;">
+        </div>
+
+        <p style="text-align: center; color: #666; font-size: 0.9rem; margin-top: 20px;">
+          <i class="fas fa-info-circle"></i> When released, students can view results in their dashboard. When stopped, results are hidden from all students.
+        </p>
+      </div>
+    </div>
+
+    <!-- Admit Card Management Tab -->
+    <div id="admit-cards" class="tab-content">
+      <div class="card">
+        <h2><i class="fas fa-id-card"></i> Admit Card Management</h2>
+        
+        <div class="stats-grid" id="admitStatsContainer">
+          <div class="stat-box">
+            <div class="stat-value" id="totalStudentsAdmit">0</div>
+            <div class="stat-label">Total Students</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value" id="releasedAdmitCards">0</div>
+            <div class="stat-label">Admit Cards Released</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value" id="pendingAdmitCards">0</div>
+            <div class="stat-label">Pending Release</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value" id="releasePercentage">0%</div>
+            <div class="stat-label">Release Progress</div>
+          </div>
+        </div>
+
+        <!-- Release Options -->
+        <div style="background: #e0f2fe; border: 1px solid #0284c7; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+          <h3 style="margin-top: 0; color: #0c4a6e; display: flex; align-items: center; gap: 8px;">
+            <i class="fas fa-paper-plane"></i> Release Admit Cards
+          </h3>
+          
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+            <!-- Release All -->
+            <div style="border: 1px solid #06b6d4; border-radius: 6px; padding: 15px; background: white;">
+              <h4 style="margin: 0 0 10px 0; color: #0c4a6e;">
+                <i class="fas fa-globe"></i> Release All Students
+              </h4>
+              <p style="margin: 0 0 10px 0; color: #666; font-size: 0.9rem;">
+                Generate roll numbers and release admit cards for all pending students across all schools
+              </p>
+              <button id="releaseAllBtn" class="btn" style="background: #10b981; color: white; width: 100%; cursor: pointer;">
+                <i class="fas fa-check-circle"></i> Release All
+              </button>
+            </div>
+
+            <!-- Release by School -->
+            <div style="border: 1px solid #06b6d4; border-radius: 6px; padding: 15px; background: white;">
+              <h4 style="margin: 0 0 10px 0; color: #0c4a6e;">
+                <i class="fas fa-school"></i> Release by School
+              </h4>
+              <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+                <select id="schoolSelectForRelease" style="flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                  <option value="">Select a school...</option>
+                </select>
+                <button id="releaseSchoolBtn" class="btn" style="background: #3b82f6; color: white; padding: 8px 16px; cursor: pointer;">
+                  <i class="fas fa-arrow-right"></i>
+                </button>
+              </div>
+              <small style="color: #666;">Select a school to release admit cards for its students only</small>
+            </div>
+
+            <!-- Release Individual Student -->
+            <div style="border: 1px solid #06b6d4; border-radius: 6px; padding: 15px; background: white;">
+              <h4 style="margin: 0 0 10px 0; color: #0c4a6e;">
+                <i class="fas fa-user-graduate"></i> Release Individual
+              </h4>
+              <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+                <input type="text" id="studentSearchForRelease" placeholder="Search student..." 
+                       style="flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                <button id="releaseIndividualBtn" class="btn" style="background: #8b5cf6; color: white; padding: 8px 16px; cursor: pointer;">
+                  <i class="fas fa-arrow-right"></i>
+                </button>
+              </div>
+              <small style="color: #666;">Enter student name to release their admit card</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="controls">
+          <button id="refreshAdmitStatsBtn" class="btn" style="background: #3b82f6; color: white;">
+            <i class="fas fa-sync"></i> Refresh Stats
+          </button>
+        </div>
+
+        <div class="controls">
+          <div class="filter-group">
+            <label for="admitClassFilter">
+              <i class="fas fa-graduation-cap"></i> Filter by Class:
+            </label>
+            <select id="admitClassFilter">
+              <option value="">All Classes</option>
+              <option value="3">Class 3</option>
+              <option value="4">Class 4</option>
+              <option value="5">Class 5</option>
+              <option value="6">Class 6</option>
+              <option value="7">Class 7</option>
+              <option value="8">Class 8</option>
+              <option value="9">Class 9</option>
+              <option value="10">Class 10</option>
+              <option value="11">Class 11</option>
+              <option value="12">Class 12</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label for="admitStatusFilter">
+              <i class="fas fa-info-circle"></i> Filter by Status:
+            </label>
+            <select id="admitStatusFilter">
+              <option value="">All Status</option>
+              <option value="released">Released</option>
+              <option value="pending">Pending</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Export Section -->
+        <div class="card" style="background: #f9fafb; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+          <h3 style="margin-top: 0; color: #1f2937;"><i class="fas fa-download"></i> Export Admit Data</h3>
+          <div class="controls" style="gap: 10px; flex-wrap: wrap;">
+            <button id="exportCSVBtn" class="btn" style="background: #059669; color: white;">
+              <i class="fas fa-file-csv"></i> Export to CSV
+            </button>
+            <button id="exportExcelBtn" class="btn" style="background: #0891b2; color: white;">
+              <i class="fas fa-file-excel"></i> Export to Excel
+            </button>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table id="admitCardTable">
+            <thead>
+              <tr>
+                <th><i class="fas fa-hashtag"></i> ID</th>
+                <th><i class="fas fa-user"></i> Name</th>
+                <th><i class="fas fa-graduation-cap"></i> Class</th>
+                <th><i class="fas fa-layer-group"></i> Category</th>
+                <th><i class="fas fa-id-card"></i> Roll Number</th>
+                <th><i class="fas fa-book"></i> Subjects</th>
+                <th><i class="fas fa-credit-card"></i> Payment</th>
+                <th><i class="fas fa-school"></i> School</th>
+                <th><i class="fas fa-flag"></i> Status</th>
+                <th><i class="fas fa-cog"></i> Actions</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        
+        <div class="pagination" id="admitCardPager"></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+const API = '/api';
+//const API = '/api';
+let token = localStorage.getItem('bomAdminToken');
+if (!token) {
+  window.location.href = '/admin-login/';
+}
+
+const headers = () => ({ 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token });
+const qs = (sel) => document.querySelector(sel);
+
+// Tab functionality
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const tabName = btn.dataset.tab;
+    
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    
+    btn.classList.add('active');
+    document.getElementById(tabName).classList.add('active');
+    
+    if (tabName === 'registrations') {
+      loadRegs();
+    } else if (tabName === 'students') {
+      loadStudents();
+    } else if (tabName === 'results') {
+      loadResultEntryStats();
+      loadResultsForEntry();
+    } else if (tabName === 'edit-students') {
+      loadEditStudentStats();
+      loadStudentsForEditing();
+    } else if (tabName === 'report-cards') {
+      // Report cards tab loaded
+    } else if (tabName === 'admit-cards') {
+      loadAdmitCardStats();
+      loadAdmitCards();
+    }
+  });
+});
+
+async function loadStats() {
+  try {
+    const res = await fetch(API + '/admin/stats', { headers: headers() });
+    const j = await res.json();
+    if (!j.success) {
+      alert('Failed to load statistics');
+      return;
+    }
+    qs('#statsLoading').style.display = 'none';
+    qs('#statsContent').style.display = 'block';
+    qs('#totalRegs').textContent = j.data.totalRegistrations || 0;
+    qs('#totalStudents').textContent = j.data.totalStudents || 0;
+    qs('#totalRevenue').textContent = '₹' + (j.data.totalRevenue || 0);
+  } catch (e) {
+    console.error('Stats error:', e);
+  }
+}
+
+let page = 1, status = '';
+
+async function loadRegs() {
+  const tbody = qs('#regTable tbody');
+  tbody.innerHTML = '<tr><td colspan="8" class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</td></tr>';
+
+  try {
+    let url = `${API}/admin/registrations?page=${page}`;
+    if (status) url += `&status=${status}`;
+    
+    const res = await fetch(url, { headers: headers() });
+    const j = await res.json();
+
+    tbody.innerHTML = '';
+
+    if (!j.data || j.data.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="8" class="empty-state">
+            <i class="fas fa-inbox"></i>
+            <p>No registrations found</p>
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    j.data.forEach(r => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><strong>${r.registrationId}</strong></td>
+        <td>${r.school?.schoolName || 'N/A'}</td>
+        <td>${r.school?.coordinatorName || 'N/A'}</td>
+        <td><span style="font-weight: 600;">${r.students?.length || 0}</span></td>
+        <td><strong>₹${r.totalAmount}</strong></td>
+        <td><span class="utr-number">${r.utr || 'N/A'}</span></td>
+        <td><span class="status ${r.paymentStatus || r.status}">${r.paymentStatus || r.status}</span></td>
+        <td>
+          <div class="action-buttons">
+            <button onclick="approveUTR('${r.registrationId}')" class="btn btn-success" ${r.paymentStatus === 'verified' ? 'disabled' : ''}>
+              <i class="fas fa-check"></i> Approve
+            </button>
+            <button onclick="pendingUTR('${r.registrationId}')" class="btn btn-warning" ${r.paymentStatus === 'pending' ? 'disabled' : ''}>
+              <i class="fas fa-clock"></i> Pending
+            </button>
+            <button onclick="rejectUTR('${r.registrationId}')" class="btn btn-danger" ${r.paymentStatus === 'rejected' ? 'disabled' : ''}>
+              <i class="fas fa-times"></i> Reject
+            </button>
+          </div>
+        </td>`;
+      tbody.appendChild(tr);
+    });
+    
+    if (j.pagination) {
+      pager(j.pagination.total);
+    }
+  } catch (e) {
+    console.error('Load registrations error:', e);
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="8" class="empty-state">
+          <i class="fas fa-exclamation-triangle"></i>
+          <p>Error loading registrations</p>
+        </td>
+      </tr>
+    `;
+  }
+}
+
+function pager(total) {
+  const p = qs('#pager');
+  p.innerHTML = '';
+  const totalPages = Math.ceil(total / 20);
+
+  // Smart Pagination - Show Previous/Next + limited page numbers
+  const maxPagesToShow = 5;
+  let startPage = Math.max(1, page - Math.floor(maxPagesToShow / 2));
+  let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+  
+  // Adjust start if we're near the end
+  if (endPage - startPage + 1 < maxPagesToShow) {
+    startPage = Math.max(1, endPage - maxPagesToShow + 1);
+  }
+  
+  // Previous button
+  const prevBtn = document.createElement('button');
+  prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i> Previous';
+  prevBtn.disabled = page === 1;
+  prevBtn.onclick = () => {
+    if (page > 1) {
+      page--;
+      loadRegs();
+    }
+  };
+  p.appendChild(prevBtn);
+  
+  // Show "1" if not in range
+  if (startPage > 1) {
+    const btn1 = document.createElement('button');
+    btn1.textContent = '1';
+    btn1.onclick = () => {
+      page = 1;
+      loadRegs();
+    };
+    p.appendChild(btn1);
+    
+    if (startPage > 2) {
+      const dots = document.createElement('span');
+      dots.textContent = '...';
+      dots.style.padding = '8px 4px';
+      dots.style.display = 'flex';
+      dots.style.alignItems = 'center';
+      p.appendChild(dots);
+    }
+  }
+  
+  // Page numbers in range
+  for (let i = startPage; i <= endPage; i++) {
+    const b = document.createElement('button');
+    b.textContent = i;
+    if (i === page) b.classList.add('active');
+    b.onclick = () => {
+      page = i;
+      loadRegs();
+    };
+    p.appendChild(b);
+  }
+  
+  // Show last page if not in range
+  if (endPage < totalPages) {
+    if (endPage < totalPages - 1) {
+      const dots = document.createElement('span');
+      dots.textContent = '...';
+      dots.style.padding = '8px 4px';
+      dots.style.display = 'flex';
+      dots.style.alignItems = 'center';
+      p.appendChild(dots);
+    }
+    
+    const btnLast = document.createElement('button');
+    btnLast.textContent = totalPages;
+    btnLast.onclick = () => {
+      page = totalPages;
+      loadRegs();
+    };
+    p.appendChild(btnLast);
+  }
+  
+  // Next button
+  const nextBtn = document.createElement('button');
+  nextBtn.innerHTML = 'Next <i class="fas fa-chevron-right"></i>';
+  nextBtn.disabled = page === totalPages;
+  nextBtn.onclick = () => {
+    if (page < totalPages) {
+      page++;
+      loadRegs();
+    }
+  };
+  p.appendChild(nextBtn);
+  
+  // Page info
+  const pageInfo = document.createElement('div');
+  pageInfo.style.width = '100%';
+  pageInfo.style.textAlign = 'center';
+  pageInfo.style.marginTop = '10px';
+  pageInfo.style.fontSize = '0.9rem';
+  pageInfo.style.color = '#666';
+  pageInfo.innerHTML = `Page <strong>${page}</strong> of <strong>${totalPages}</strong> | Total Registrations: <strong>${total}</strong>`;
+  p.appendChild(pageInfo);
+}
+
+async function updatePaymentStatus(registrationId, status, successMessage, reason = '') {
+  const payload = { status, paymentStatus: status };
+  if (reason) payload.reason = reason;
+
+  const res = await fetch(API + `/admin/registrations/${registrationId}/status`, {
+    method: 'PUT',
+    headers: headers(),
+    body: JSON.stringify(payload)
+  });
+
+  const j = await res.json();
+  if (j.success) {
+    alert(successMessage);
+    loadRegs();
+    loadStats();
+    if (document.getElementById('students').classList.contains('active')) {
+      loadStudents();
+    }
+    return;
+  }
+
+  alert('Status update failed: ' + (j.message || 'Unknown error'));
+}
+
+// Verify UTR function
+async function verifyUTR(registrationId) {
+  if (!confirm(`Verify payment for registration ${registrationId}?`)) return;
+
+  try {
+    await updatePaymentStatus(registrationId, 'verified', 'Registration verified successfully!');
+  } catch (e) {
+    alert('Verification failed');
+    console.error(e);
+  }
+}
+
+//  NEW: Reject UTR function
+async function rejectUTR(registrationId) {
+  const reason = prompt('Enter rejection reason:');
+  if (!reason) return;
+
+  try {
+    await updatePaymentStatus(registrationId, 'rejected', 'Registration rejected', reason);
+  } catch (e) {
+    alert('Rejection failed');
+    console.error(e);
+  }
+}
+
+// Approve UTR function
+async function approveUTR(registrationId) {
+  if (!confirm(`Approve payment for registration ${registrationId}?`)) return;
+
+  try {
+    await updatePaymentStatus(registrationId, 'verified', 'Registration approved successfully!');
+  } catch (e) {
+    alert('Approval failed');
+    console.error(e);
+  }
+}
+
+async function pendingUTR(registrationId) {
+  if (!confirm(`Mark registration ${registrationId} as pending?`)) return;
+
+  try {
+    await updatePaymentStatus(registrationId, 'pending', 'Registration marked as pending.');
+  } catch (e) {
+    alert('Pending update failed');
+    console.error(e);
+  }
+}
+
+// Student Management Functions
+let studentPage = 1, studentStatus = '', studentClass = '';
+
+async function loadStudents() {
+  const tbody = qs('#studentTable tbody');
+  tbody.innerHTML = '<tr><td colspan="10" class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</td></tr>';
+
+  try {
+    let url = `${API}/admin/students?page=${studentPage}`;
+    if (studentStatus) url += `&status=${studentStatus}`;
+    if (studentClass) url += `&class=${studentClass}`;
+
+    const res = await fetch(url, { headers: headers() });
+    const j = await res.json();
+
+    tbody.innerHTML = '';
+
+    if (!Array.isArray(j.data) || j.data.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="10" class="empty-state">
+            <i class="fas fa-user-slash"></i>
+            <p>No students found</p>
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    j.data.forEach(s => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><strong>${s.studentId}</strong></td>
+        <td>${s.name}</td>
+        <td>${s.class}</td>
+        <td>${formatSubjects(s.subjects)}</td>
+        <td>${s.schoolName || 'N/A'}</td>
+        <td>${s.coordinatorName || 'N/A'}</td>
+        <td>${s.coordinatorEmail || 'N/A'}</td>
+        <td>${s.parentName || 'N/A'}</td>
+        <td>${s.parentContact || 'N/A'}</td>
+        <td><span class="status ${s.status}">${s.status}</span></td>`;
+      tbody.appendChild(tr);
+    });
+
+    if (j.pagination) {
+      studentPager(j.pagination.total);
+    }
+  } catch (e) {
+    console.error('Load students error:', e);
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="10" class="empty-state">
+          <i class="fas fa-exclamation-triangle"></i>
+          <p>Error loading students</p>
+        </td>
+      </tr>
+    `;
+  }
+}
+
+function studentPager(total) {
+  const p = qs('#studentPager');
+  p.innerHTML = '';
+  const totalPages = Math.ceil(total / 20);
+
+  // Smart Pagination - Show Previous/Next + limited page numbers
+  const maxPagesToShow = 5;
+  let startPage = Math.max(1, studentPage - Math.floor(maxPagesToShow / 2));
+  let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+  
+  // Adjust start if we're near the end
+  if (endPage - startPage + 1 < maxPagesToShow) {
+    startPage = Math.max(1, endPage - maxPagesToShow + 1);
+  }
+  
+  // Previous button
+  const prevBtn = document.createElement('button');
+  prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i> Previous';
+  prevBtn.disabled = studentPage === 1;
+  prevBtn.onclick = () => {
+    if (studentPage > 1) {
+      studentPage--;
+      loadStudents();
+    }
+  };
+  p.appendChild(prevBtn);
+  
+  // Show "1" if not in range
+  if (startPage > 1) {
+    const btn1 = document.createElement('button');
+    btn1.textContent = '1';
+    btn1.onclick = () => {
+      studentPage = 1;
+      loadStudents();
+    };
+    p.appendChild(btn1);
+    
+    if (startPage > 2) {
+      const dots = document.createElement('span');
+      dots.textContent = '...';
+      dots.style.padding = '8px 4px';
+      dots.style.display = 'flex';
+      dots.style.alignItems = 'center';
+      p.appendChild(dots);
+    }
+  }
+  
+  // Page numbers in range
+  for (let i = startPage; i <= endPage; i++) {
+    const b = document.createElement('button');
+    b.textContent = i;
+    if (i === studentPage) b.classList.add('active');
+    b.onclick = () => {
+      studentPage = i;
+      loadStudents();
+    };
+    p.appendChild(b);
+  }
+  
+  // Show last page if not in range
+  if (endPage < totalPages) {
+    if (endPage < totalPages - 1) {
+      const dots = document.createElement('span');
+      dots.textContent = '...';
+      dots.style.padding = '8px 4px';
+      dots.style.display = 'flex';
+      dots.style.alignItems = 'center';
+      p.appendChild(dots);
+    }
+    
+    const btnLast = document.createElement('button');
+    btnLast.textContent = totalPages;
+    btnLast.onclick = () => {
+      studentPage = totalPages;
+      loadStudents();
+    };
+    p.appendChild(btnLast);
+  }
+  
+  // Next button
+  const nextBtn = document.createElement('button');
+  nextBtn.innerHTML = 'Next <i class="fas fa-chevron-right"></i>';
+  nextBtn.disabled = studentPage === totalPages;
+  nextBtn.onclick = () => {
+    if (studentPage < totalPages) {
+      studentPage++;
+      loadStudents();
+    }
+  };
+  p.appendChild(nextBtn);
+  
+  // Page info
+  const pageInfo = document.createElement('div');
+  pageInfo.style.width = '100%';
+  pageInfo.style.textAlign = 'center';
+  pageInfo.style.marginTop = '10px';
+  pageInfo.style.fontSize = '0.9rem';
+  pageInfo.style.color = '#666';
+  pageInfo.innerHTML = `Page <strong>${studentPage}</strong> of <strong>${totalPages}</strong> | Total Students: <strong>${total}</strong>`;
+  p.appendChild(pageInfo);
+}
+
+function formatSubjects(subjects) {
+  if (subjects === 'both') return 'Math & Science';
+  if (subjects === 'math') return 'Mathematics';
+  if (subjects === 'science') return 'Science';
+  return subjects;
+}
+
+// Event listeners
+qs('#statusFilter').onchange = e => {
+  status = e.target.value;
+  page = 1;
+  loadRegs();
+};
+
+qs('#studentStatusFilter').onchange = e => {
+  studentStatus = e.target.value;
+  studentPage = 1;
+  loadStudents();
+};
+
+qs('#classFilter').onchange = e => {
+  studentClass = e.target.value;
+  studentPage = 1;
+  loadStudents();
+};
+
+qs('#exportBtn').onclick = async () => {
+  try {
+    const res = await fetch(API + '/admin/export', {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      return alert(`Export failed: ${err.message}`);
+    }
+
+    const blob = await res.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'registrations.csv';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(url);
+  } catch (e) {
+    alert('Export failed');
+  }
+};
+
+qs('#exportStudentsBtn').onclick = async () => {
+  try {
+    const res = await fetch(API + '/admin/export-students', {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      return alert(`Export failed: ${err.message}`);
+    }
+
+    const blob = await res.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'students.csv';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(url);
+  } catch (e) {
+    alert('Export failed');
+  }
+};
+
+qs('#logoutBtn').onclick = () => {
+  localStorage.removeItem('bomAdminToken');
+  window.location.href = '/admin-login/';
+};
+
+// Registration Control Functions
+let registrationStatus = 'open';
+
+async function loadRegistrationStatus() {
+  try {
+    const res = await fetch(API + '/admin/registration-status', { headers: headers() });
+    const j = await res.json();
+    if (j.success) {
+      registrationStatus = j.data.status;
+      updateRegistrationUI();
+    }
+  } catch (e) {
+    console.error('Failed to load registration status:', e);
+  }
+}
+
+function updateRegistrationUI() {
+  const statusText = qs('#registrationStatusText');
+  const stopBtn = qs('#stopRegistrationBtn');
+  const startBtn = qs('#startRegistrationBtn');
+  
+  if (registrationStatus === 'closed') {
+    statusText.textContent = 'CLOSED';
+    statusText.style.color = '#ef4444';
+    stopBtn.style.display = 'none';
+    startBtn.style.display = 'inline-flex';
+  } else {
+    statusText.textContent = 'OPEN';
+    statusText.style.color = '#10b981';
+    stopBtn.style.display = 'inline-flex';
+    startBtn.style.display = 'none';
+  }
+}
+
+async function stopRegistration() {
+  if (!confirm('Are you sure you want to stop registration? This will disable the "Register Now" link on the homepage.')) {
+    return;
+  }
+  
+  try {
+    const res = await fetch(API + '/admin/registration-status', {
+      method: 'PUT',
+      headers: headers(),
+      body: JSON.stringify({ status: 'closed' })
+    });
+    
+    const j = await res.json();
+    if (j.success) {
+      registrationStatus = 'closed';
+      updateRegistrationUI();
+      alert('Registration has been stopped successfully!');
+    } else {
+      alert('Failed to stop registration: ' + (j.message || 'Unknown error'));
+    }
+  } catch (e) {
+    alert('Failed to stop registration');
+    console.error(e);
+  }
+}
+
+async function startRegistration() {
+  if (!confirm('Are you sure you want to start registration? This will enable the "Register Now" link on the homepage.')) {
+    return;
+  }
+  
+  try {
+    const res = await fetch(API + '/admin/registration-status', {
+      method: 'PUT',
+      headers: headers(),
+      body: JSON.stringify({ status: 'open' })
+    });
+    
+    const j = await res.json();
+    if (j.success) {
+      registrationStatus = 'open';
+      updateRegistrationUI();
+      alert('Registration has been started successfully!');
+    } else {
+      alert('Failed to start registration: ' + (j.message || 'Unknown error'));
+    }
+  } catch (e) {
+    alert('Failed to start registration');
+    console.error(e);
+  }
+}
+
+qs('#stopRegistrationBtn').onclick = stopRegistration;
+qs('#startRegistrationBtn').onclick = startRegistration;
+
+// ===============================
+// ADMIT CARD MANAGEMENT
+// ===============================
+
+let admitCardPage = 1;
+let admitCardClassFilter = '';
+let admitCardStatusFilter = '';
+
+// Helper function to get category from class
+function getCategoryFromClass(cls) {
+  const classNum = parseInt(cls, 10);
+  if (classNum >= 3 && classNum <= 4) return 'A';
+  if (classNum >= 5 && classNum <= 6) return 'B';
+  if (classNum >= 7 && classNum <= 8) return 'C';
+  if (classNum >= 9 && classNum <= 10) return 'D';
+  if (classNum >= 11 && classNum <= 12) return 'E';
+  return 'N/A';
+}
+
+async function loadAdmitCardStats() {
+  try {
+    const res = await fetch(API + '/admin/admit-cards/stats', { headers: headers() });
+    const j = await res.json();
+    
+    if (j.success) {
+      const stats = j.data.summary;
+      qs('#totalStudentsAdmit').textContent = stats.totalStudents;
+      qs('#releasedAdmitCards').textContent = stats.released;
+      qs('#pendingAdmitCards').textContent = stats.pending;
+      qs('#releasePercentage').textContent = stats.percentage + '%';
+    }
+  } catch (e) {
+    console.error('Failed to load admit card stats:', e);
+  }
+}
+
+async function loadAdmitCards() {
+  const tbody = qs('#admitCardTable tbody');
+  tbody.innerHTML = '<tr><td colspan="10" class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</td></tr>';
+
+  try {
+    let url = `${API}/admin/students?page=${admitCardPage}`;
+    if (admitCardClassFilter) url += `&class=${admitCardClassFilter}`;
+    
+    const res = await fetch(url, { headers: headers() });
+    const j = await res.json();
+
+    tbody.innerHTML = '';
+
+    if (!j.data || j.data.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="10" class="empty-state">
+            <i class="fas fa-inbox"></i>
+            <p>No students found</p>
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    // Apply status filter if set
+    let filteredData = j.data;
+    if (admitCardStatusFilter === 'released') {
+      filteredData = j.data.filter(s => s.admitCardReleased);
+    } else if (admitCardStatusFilter === 'pending') {
+      filteredData = j.data.filter(s => !s.admitCardReleased);
+    }
+
+    filteredData.forEach(s => {
+      const tr = document.createElement('tr');
+      const statusClass = s.admitCardReleased ? 'released' : 'pending';
+      const statusText = s.admitCardReleased ? 'Released' : 'Pending';
+      
+      // Get category from class
+      const category = getCategoryFromClass(s.class);
+      
+      // Format subjects for display
+      let subjectsText = 'N/A';
+      if (s.subjects) {
+        if (s.subjects === 'both') subjectsText = 'Math & Science';
+        else if (s.subjects === 'math') subjectsText = 'Mathematics';
+        else if (s.subjects === 'science') subjectsText = 'Science';
+        else subjectsText = s.subjects;
+      }
+      
+      // Format payment status for display
+      let paymentStatusText = s.paymentStatus || 'pending';
+      let paymentBadgeClass = 'payment-' + paymentStatusText.toLowerCase();
+      let paymentDisplayText = paymentStatusText.charAt(0).toUpperCase() + paymentStatusText.slice(1);
+      
+      tr.innerHTML = `
+        <td><strong>${s.studentId || s._id.substring(0, 8)}</strong></td>
+        <td>${s.name}</td>
+        <td>Class ${s.class}</td>
+        <td><strong style="font-size: 1.1rem; color: #667eea;">Category ${category}</strong></td>
+        <td><span style="font-family: monospace; font-weight: bold; color: #3b82f6;">${s.rollNumber || 'Not Assigned'}</span></td>
+        <td><span style="background: #f0f4ff; padding: 4px 8px; border-radius: 4px; font-size: 0.9rem;">${subjectsText}</span></td>
+        <td><span class="status-badge ${paymentBadgeClass}">${paymentDisplayText}</span></td>
+        <td>${s.school?.schoolName || 'N/A'}</td>
+        <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+        <td class="actions">
+          ${!s.admitCardReleased ? `
+            <button class="action-btn release-btn" onclick="releaseStudentAdmitCard('${s._id}')" title="Release Admit Card">
+              <i class="fas fa-check-circle"></i> Release
+            </button>
+          ` : `
+            <button class="action-btn revoke-btn" onclick="revokeStudentAdmitCard('${s._id}')" title="Revoke Admit Card">
+              <i class="fas fa-ban"></i> Revoke
+            </button>
+          `}
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    // Smart Pagination - Show Previous/Next + limited page numbers
+    const totalPages = j.pagination?.pages || j.totalPages || 1;
+    const pager = qs('#admitCardPager');
+    pager.innerHTML = '';
+    
+    // Calculate range of page numbers to show (max 5 pages at a time)
+    const maxPagesToShow = 5;
+    let startPage = Math.max(1, admitCardPage - Math.floor(maxPagesToShow / 2));
+    let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+    
+    // Adjust start if we're near the end
+    if (endPage - startPage + 1 < maxPagesToShow) {
+      startPage = Math.max(1, endPage - maxPagesToShow + 1);
+    }
+    
+    // Previous button
+    const prevBtn = document.createElement('button');
+    prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i> Previous';
+    prevBtn.disabled = admitCardPage === 1;
+    prevBtn.onclick = () => {
+      if (admitCardPage > 1) {
+        admitCardPage--;
+        loadAdmitCards();
+      }
+    };
+    pager.appendChild(prevBtn);
+    
+    // Show "1" if not in range
+    if (startPage > 1) {
+      const btn1 = document.createElement('button');
+      btn1.textContent = '1';
+      btn1.onclick = () => {
+        admitCardPage = 1;
+        loadAdmitCards();
+      };
+      pager.appendChild(btn1);
+      
+      if (startPage > 2) {
+        const dots = document.createElement('span');
+        dots.textContent = '...';
+        dots.style.padding = '8px 4px';
+        dots.style.display = 'flex';
+        dots.style.alignItems = 'center';
+        pager.appendChild(dots);
+      }
+    }
+    
+    // Page numbers in range
+    for (let i = startPage; i <= endPage; i++) {
+      const btn = document.createElement('button');
+      btn.textContent = i;
+      btn.className = i === admitCardPage ? 'active' : '';
+      btn.onclick = () => {
+        admitCardPage = i;
+        loadAdmitCards();
+      };
+      pager.appendChild(btn);
+    }
+    
+    // Show last page if not in range
+    if (endPage < totalPages) {
+      if (endPage < totalPages - 1) {
+        const dots = document.createElement('span');
+        dots.textContent = '...';
+        dots.style.padding = '8px 4px';
+        dots.style.display = 'flex';
+        dots.style.alignItems = 'center';
+        pager.appendChild(dots);
+      }
+      
+      const btnLast = document.createElement('button');
+      btnLast.textContent = totalPages;
+      btnLast.onclick = () => {
+        admitCardPage = totalPages;
+        loadAdmitCards();
+      };
+      pager.appendChild(btnLast);
+    }
+    
+    // Next button
+    const nextBtn = document.createElement('button');
+    nextBtn.innerHTML = 'Next <i class="fas fa-chevron-right"></i>';
+    nextBtn.disabled = admitCardPage === totalPages;
+    nextBtn.onclick = () => {
+      if (admitCardPage < totalPages) {
+        admitCardPage++;
+        loadAdmitCards();
+      }
+    };
+    pager.appendChild(nextBtn);
+    
+    // Page info
+    const pageInfo = document.createElement('div');
+    pageInfo.style.width = '100%';
+    pageInfo.style.textAlign = 'center';
+    pageInfo.style.marginTop = '10px';
+    pageInfo.style.fontSize = '0.9rem';
+    pageInfo.style.color = '#666';
+    pageInfo.innerHTML = `Page <strong>${admitCardPage}</strong> of <strong>${totalPages}</strong> | Total Students: <strong>${j.pagination?.total || j.count}</strong>`;
+    pager.appendChild(pageInfo);
+  } catch (e) {
+    console.error('Load admit cards error:', e);
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="9" class="error">
+          <i class="fas fa-exclamation-triangle"></i>
+          <p>Failed to load students</p>
+        </td>
+      </tr>
+    `;
+  }
+}
+
+async function releaseStudentAdmitCard(studentId) {
+  if (!confirm('Release admit card for this student?')) return;
+
+  try {
+    const res = await fetch(`${API}/admin/admit-cards/release/${studentId}`, {
+      method: 'POST',
+      headers: headers()
+    });
+    const j = await res.json();
+
+    if (j.success) {
+      alert(' Admit card released successfully!\n\nNotification email has been sent to the coordinator.');
+      loadAdmitCards();
+      loadAdmitCardStats();
+    } else {
+      alert('Failed to release admit card: ' + (j.message || 'Unknown error'));
+    }
+  } catch (e) {
+    console.error('Release error:', e);
+    alert('Failed to release admit card');
+  }
+}
+
+async function revokeStudentAdmitCard(studentId) {
+  if (!confirm('Revoke admit card for this student?')) return;
+
+  try {
+    const res = await fetch(`${API}/admin/admit-cards/revoke/${studentId}`, {
+      method: 'POST',
+      headers: headers()
+    });
+    const j = await res.json();
+
+    if (j.success) {
+      alert('Admit card revoked successfully!');
+      loadAdmitCards();
+      loadAdmitCardStats();
+    } else {
+      alert('Failed to revoke admit card: ' + (j.message || 'Unknown error'));
+    }
+  } catch (e) {
+    console.error('Revoke error:', e);
+    alert('Failed to revoke admit card');
+  }
+}
+
+async function releaseAllAdmitCards() {
+  if (!confirm('Release admit cards for ALL students? This action cannot be undone.')) return;
+
+  const btn = qs('#releaseAllBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+
+  try {
+    const res = await fetch(`${API}/admin/admit-cards/release-all`, {
+      method: 'POST',
+      headers: headers()
+    });
+    const j = await res.json();
+
+    if (j.success) {
+      alert(` Admit cards released for ${j.data.released} students!\n\n📧 Notification emails have been sent to all coordinators with instructions to download and distribute the admit cards.`);
+      loadAdmitCards();
+      loadAdmitCardStats();
+    } else {
+      alert('Failed to release admit cards: ' + (j.message || 'Unknown error'));
+    }
+  } catch (e) {
+    console.error('Batch release error:', e);
+    alert('Failed to release admit cards');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-check-circle"></i> Release All Admit Cards';
+  }
+}
+
+async function releaseSchoolAdmitCards() {
+  const schoolId = qs('#schoolSelectForRelease').value;
+  if (!schoolId) {
+    alert('Please select a school');
+    return;
+  }
+
+  const schoolSelect = qs('#schoolSelectForRelease');
+  const schoolName = schoolSelect.options[schoolSelect.selectedIndex].text;
+
+  if (!confirm(`Release admit cards for all students in ${schoolName}? This action cannot be undone.`)) return;
+
+  const btn = qs('#releaseSchoolBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+  try {
+    const res = await fetch(`${API}/admin/admit-cards/release-school/${schoolId}`, {
+      method: 'POST',
+      headers: headers()
+    });
+    const j = await res.json();
+
+    if (j.success) {
+      alert(` Admit cards released for ${j.data.released} students from ${schoolName}!`);
+      loadAdmitCards();
+      loadAdmitCardStats();
+      qs('#schoolSelectForRelease').value = '';
+    } else {
+      alert('Failed to release admit cards: ' + (j.message || 'Unknown error'));
+    }
+  } catch (e) {
+    console.error('School release error:', e);
+    alert('Failed to release admit cards for school');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-arrow-right"></i>';
+  }
+}
+
+async function releaseIndividualAdmitCard() {
+  const searchTerm = qs('#studentSearchForRelease').value.trim();
+  if (!searchTerm) {
+    alert('Please enter a student name');
+    return;
+  }
+
+  const btn = qs('#releaseIndividualBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+  try {
+    // Find student by name
+    const res = await fetch(`${API}/admin/students`, {
+      headers: headers()
+    });
+    const j = await res.json();
+
+    if (!j.success || !j.data) {
+      alert('Failed to fetch student list');
+      return;
+    }
+
+    const students = j.data;
+    const matching = students.filter(s => 
+      s.name && s.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    if (matching.length === 0) {
+      alert(`No students found matching "${searchTerm}"`);
+    } else if (matching.length === 1) {
+      const student = matching[0];
+      if (student.admitCardReleased) {
+        alert(`Admit card for ${student.name} is already released`);
+      } else {
+        if (confirm(`Release admit card for ${student.name}? Class ${student.class}`)) {
+          const releaseRes = await fetch(`${API}/admin/admit-cards/release/${student._id}`, {
+            method: 'POST',
+            headers: headers()
+          });
+          const releaseJ = await releaseRes.json();
+          if (releaseJ.success) {
+            alert(` Admit card released for ${student.name}!\nRoll Number: ${releaseJ.data.rollNumber}`);
+            loadAdmitCards();
+            loadAdmitCardStats();
+            qs('#studentSearchForRelease').value = '';
+          } else {
+            alert('Failed to release admit card: ' + (releaseJ.message || 'Unknown error'));
+          }
+        }
+      }
+    } else {
+      const names = matching.map(s => `${s.name} (Class ${s.class})`).join('\n');
+      alert(`Found ${matching.length} students:\n${names}\n\nPlease be more specific.`);
+    }
+  } catch (e) {
+    console.error('Individual release error:', e);
+    alert('Failed to release admit card for individual student');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-arrow-right"></i>';
+  }
+}
+
+// Load schools for release dropdown
+async function loadSchoolsForRelease() {
+  try {
+    const res = await fetch(`${API}/admin/students`, {
+      headers: headers()
+    });
+    const j = await res.json();
+
+    if (!j.success || !j.data) return;
+
+    const schools = new Map();
+    j.data.forEach(student => {
+      if (student.school && student.school._id) {
+        const key = student.school._id;
+        if (!schools.has(key)) {
+          schools.set(key, student.school.schoolName || 'Unknown School');
+        }
+      }
+    });
+
+    const select = qs('#schoolSelectForRelease');
+    schools.forEach((name, id) => {
+      const option = document.createElement('option');
+      option.value = id;
+      option.textContent = name;
+      select.appendChild(option);
+    });
+  } catch (e) {
+    console.error('Failed to load schools:', e);
+  }
+}
+
+// Event listeners for admit card management
+if (qs('#releaseAllBtn')) {
+  qs('#releaseAllBtn').onclick = releaseAllAdmitCards;
+}
+
+if (qs('#releaseSchoolBtn')) {
+  qs('#releaseSchoolBtn').onclick = releaseSchoolAdmitCards;
+}
+
+if (qs('#releaseIndividualBtn')) {
+  qs('#releaseIndividualBtn').onclick = releaseIndividualAdmitCard;
+}
+
+if (qs('#refreshAdmitStatsBtn')) {
+  qs('#refreshAdmitStatsBtn').onclick = loadAdmitCardStats;
+}
+
+if (qs('#admitClassFilter')) {
+  qs('#admitClassFilter').onchange = () => {
+    admitCardClassFilter = qs('#admitClassFilter').value;
+    admitCardPage = 1;
+    loadAdmitCards();
+  };
+}
+
+if (qs('#admitStatusFilter')) {
+  qs('#admitStatusFilter').onchange = () => {
+    admitCardStatusFilter = qs('#admitStatusFilter').value;
+    admitCardPage = 1;
+    loadAdmitCards();
+  };
+}
+
+// Load schools on page load
+loadSchoolsForRelease();
+// Export to CSV
+async function exportToCSV() {
+  try {
+    // First, fetch the total count to know how many pages we need
+    const firstRes = await fetch(`${API}/admin/students?page=1`, { headers: headers() });
+    const firstData = await firstRes.json();
+    const totalPages = firstData.pagination?.pages || 1;
+    
+    let allStudents = [];
+    
+    // Fetch all pages
+    for (let page = 1; page <= totalPages; page++) {
+      const res = await fetch(`${API}/admin/students?page=${page}`, { headers: headers() });
+      const data = await res.json();
+      allStudents = allStudents.concat(data.data || []);
+    }
+    
+    if (allStudents.length === 0) {
+      alert('No students to export');
+      return;
+    }
+
+    // CSV header now includes Category and Subjects
+    let csv = 'Student ID,Name,Class,Category,Subjects,Roll Number,School,Status,Released Date\n';
+    allStudents.forEach(s => {
+      const status = s.admitCardReleased ? 'Released' : 'Pending';
+      const date = s.admitCardReleasedAt ? new Date(s.admitCardReleasedAt).toLocaleDateString('en-IN') : 'N/A';
+      // Use helper to determine category from class if available
+      const category = (typeof getCategoryFromClass === 'function') ? getCategoryFromClass(s.class) : (s.category || 'N/A');
+      // Map subjects to readable labels (same as table)
+      let subjectsText = 'N/A';
+      if (s.subjects) {
+        if (s.subjects === 'both') subjectsText = 'Math & Science';
+        else if (s.subjects === 'math') subjectsText = 'Mathematics';
+        else if (s.subjects === 'science') subjectsText = 'Science';
+        else subjectsText = s.subjects;
+      }
+      csv += `"${s.studentId || (s._id || '').toString().substring(0, 8)}","${s.name || ''}","${s.class || ''}","${category}","${subjectsText}","${s.rollNumber || 'N/A'}","${s.school?.schoolName || 'N/A'}","${status}","${date}"\n`;
+    });
+    
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `admit-cards-${new Date().getTime()}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+    
+    alert(` Exported ${allStudents.length} students to CSV`);
+  } catch (e) {
+    console.error('CSV export error:', e);
+    alert('Failed to export CSV');
+  }
+}
+
+// Export to Excel (using CSV as base - can be opened in Excel)
+function exportToExcel() {
+  exportToCSV(); // Same as CSV, will open in Excel
+}
+
+// Attach event listeners for export buttons
+if (qs('#exportCSVBtn')) {
+  qs('#exportCSVBtn').onclick = exportToCSV;
+}
+if (qs('#exportExcelBtn')) {
+  qs('#exportExcelBtn').onclick = exportToExcel;
+}
+
+// ===============================
+// RESULT ENTRY MANAGEMENT
+// ===============================
+
+let resultPage = 1;
+let resultClassFilter = '';
+let resultSubjectFilter = '';
+
+async function loadResultEntryStats() {
+  try {
+    const res = await fetch(API + '/admin/results/stats', { headers: headers() });
+    const j = await res.json();
+    
+    if (j.success) {
+      const stats = j.data.summary;
+      qs('#totalResultStudents').textContent = stats.totalStudents;
+      qs('#marksEnteredCount').textContent = stats.withMarks;
+      qs('#marksPendingCount').textContent = stats.pending;
+      qs('#marksPercentage').textContent = stats.percentage + '%';
+    }
+  } catch (e) {
+    console.error('Failed to load result entry stats:', e);
+  }
+}
+
+async function loadResultsForEntry() {
+  const tbody = qs('#resultTable tbody');
+  tbody.innerHTML = '<tr><td colspan="9" class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</td></tr>';
+
+  try {
+    let url = `${API}/admin/results/students?page=${resultPage}`;
+    if (resultClassFilter) url += `&class=${resultClassFilter}`;
+    if (resultSubjectFilter) url += `&subject=${resultSubjectFilter}`;
+    
+    const res = await fetch(url, { headers: headers() });
+    const j = await res.json();
+
+    tbody.innerHTML = '';
+
+    if (!j.data || j.data.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="9" class="empty-state">
+            <i class="fas fa-inbox"></i>
+            <p>No students found</p>
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    j.data.forEach(s => {
+      const tr = document.createElement('tr');
+      
+      let subjectsText = 'N/A';
+      if (s.subjects) {
+        if (s.subjects === 'both') subjectsText = 'Math & Science';
+        else if (s.subjects === 'math') subjectsText = 'Mathematics';
+        else if (s.subjects === 'science') subjectsText = 'Science';
+        else subjectsText = s.subjects;
+      }
+
+      const mathMarks = s.marks?.math !== undefined && s.marks?.math !== null ? s.marks.math : '';
+      const scienceMarks = s.marks?.science !== undefined && s.marks?.science !== null ? s.marks.science : '';
+      
+      tr.innerHTML = `
+        <td><span style="font-family: monospace; font-weight: bold; color: #3b82f6;">${s.rollNumber || 'N/A'}</span></td>
+        <td><strong>${s.name}</strong></td>
+        <td>Class ${s.class}</td>
+        <td><span style="background: #f0f4ff; padding: 4px 8px; border-radius: 4px; font-size: 0.9rem;">${subjectsText}</span></td>
+        <td>${s.schoolName || 'N/A'}</td>
+        <td>${s.coordinatorName || 'N/A'}</td>
+        <td>
+          ${s.subjects === 'math' || s.subjects === 'both' ? 
+            `<input type="number" id="mathMarks_${s._id}" class="marks-input" min="0" max="60" value="${mathMarks}" placeholder="0-60" style="width: 80px; padding: 6px; border: 1px solid #cbd5e0; border-radius: 4px;">` 
+            : `<span style="color: #999;">N/A</span>`}
+        </td>
+        <td>
+          ${s.subjects === 'science' || s.subjects === 'both' ? 
+            `<input type="number" id="scienceMarks_${s._id}" class="marks-input" min="0" max="60" value="${scienceMarks}" placeholder="0-60" style="width: 80px; padding: 6px; border: 1px solid #cbd5e0; border-radius: 4px;">` 
+            : `<span style="color: #999;">N/A</span>`}
+        </td>
+        <td>
+          <button class="btn" onclick="saveStudentMarks('${s._id}')" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">
+            <i class="fas fa-save"></i> Save
+          </button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    // Pagination
+    const totalPages = j.pagination?.pages || j.totalPages || 1;
+    const pager = qs('#resultPager');
+    pager.innerHTML = '';
+    
+    const maxPagesToShow = 5;
+    let startPage = Math.max(1, resultPage - Math.floor(maxPagesToShow / 2));
+    let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+    
+    if (endPage - startPage + 1 < maxPagesToShow) {
+      startPage = Math.max(1, endPage - maxPagesToShow + 1);
+    }
+    
+    const prevBtn = document.createElement('button');
+    prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i> Previous';
+    prevBtn.disabled = resultPage === 1;
+    prevBtn.onclick = () => {
+      if (resultPage > 1) {
+        resultPage--;
+        loadResultsForEntry();
+      }
+    };
+    pager.appendChild(prevBtn);
+    
+    if (startPage > 1) {
+      const btn1 = document.createElement('button');
+      btn1.textContent = '1';
+      btn1.onclick = () => {
+        resultPage = 1;
+        loadResultsForEntry();
+      };
+      pager.appendChild(btn1);
+      
+      if (startPage > 2) {
+        const dots = document.createElement('span');
+        dots.textContent = '...';
+        dots.style.padding = '8px 4px';
+        dots.style.display = 'flex';
+        dots.style.alignItems = 'center';
+        pager.appendChild(dots);
+      }
+    }
+    
+    for (let i = startPage; i <= endPage; i++) {
+      const btn = document.createElement('button');
+      btn.textContent = i;
+      btn.className = i === resultPage ? 'active' : '';
+      btn.onclick = () => {
+        resultPage = i;
+        loadResultsForEntry();
+      };
+      pager.appendChild(btn);
+    }
+    
+    if (endPage < totalPages) {
+      if (endPage < totalPages - 1) {
+        const dots = document.createElement('span');
+        dots.textContent = '...';
+        dots.style.padding = '8px 4px';
+        dots.style.display = 'flex';
+        dots.style.alignItems = 'center';
+        pager.appendChild(dots);
+      }
+      
+      const btnLast = document.createElement('button');
+      btnLast.textContent = totalPages;
+      btnLast.onclick = () => {
+        resultPage = totalPages;
+        loadResultsForEntry();
+      };
+      pager.appendChild(btnLast);
+    }
+    
+    const nextBtn = document.createElement('button');
+    nextBtn.innerHTML = 'Next <i class="fas fa-chevron-right"></i>';
+    nextBtn.disabled = resultPage === totalPages;
+    nextBtn.onclick = () => {
+      if (resultPage < totalPages) {
+        resultPage++;
+        loadResultsForEntry();
+      }
+    };
+    pager.appendChild(nextBtn);
+    
+    const pageInfo = document.createElement('div');
+    pageInfo.style.width = '100%';
+    pageInfo.style.textAlign = 'center';
+    pageInfo.style.marginTop = '10px';
+    pageInfo.style.fontSize = '0.9rem';
+    pageInfo.style.color = '#666';
+    pageInfo.innerHTML = `Page <strong>${resultPage}</strong> of <strong>${totalPages}</strong> | Total Students: <strong>${j.pagination?.total || j.count}</strong>`;
+    pager.appendChild(pageInfo);
+  } catch (e) {
+    console.error('Load results error:', e);
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="9" class="error">
+          <i class="fas fa-exclamation-triangle"></i>
+          <p>Failed to load students</p>
+        </td>
+      </tr>
+    `;
+  }
+}
+
+async function saveStudentMarks(studentId) {
+  try {
+    const mathInput = qs(`#mathMarks_${studentId}`);
+    const scienceInput = qs(`#scienceMarks_${studentId}`);
+
+    const mathMarks = mathInput ? (mathInput.value === '' ? null : parseInt(mathInput.value)) : undefined;
+    const scienceMarks = scienceInput ? (scienceInput.value === '' ? null : parseInt(scienceInput.value)) : undefined;
+
+    // Validate marks
+    if (mathMarks !== undefined && mathMarks !== null) {
+      if (mathMarks < 0 || mathMarks > 100) {
+        alert('Math marks must be between 0 and 100');
+        return;
+      }
+    }
+
+    if (scienceMarks !== undefined && scienceMarks !== null) {
+      if (scienceMarks < 0 || scienceMarks > 100) {
+        alert('Science marks must be between 0 and 100');
+        return;
+      }
+    }
+
+    const res = await fetch(`${API}/admin/results/marks/${studentId}`, {
+      method: 'PUT',
+      headers: headers(),
+      body: JSON.stringify({
+        mathMarks: mathMarks,
+        scienceMarks: scienceMarks
+      })
+    });
+
+    const j = await res.json();
+    if (j.success) {
+      alert('Marks saved successfully!');
+      loadResultsForEntry();
+      loadResultEntryStats();
+    } else {
+      alert('Failed to save marks: ' + (j.message || 'Unknown error'));
+    }
+  } catch (e) {
+    console.error('Save marks error:', e);
+    alert('Failed to save marks');
+  }
+}
+
+async function saveAllMarksOnCurrentPage() {
+  try {
+    // Collect all student data from the current page
+    const tbody = qs('#resultTable tbody');
+    const rows = tbody.querySelectorAll('tr');
+    
+    if (rows.length === 0) {
+      alert('No students on this page to save');
+      return;
+    }
+
+    const students = [];
+    let hasAnyMarks = false;
+
+    rows.forEach(row => {
+      // Find all input fields in this row
+      const mathInput = row.querySelector('input[id*="mathMarks_"]');
+      const scienceInput = row.querySelector('input[id*="scienceMarks_"]');
+
+      if (mathInput || scienceInput) {
+        // Extract student ID from input ID (format: mathMarks_[studentId] or scienceMarks_[studentId])
+        let studentId = null;
+        if (mathInput) {
+          studentId = mathInput.id.replace('mathMarks_', '');
+        } else if (scienceInput) {
+          studentId = scienceInput.id.replace('scienceMarks_', '');
+        }
+
+        if (studentId) {
+          const mathMarks = mathInput ? (mathInput.value === '' ? null : parseInt(mathInput.value)) : undefined;
+          const scienceMarks = scienceInput ? (scienceInput.value === '' ? null : parseInt(scienceInput.value)) : undefined;
+
+          // Only add if at least one mark was entered
+          if (mathMarks !== undefined || scienceMarks !== undefined) {
+            hasAnyMarks = true;
+            students.push({
+              studentId,
+              mathMarks,
+              scienceMarks
+            });
+          }
+        }
+      }
+    });
+
+    if (!hasAnyMarks) {
+      alert('No marks entered on this page to save');
+      return;
+    }
+
+    // Validate all marks before sending
+    for (const student of students) {
+      if (student.mathMarks !== null && student.mathMarks !== undefined) {
+        if (student.mathMarks < 0 || student.mathMarks > 100) {
+          alert(`Math marks for one student must be between 0 and 100`);
+          return;
+        }
+      }
+      if (student.scienceMarks !== null && student.scienceMarks !== undefined) {
+        if (student.scienceMarks < 0 || student.scienceMarks > 100) {
+          alert(`Science marks for one student must be between 0 and 100`);
+          return;
+        }
+      }
+    }
+
+    const btn = qs('#saveAllMarksBtn');
+    const originalText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving all marks...';
+
+    const res = await fetch(`${API}/admin/results/marks/batch`, {
+      method: 'POST',
+      headers: headers(),
+      body: JSON.stringify({ students })
+    });
+
+    const j = await res.json();
+    if (j.success) {
+      alert(`✓ Success! Saved ${j.data.successCount} out of ${j.data.total} students on this page.${j.data.failureCount > 0 ? '\n' + j.data.failureCount + ' failed.' : ''}`);
+      loadResultsForEntry();
+      loadResultEntryStats();
+    } else {
+      alert('Failed to save marks: ' + (j.message || 'Unknown error'));
+    }
+
+    btn.disabled = false;
+    btn.innerHTML = originalText;
+  } catch (e) {
+    console.error('Save all marks error:', e);
+    alert('Failed to save marks');
+    const btn = qs('#saveAllMarksBtn');
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-save"></i> Save All on This Page';
+  }
+}
+
+// Event listeners for result entry
+if (qs('#resultClassFilter')) {
+  qs('#resultClassFilter').onchange = () => {
+    resultClassFilter = qs('#resultClassFilter').value;
+    resultPage = 1;
+    loadResultsForEntry();
+  };
+}
+
+if (qs('#resultSubjectFilter')) {
+  qs('#resultSubjectFilter').onchange = () => {
+    resultSubjectFilter = qs('#resultSubjectFilter').value;
+    resultPage = 1;
+    loadResultsForEntry();
+  };
+}
+
+if (qs('#refreshResultStatsBtn')) {
+  qs('#refreshResultStatsBtn').onclick = loadResultEntryStats;
+}
+
+if (qs('#saveAllMarksBtn')) {
+  qs('#saveAllMarksBtn').onclick = saveAllMarksOnCurrentPage;
+}
+
+// ===============================
+// EDIT STUDENT DETAILS MANAGEMENT
+// ===============================
+
+let editStudentPage = 1;
+let editStudentClassFilter = '';
+let editStudentSubjectFilter = '';
+
+async function loadEditStudentStats() {
+  try {
+    const res = await fetch(API + '/admin/edit/students?page=1&class=&subject=', { headers: headers() });
+    const j = await res.json();
+    
+    if (j.success) {
+      qs('#totalEditStudents').textContent = j.pagination?.total || 0;
+      qs('#editedCount').textContent = '0';
+      qs('#pendingEditCount').textContent = '0';
+    }
+  } catch (e) {
+    console.error('Failed to load edit student stats:', e);
+  }
+}
+
+async function loadStudentsForEditing() {
+  const tbody = qs('#editStudentTable tbody');
+  tbody.innerHTML = '<tr><td colspan="6" class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</td></tr>';
+
+  try {
+    let url = `${API}/admin/edit/students?page=${editStudentPage}`;
+    if (editStudentClassFilter) url += `&class=${editStudentClassFilter}`;
+    if (editStudentSubjectFilter) url += `&subject=${editStudentSubjectFilter}`;
+    
+    const res = await fetch(url, { headers: headers() });
+    const j = await res.json();
+
+    tbody.innerHTML = '';
+
+    if (!j.data || j.data.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="6" class="empty-state">
+            <i class="fas fa-inbox"></i>
+            <p>No students found</p>
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    j.data.forEach(s => {
+      const tr = document.createElement('tr');
+      
+      let subjectsText = 'N/A';
+      if (s.subjects) {
+        if (s.subjects === 'both') subjectsText = 'Math & Science';
+        else if (s.subjects === 'math') subjectsText = 'Mathematics';
+        else if (s.subjects === 'science') subjectsText = 'Science';
+        else subjectsText = s.subjects;
+      }
+
+      tr.innerHTML = `
+        <td><span style="font-family: monospace; font-weight: bold; color: #3b82f6;">${s.rollNumber || 'N/A'}</span></td>
+        <td>
+          <input type="text" id="name_${s._id}" class="student-name-input" value="${s.name}" 
+            style="width: 100%; padding: 6px; border: 1px solid #cbd5e0; border-radius: 4px; font-weight: 500;">
+        </td>
+        <td>Class ${s.class}</td>
+        <td><span style="background: #f0f4ff; padding: 4px 8px; border-radius: 4px; font-size: 0.9rem;">${subjectsText}</span></td>
+        <td>${s.schoolName || 'N/A'}</td>
+        <td>
+          <button class="btn" onclick="saveStudentName('${s._id}')" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">
+            <i class="fas fa-save"></i> Save
+          </button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    // Pagination
+    const totalPages = j.pagination?.pages || j.totalPages || 1;
+    const pager = qs('#editStudentPager');
+    pager.innerHTML = '';
+    
+    const maxPagesToShow = 5;
+    let startPage = Math.max(1, editStudentPage - Math.floor(maxPagesToShow / 2));
+    let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+    
+    if (endPage - startPage + 1 < maxPagesToShow) {
+      startPage = Math.max(1, endPage - maxPagesToShow + 1);
+    }
+    
+    const prevBtn = document.createElement('button');
+    prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i> Previous';
+    prevBtn.disabled = editStudentPage === 1;
+    prevBtn.onclick = () => {
+      if (editStudentPage > 1) {
+        editStudentPage--;
+        loadStudentsForEditing();
+      }
+    };
+    pager.appendChild(prevBtn);
+    
+    if (startPage > 1) {
+      const btn1 = document.createElement('button');
+      btn1.textContent = '1';
+      btn1.onclick = () => {
+        editStudentPage = 1;
+        loadStudentsForEditing();
+      };
+      pager.appendChild(btn1);
+      
+      if (startPage > 2) {
+        const dots = document.createElement('span');
+        dots.textContent = '...';
+        dots.style.padding = '8px 4px';
+        dots.style.display = 'flex';
+        dots.style.alignItems = 'center';
+        pager.appendChild(dots);
+      }
+    }
+    
+    for (let i = startPage; i <= endPage; i++) {
+      const btn = document.createElement('button');
+      btn.textContent = i;
+      btn.className = i === editStudentPage ? 'active' : '';
+      btn.onclick = () => {
+        editStudentPage = i;
+        loadStudentsForEditing();
+      };
+      pager.appendChild(btn);
+    }
+    
+    if (endPage < totalPages) {
+      if (endPage < totalPages - 1) {
+        const dots = document.createElement('span');
+        dots.textContent = '...';
+        dots.style.padding = '8px 4px';
+        dots.style.display = 'flex';
+        dots.style.alignItems = 'center';
+        pager.appendChild(dots);
+      }
+      
+      const btnLast = document.createElement('button');
+      btnLast.textContent = totalPages;
+      btnLast.onclick = () => {
+        editStudentPage = totalPages;
+        loadStudentsForEditing();
+      };
+      pager.appendChild(btnLast);
+    }
+    
+    const nextBtn = document.createElement('button');
+    nextBtn.innerHTML = 'Next <i class="fas fa-chevron-right"></i>';
+    nextBtn.disabled = editStudentPage === totalPages;
+    nextBtn.onclick = () => {
+      if (editStudentPage < totalPages) {
+        editStudentPage++;
+        loadStudentsForEditing();
+      }
+    };
+    pager.appendChild(nextBtn);
+    
+    const pageInfo = document.createElement('div');
+    pageInfo.style.width = '100%';
+    pageInfo.style.textAlign = 'center';
+    pageInfo.style.marginTop = '10px';
+    pageInfo.style.fontSize = '0.9rem';
+    pageInfo.style.color = '#666';
+    pageInfo.innerHTML = `Page <strong>${editStudentPage}</strong> of <strong>${totalPages}</strong> | Total Students: <strong>${j.pagination?.total || j.count}</strong>`;
+    pager.appendChild(pageInfo);
+  } catch (e) {
+    console.error('Load students for editing error:', e);
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="6" class="error">
+          <i class="fas fa-exclamation-triangle"></i>
+          <p>Failed to load students</p>
+        </td>
+      </tr>
+    `;
+  }
+}
+
+async function saveStudentName(studentId) {
+  try {
+    const nameInput = qs(`#name_${studentId}`);
+    const newName = nameInput.value.trim();
+
+    if (!newName) {
+      alert('Student name cannot be empty');
+      return;
+    }
+
+    const res = await fetch(`${API}/admin/edit/students/${studentId}`, {
+      method: 'PUT',
+      headers: headers(),
+      body: JSON.stringify({ name: newName })
+    });
+
+    const j = await res.json();
+    if (j.success) {
+      alert('Student name updated successfully!');
+      loadStudentsForEditing();
+      loadEditStudentStats();
+    } else {
+      alert('Failed to update name: ' + (j.message || 'Unknown error'));
+    }
+  } catch (e) {
+    console.error('Save student name error:', e);
+    alert('Failed to save student name');
+  }
+}
+
+async function saveAllStudentNamesOnCurrentPage() {
+  try {
+    const tbody = qs('#editStudentTable tbody');
+    const rows = tbody.querySelectorAll('tr');
+    
+    if (rows.length === 0) {
+      alert('No students on this page to save');
+      return;
+    }
+
+    const students = [];
+    let hasAnyChanges = false;
+
+    rows.forEach(row => {
+      const nameInput = row.querySelector('input[id*="name_"]');
+
+      if (nameInput) {
+        let studentId = nameInput.id.replace('name_', '');
+        const name = nameInput.value.trim();
+
+        if (name) {
+          hasAnyChanges = true;
+          students.push({
+            studentId,
+            name
+          });
+        }
+      }
+    });
+
+    if (!hasAnyChanges) {
+      alert('No student names to save');
+      return;
+    }
+
+    // Validate all names
+    for (const student of students) {
+      if (!student.name || student.name.length === 0) {
+        alert('Student name cannot be empty');
+        return;
+      }
+    }
+
+    const btn = qs('#saveAllEditBtn');
+    const originalText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving all changes...';
+
+    const res = await fetch(`${API}/admin/edit/students/batch`, {
+      method: 'POST',
+      headers: headers(),
+      body: JSON.stringify({ students })
+    });
+
+    const j = await res.json();
+    if (j.success) {
+      alert(`✓ Success! Updated ${j.data.successCount} out of ${j.data.total} students on this page.${j.data.failureCount > 0 ? '\n' + j.data.failureCount + ' failed.' : ''}`);
+      loadStudentsForEditing();
+      loadEditStudentStats();
+    } else {
+      alert('Failed to save changes: ' + (j.message || 'Unknown error'));
+    }
+
+    btn.disabled = false;
+    btn.innerHTML = originalText;
+  } catch (e) {
+    console.error('Save all student names error:', e);
+    alert('Failed to save changes');
+    const btn = qs('#saveAllEditBtn');
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-save"></i> Save All Changes on This Page';
+  }
+}
+
+// Event listeners for edit student
+if (qs('#editStudentClassFilter')) {
+  qs('#editStudentClassFilter').onchange = () => {
+    editStudentClassFilter = qs('#editStudentClassFilter').value;
+    editStudentPage = 1;
+    loadStudentsForEditing();
+  };
+}
+
+if (qs('#editStudentSubjectFilter')) {
+  qs('#editStudentSubjectFilter').onchange = () => {
+    editStudentSubjectFilter = qs('#editStudentSubjectFilter').value;
+    editStudentPage = 1;
+    loadStudentsForEditing();
+  };
+}
+
+if (qs('#refreshEditStatsBtn')) {
+  qs('#refreshEditStatsBtn').onclick = loadEditStudentStats;
+}
+
+if (qs('#saveAllEditBtn')) {
+  qs('#saveAllEditBtn').onclick = saveAllStudentNamesOnCurrentPage;
+}
+
+// ===============================
+// MESSAGING SYSTEM
+// ===============================
+
+async function sendMessageToCoordinators() {
+  const messageContent = qs('#messageContent').value.trim();
+  
+  if (!messageContent) {
+    alert('Please write a message before sending');
+    return;
+  }
+
+  const btn = qs('#sendMessageBtn');
+  const statusDiv = qs('#messageStatus');
+  
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+  statusDiv.style.display = 'block';
+  statusDiv.textContent = '⏳ Sending message to all coordinators...';
+
+  try {
+    const res = await fetch(API + '/admin/send-message-to-coordinators', {
+      method: 'POST',
+      headers: headers(),
+      body: JSON.stringify({ message: messageContent })
+    });
+
+    const j = await res.json();
+
+    if (j.success) {
+      statusDiv.style.background = 'rgba(16, 185, 129, 0.3)';
+      statusDiv.innerHTML = `<i class="fas fa-check-circle"></i> ✓ Message sent successfully to ${j.data.successCount} coordinators`;
+      qs('#messageContent').value = '';
+      
+      // Reset after 5 seconds
+      setTimeout(() => {
+        statusDiv.style.display = 'none';
+        statusDiv.style.background = 'rgba(255,255,255,0.2)';
+      }, 5000);
+    } else {
+      statusDiv.style.background = 'rgba(239, 68, 68, 0.3)';
+      statusDiv.innerHTML = `<i class="fas fa-times-circle"></i> ✗ Failed: ${j.message || 'Unknown error'}`;
+    }
+  } catch (e) {
+    console.error('Send message error:', e);
+    statusDiv.style.background = 'rgba(239, 68, 68, 0.3)';
+    statusDiv.innerHTML = `<i class="fas fa-times-circle"></i> ✗ Error sending message`;
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Message to All';
+  }
+}
+
+if (qs('#sendMessageBtn')) {
+  qs('#sendMessageBtn').onclick = sendMessageToCoordinators;
+}
+
+// ============================================
+// REPORT CARDS & CERTIFICATES MANAGEMENT
+// ============================================
+
+async function releaseAll() {
+  if (!confirm('Release both Report Cards & Certificates to all students? This will make them visible in their dashboard.')) {
+    return;
+  }
+  
+  const btn = qs('#releaseAllBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+  
+  try {
+    // Release both report cards and certificates
+    const resReports = await fetch(API + '/admin/results/release-report-cards', {
+      method: 'POST',
+      headers: headers()
+    });
+    
+    const resCerts = await fetch(API + '/admin/results/release-certificates', {
+      method: 'POST',
+      headers: headers()
+    });
+    
+    const j1 = await resReports.json();
+    const j2 = await resCerts.json();
+    const statusDiv = qs('#reportStatusMessage');
+    
+    if (j1.success && j2.success) {
+      statusDiv.style.display = 'block';
+      statusDiv.style.background = 'rgba(16, 185, 129, 0.3)';
+      statusDiv.style.color = '#065f46';
+      statusDiv.innerHTML = `<i class="fas fa-check-circle"></i> ✓ Report Cards & Certificates Released Successfully!`;
+    } else {
+      statusDiv.style.display = 'block';
+      statusDiv.style.background = 'rgba(239, 68, 68, 0.3)';
+      statusDiv.style.color = '#7f1d1d';
+      statusDiv.innerHTML = `<i class="fas fa-times-circle"></i> ✗ ${j1.message || j2.message}`;
+    }
+  } catch (error) {
+    console.error('Release Error:', error);
+    qs('#reportStatusMessage').style.display = 'block';
+    qs('#reportStatusMessage').style.background = 'rgba(239, 68, 68, 0.3)';
+    qs('#reportStatusMessage').style.color = '#7f1d1d';
+    qs('#reportStatusMessage').innerHTML = `<i class="fas fa-times-circle"></i> ✗ Error releasing documents`;
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-unlock"></i> Release';
+  }
+}
+
+async function stopAll() {
+  if (!confirm('Stop Report Cards & Certificates? Students will no longer be able to see results.')) {
+    return;
+  }
+  
+  const btn = qs('#stopAllBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+  
+  try {
+    // Stop both report cards and certificates
+    const resReports = await fetch(API + '/admin/results/stop-report-cards', {
+      method: 'POST',
+      headers: headers()
+    });
+    
+    const resCerts = await fetch(API + '/admin/results/stop-certificates', {
+      method: 'POST',
+      headers: headers()
+    });
+    
+    const j1 = await resReports.json();
+    const j2 = await resCerts.json();
+    const statusDiv = qs('#reportStatusMessage');
+    
+    if (j1.success && j2.success) {
+      statusDiv.style.display = 'block';
+      statusDiv.style.background = 'rgba(239, 68, 68, 0.3)';
+      statusDiv.style.color = '#7f1d1d';
+      statusDiv.innerHTML = `<i class="fas fa-lock"></i> ✓ Report Cards & Certificates Stopped`;
+    } else {
+      statusDiv.style.display = 'block';
+      statusDiv.style.background = 'rgba(239, 68, 68, 0.3)';
+      statusDiv.style.color = '#7f1d1d';
+      statusDiv.innerHTML = `<i class="fas fa-times-circle"></i> ✗ ${j1.message || j2.message}`;
+    }
+  } catch (error) {
+    console.error('Stop Error:', error);
+    qs('#reportStatusMessage').style.display = 'block';
+    qs('#reportStatusMessage').style.background = 'rgba(239, 68, 68, 0.3)';
+    qs('#reportStatusMessage').style.color = '#7f1d1d';
+    qs('#reportStatusMessage').innerHTML = `<i class="fas fa-times-circle"></i> ✗ Error stopping documents`;
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-lock"></i> Stop';
+  }
+}
+
+// Attach event listeners
+if (qs('#releaseAllBtn')) {
+  qs('#releaseAllBtn').onclick = releaseAll;
+}
+if (qs('#stopAllBtn')) {
+  qs('#stopAllBtn').onclick = stopAll;
+}
+
+// Initialize
+loadStats();
+loadRegs();
+loadRegistrationStatus();
+loadAdmitCardStats();
+loadAdmitCards();
+loadResultEntryStats();
+loadResultsForEntry();
+loadEditStudentStats();
+loadStudentsForEditing();
+</script>
+</body>
+</html>

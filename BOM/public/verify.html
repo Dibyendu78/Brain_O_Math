@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Invigilator - Student Verify</title>
+  <style>
+    :root{--bg:#f5f7fb;--card:#ffffff;--muted:#6b7280;--accent:#1e3a8a;--accent-2:#3b82f6}
+    body{font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);margin:0;display:flex;min-height:100vh;align-items:center;justify-content:center;padding:28px}
+    .container{max-width:900px;width:100%}
+    .card{background:var(--card);border-radius:12px;box-shadow:0 6px 20px rgba(20,25,40,0.08);padding:22px}
+    header{display:flex;align-items:center;gap:16px}
+    .logo{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;overflow:hidden}
+    h1{font-size:18px;margin:0}
+    p.lead{margin:6px 0 0;color:var(--muted)}
+    .controls{margin-top:18px;display:flex;gap:10px}
+    input[type=text]{flex:1;padding:10px;border:1px solid #e6eefb;border-radius:8px;font-size:15px}
+    button{background:var(--accent-2);color:#fff;padding:10px 14px;border:none;border-radius:8px;cursor:pointer}
+    .result{margin-top:18px}
+    .grid{display:grid;grid-template-columns:1fr 320px;gap:18px}
+    .info{padding:14px;border-radius:10px;border:1px solid #eef2ff}
+    .info h2{margin:0 0 8px;font-size:16px;color:var(--accent)}
+    .row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed #f1f5f9}
+    .row:last-child{border-bottom:none}
+    .label{color:var(--muted);font-size:13px}
+    .value{font-weight:600}
+    .school-card{padding:14px;border-radius:10px;background:linear-gradient(180deg,#fff,#fbfdff);border:1px solid #eef2ff}
+    .empty{opacity:0.6;color:var(--muted)}
+    footer{margin-top:18px;text-align:right;color:var(--muted);font-size:13px}
+    @media(max-width:780px){.grid{grid-template-columns:1fr;}.school-card{order:2}}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <header>
+        <div class="logo"><img src="logo.jpg" alt="Brain O Math Logo" style="width:100%;height:100%;object-fit:contain;border-radius:50%;"></div>
+        <div>
+          <h1>Invigilator — Student Verification</h1>
+        </div>
+      </header>
+
+      <div class="controls">
+        <h1>Student Infromation</h1>
+      </div>
+
+      <div class="result" id="result">
+        <div class="grid">
+          <div class="info" id="infobox">
+            <p class="empty">No student loaded. Scan QR or enter an id and click Verify.</p>
+          </div>
+          <div class="school-card" id="schoolbox">
+            <p class="empty">School / Registration info will appear here.</p>
+          </div>
+        </div>
+      </div>
+
+        <footer>
+            &copy; 2025 Brain-O-Math. All rights reserved.  
+        </footer>
+    </div>
+  </div>
+
+  <script>
+    //here
+    
+    const q = new URLSearchParams(location.search);
+    const infobox = document.getElementById('infobox');
+    const schoolbox = document.getElementById('schoolbox');
+
+    // Auto-load data from URL parameter (sent by QR code)
+    const dataFromUrl = q.get('data');
+    if (dataFromUrl) {
+      try {
+        const obj = decodeBase64UrlJson(dataFromUrl);
+        renderFromSnapshot(obj);
+      } catch (e) {
+        console.error('Failed to decode QR data:', e);
+        infobox.innerHTML = '<p class="empty">Invalid QR data or corrupted link</p>';
+      }
+    } else {
+      infobox.innerHTML = '<p class="empty">No QR data received. Please scan the admit card QR code.</p>';
+    }
+
+    function renderFromSnapshot(d) {
+      if (!d) return;
+      infobox.innerHTML = `
+        <h2>${escapeHtml(d.name || '—')}</h2>
+        <div class="row"><div class="label">Student ID</div><div class="value">${escapeHtml(d.studentId || '—')}</div></div>
+        <div class="row"><div class="label">Roll Number</div><div class="value">${escapeHtml(d.rollNumber || '—')}</div></div>
+        <div class="row"><div class="label">Class</div><div class="value">${escapeHtml(d.class || '—')}</div></div>
+        <div class="row"><div class="label">Category</div><div class="value">${escapeHtml(d.category || '—')}</div></div>
+        <div class="row"><div class="label">Subject choice</div><div class="value">${escapeHtml(d.subjects || '—')}</div></div>
+        <div class="row"><div class="label">School</div><div class="value">${escapeHtml(d.schoolName || '—')}</div></div>
+        <div class="row"><div class="label">Coordinator</div><div class="value">${escapeHtml(d.coordinatorName || '—')}</div></div>
+        
+      `;
+
+      schoolbox.innerHTML = `
+        <h3 style="margin-top:0;color:var(--accent)">${escapeHtml(d.schoolName || '—')}</h3>
+        <div style="font-size:13px;color:var(--muted)">Coordinator: <strong>${escapeHtml(d.coordinatorName || '—')}</strong></div>
+        <div style="margin-top:8px">Coordinator Email: <a href="mailto:${escapeHtml(d.coordinatorEmail || '')}">${escapeHtml(d.coordinatorEmail || '—')}</a></div>
+        <hr style="margin:12px 0;border:none;border-top:1px solid #f1f5f9">
+        <div>Registration ID: <strong>${escapeHtml(d.registrationId || '—')}</strong></div>
+      `;
+    }
+
+    function decodeBase64UrlJson(s) {
+      // base64url -> base64
+      s = s.replace(/-/g, '+').replace(/_/g, '/');
+      while (s.length % 4) s += '=';
+      // decode base64 to binary string
+      const bin = atob(s);
+      // convert binary string to UTF-8 string
+      let utf8 = '';
+      for (let i = 0; i < bin.length; i++) {
+        utf8 += String.fromCharCode(bin.charCodeAt(i));
+      }
+      try {
+        return JSON.parse(utf8);
+      } catch (e) {
+        // fallback using decodeURIComponent for multibyte chars
+        try {
+          const decoded = decodeURIComponent(escape(bin));
+          return JSON.parse(decoded);
+        } catch (err) {
+          throw new Error('Failed to parse embedded JSON');
+        }
+      }
+    }
+
+    function escapeHtml(s){
+      if (!s && s !== 0) return '';
+      return String(s).replace(/[&<>"']/g, function(c){
+        return {'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":"&#39;"}[c];
+      });
+    }
+  </script>
+</body>
+</html>

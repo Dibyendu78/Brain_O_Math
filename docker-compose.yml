@@ -1,0 +1,19 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bom_django_web
+    ports:
+      - '8000:8000'
+    volumes:
+      - .:/app:cached
+    working_dir: /app/BOM
+    env_file:
+      - .env
+    environment:
+      DJANGO_SETTINGS_MODULE: BOM.settings
+      DEBUG: 'True'
+      SECRET_KEY: 'django-insecure-replace-this'
+      ALLOWED_HOSTS: 'localhost,127.0.0.1,0.0.0.0'
+    command: sh -c "python manage.py migrate --noinput && python manage.py runserver 0.0.0.0:8000"

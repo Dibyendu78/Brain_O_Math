@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Coordinator Login - Brain-O-Math Olympiad</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Coordinator login portal for Brain-O-Math Olympiad 2025">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      /* SOF-inspired Color System - Matching Dashboard */
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --primary-light: #3b82f6;
+      --secondary: #64748b;
+      --success: #10b981;
+      --success-light: #34d399;
+      --warning: #f59e0b;
+      --error: #ef4444;
+      --info: #06b6d4;
+
+      /* Neutral Colors */
+      --white: #ffffff;
+      --gray-50: #f8fafc;
+      --gray-100: #f1f5f9;
+      --gray-200: #e2e8f0;
+      --gray-300: #cbd5e1;
+      --gray-400: #94a3b8;
+      --gray-500: #64748b;
+      --gray-600: #475569;
+      --gray-700: #334155;
+      --gray-800: #1e293b;
+      --gray-900: #0f172a;
+
+      /* Glass morphism effects */
+      --glass-bg: rgba(255, 255, 255, 0.1);
+      --glass-border: rgba(255, 255, 255, 0.2);
+      --glass-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+
+      /* Spacing system */
+      --spacing-1: 0.25rem;
+      --spacing-2: 0.5rem;
+      --spacing-3: 0.75rem;
+      --spacing-4: 1rem;
+      --spacing-5: 1.25rem;
+      --spacing-6: 1.5rem;
+      --spacing-8: 2rem;
+      --spacing-10: 2.5rem;
+      --spacing-12: 3rem;
+      --spacing-16: 4rem;
+
+      /* Border Radius */
+      --radius-sm: 0.125rem;
+      --radius-md: 0.375rem;
+      --radius-lg: 0.5rem;
+      --radius-xl: 0.75rem;
+      --radius-2xl: 1rem;
+      --radius-full: 50rem;
+
+      /* Shadows */
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+      --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+
+      /* Typography */
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --font-size-xs: 0.75rem;
+      --font-size-sm: 0.875rem;
+      --font-size-base: 1rem;
+      --font-size-lg: 1.125rem;
+      --font-size-xl: 1.25rem;
+      --font-size-2xl: 1.5rem;
+      --font-size-3xl: 1.875rem;
+      --font-size-4xl: 2.25rem;
+
+      /* Transitions */
+      --transition: all 0.2s ease-in-out;
+    }
+
+    /* Reset and Base Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: linear-gradient(135deg, var(--gray-100) 0%, var(--gray-200) 50%, var(--gray-300) 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gray-800);
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Background Pattern */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image:
+        radial-gradient(circle at 25% 25%, rgba(37, 99, 235, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 75% 75%, rgba(16, 185, 129, 0.05) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Login Container */
+    .login-container {
+      width: 100%;
+      max-width: 420px;
+      margin: var(--spacing-6);
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-2xl);
+      box-shadow: var(--shadow-xl);
+      position: relative;
+      z-index: 10;
+      overflow: hidden;
+    }
+
+    .login-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 50%, var(--success) 100%);
+    }
+
+    /* Header Section */
+    .login-header {
+      text-align: center;
+      padding: var(--spacing-8) var(--spacing-8) var(--spacing-6);
+      background: var(--gray-50);
+    }
+
+    .brand-section {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-3);
+      margin-bottom: var(--spacing-4);
+    }
+
+    .login-header h1 {
+      font-size: var(--font-size-2xl);
+      font-weight: 700;
+      color: var(--gray-900);
+      margin-bottom: var(--spacing-2);
+    }
+
+    .login-header p {
+      color: var(--gray-600);
+      font-size: var(--font-size-base);
+      font-weight: 500;
+    }
+
+    .subtitle {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    /* Form Section */
+    .login-form {
+      padding: var(--spacing-8);
+    }
+
+    .form-group {
+      margin-bottom: var(--spacing-6);
+    }
+
+    .form-label {
+      display: block;
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      color: var(--gray-700);
+      margin-bottom: var(--spacing-2);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-2);
+    }
+
+    .form-label i {
+      color: var(--primary);
+      font-size: var(--font-size-sm);
+    }
+
+    .form-input {
+      width: 100%;
+      padding: var(--spacing-3) var(--spacing-4);
+      border: 2px solid var(--gray-300);
+      border-radius: var(--radius-lg);
+      font-size: var(--font-size-base);
+      font-family: inherit;
+      background: var(--white);
+      color: var(--gray-800);
+      transition: var(--transition);
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .form-input::placeholder {
+      color: var(--gray-400);
+    }
+
+    /* Security code specific styling */
+    
+
+    /* Button Styles */
+    .login-button {
+      width: 100%;
+      padding: var(--spacing-4) var(--spacing-6);
+      background: var(--primary);
+      color: var(--white);
+      border: none;
+      border-radius: var(--radius-lg);
+      font-size: var(--font-size-base);
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-2);
+      margin-bottom: var(--spacing-4);
+    }
+
+    .login-button:hover:not(:disabled) {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .login-button:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    .login-button:disabled {
+      background: var(--gray-400);
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* Forgot Password Link */
+    .forgot-password-link {
+      text-align: center;
+      margin-bottom: var(--spacing-6);
+    }
+
+    .forgot-password-link button {
+      background: none;
+      border: none;
+      color: var(--primary);
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: underline;
+      transition: var(--transition);
+      padding: var(--spacing-2);
+    }
+
+    .forgot-password-link button:hover {
+      color: var(--primary-dark);
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      backdrop-filter: blur(5px);
+    }
+
+    .modal.show {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .modal-content {
+      background: var(--white);
+      border-radius: var(--radius-2xl);
+      width: 90%;
+      max-width: 400px;
+      box-shadow: var(--shadow-xl);
+      position: relative;
+      animation: slideInUp 0.3s ease-out;
+    }
+
+    @keyframes slideInUp {
+      from {
+        opacity: 0;
+        transform: translateY(50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .modal-header {
+      padding: var(--spacing-6) var(--spacing-6) var(--spacing-4);
+      text-align: center;
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .modal-header h3 {
+      font-size: var(--font-size-lg);
+      font-weight: 600;
+      color: var(--gray-900);
+      margin-bottom: var(--spacing-2);
+    }
+
+    .modal-header p {
+      color: var(--gray-600);
+      font-size: var(--font-size-sm);
+    }
+
+    .modal-body {
+      padding: var(--spacing-6);
+    }
+
+    .modal-footer {
+      padding: var(--spacing-4) var(--spacing-6) var(--spacing-6);
+      display: flex;
+      gap: var(--spacing-3);
+    }
+
+    .btn-secondary {
+      flex: 1;
+      padding: var(--spacing-3) var(--spacing-4);
+      background: var(--gray-200);
+      color: var(--gray-700);
+      border: none;
+      border-radius: var(--radius-lg);
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .btn-secondary:hover {
+      background: var(--gray-300);
+    }
+
+    .btn-primary {
+      flex: 1;
+      padding: var(--spacing-3) var(--spacing-4);
+      background: var(--primary);
+      color: var(--white);
+      border: none;
+      border-radius: var(--radius-lg);
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-2);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: var(--primary-dark);
+    }
+
+    .btn-primary:disabled {
+      background: var(--gray-400);
+      cursor: not-allowed;
+    }
+
+    /* Alert Styles */
+    .alert {
+      padding: var(--spacing-4);
+      border-radius: var(--radius-lg);
+      margin-bottom: var(--spacing-6);
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-3);
+      animation: slideInDown 0.3s ease-out;
+    }
+
+    .alert-error {
+      background: #fef2f2;
+      color: #dc2626;
+      border: 1px solid #fecaca;
+    }
+
+    .alert-success {
+      background: #f0fdf4;
+      color: #16a34a;
+      border: 1px solid #bbf7d0;
+    }
+
+    .alert i {
+      font-size: var(--font-size-base);
+    }
+
+    @keyframes slideInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Back Link */
+    .back-link {
+      text-align: center;
+      padding: var(--spacing-6) var(--spacing-8);
+      background: var(--gray-50);
+      border-top: 1px solid var(--gray-200);
+    }
+
+    .back-link a {
+      color: var(--gray-600);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: var(--font-size-sm);
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-2);
+      padding: var(--spacing-2) var(--spacing-4);
+      border-radius: var(--radius-lg);
+      transition: var(--transition);
+    }
+
+    .back-link a:hover {
+      color: var(--primary);
+      background: rgba(37, 99, 235, 0.05);
+    }
+
+    /* Loading Animation */
+    .loading-spinner {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top: 2px solid currentColor;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Input Security Indicator */
+    .security-indicator {
+      height: 2px;
+      background: var(--gray-200);
+      border-radius: var(--radius-full);
+      margin-top: var(--spacing-2);
+      overflow: hidden;
+      transition: var(--transition);
+    }
+
+    .security-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--success);
+      transition: var(--transition);
+      border-radius: var(--radius-full);
+    }
+
+    /* Status Messages */
+    .status-message {
+      font-size: var(--font-size-xs);
+      margin-top: var(--spacing-2);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-1);
+    }
+
+    .status-message.valid {
+      color: var(--success);
+    }
+
+    .status-message.invalid {
+      color: var(--error);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 480px) {
+      .login-container {
+        margin: var(--spacing-4);
+        max-width: none;
+      }
+
+      .login-header {
+        padding: var(--spacing-6) var(--spacing-6) var(--spacing-4);
+      }
+
+      .login-form {
+        padding: var(--spacing-6);
+      }
+
+      .login-header h1 {
+        font-size: var(--font-size-xl);
+      }
+
+      .modal-content {
+        margin: var(--spacing-4);
+        width: calc(100% - 2rem);
+      }
+    }
+
+    /* Focus Ring for Accessibility */
+    .form-input:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+
+    .login-button:focus-visible {
+      outline: 2px solid var(--primary-dark);
+      outline-offset: 2px;
+    }
+
+    /* Enhanced visual feedback */
+    .form-group.focused .form-label {
+      color: var(--primary);
+    }
+
+    .form-group.valid .form-input {
+      border-color: var(--success);
+    }
+
+    .form-group.invalid .form-input {
+      border-color: var(--error);
+    }
+
+    .brand-icon img {
+      border-radius: 24px;
+      box-shadow: var(--shadow-md);
+    }
+
+    /* Professional card elevation */
+    .login-container {
+      transition: var(--transition);
+    }
+
+    .login-container:hover {
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Smooth page transitions */
+    body {
+      opacity: 0;
+      animation: fadeIn 0.5s ease-out forwards;
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="login-container">
+    <!-- Header Section -->
+    <div class="login-header">
+      <div class="brand-section">
+        <div class="brand-icon">
+          <img src="logo.jpg" alt="Brain-O-Math Logo" style="width: 48px; height: 48px;">
+        </div>
+        <div>
+          <h1>Coordinator Portal</h1>
+          <p> <span class="subtitle">Brain-O-Math Olympiad 2025</span></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form Section -->
+    <div class="login-form">
+      <div id="alertContainer"></div>
+
+      <form id="loginForm">
+        <div class="form-group" id="emailGroup">
+          <label class="form-label" for="email">
+            <i class="fas fa-envelope"></i>
+            Email Address
+          </label>
+          <input type="email" id="email" class="form-input" required placeholder="Enter your registered email"
+            autocomplete="email">
+        </div>
+
+        <div class="form-group" id="passwordGroup">
+          <label class="form-label" for="password">
+            <i class="fas fa-shield-alt"></i>
+            Security Code 
+          </label>
+          <input type="password" id="password" class="form-input" required placeholder="Last 4 digits of your phone number" maxlength="4"
+            pattern="[0-9]{4}" autocomplete="current-password">
+          <div class="security-indicator">
+            <div class="security-fill" id="securityFill"></div>
+          </div>
+          <div class="status-message" id="passwordStatus"></div>
+        </div>
+
+        <button type="submit" class="login-button" id="loginBtn">
+          <i class="fas fa-sign-in-alt"></i>
+          Login to Dashboard
+        </button>
+      </form>
+
+      <!-- Forgot Password Link -->
+      <div class="forgot-password-link">
+        <button type="button" id="forgotPasswordBtn">
+          <i class="fas fa-key"></i>
+          Forgot Email or Password?
+        </button>
+      </div>
+    </div>
+
+    <!-- Footer Section -->
+    <div class="back-link">
+      <a href="signup.html" id="signupLink">
+        <i class="fas fa-arrow-left"></i>
+        Back to Registration
+      </a>
+      <a href="index.html">
+        <i class="fas fa-arrow-left"></i>
+        Back to Home
+      </a>
+    </div>
+  </div>
+
+  <!-- Forgot Password Modal -->
+  <div id="forgotPasswordModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Recover Your Account</h3>
+        <p>Enter your email  to recover your login details</p>
+      </div>
+      <div class="modal-body">
+        <div id="modalAlertContainer"></div>
+        <form id="forgotPasswordForm">
+          <div class="form-group">
+            <label class="form-label" for="recoveryInput">
+              <i class="fas fa-search"></i>
+              Email Address 
+            </label>
+            <input type="text" id="recoveryInput" class="form-input" required 
+              placeholder="Enter your email address">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" id="cancelRecoveryBtn">Cancel</button>
+        <button type="submit" form="forgotPasswordForm" class="btn-primary" id="submitRecoveryBtn">
+          <i class="fas fa-paper-plane"></i>
+          Get Recovery Password 
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Configuration
+    const API = 'http://localhost:5000/api';
+    //const API = 'https://brain-o-math.onrender.com/api';
+    // DOM Elements
+    const loginForm = document.getElementById('loginForm');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const loginBtn = document.getElementById('loginBtn');
+    const alertContainer = document.getElementById('alertContainer');
+    const securityFill = document.getElementById('securityFill');
+    const passwordStatus = document.getElementById('passwordStatus');
+    
+    // Forgot Password Elements
+    const forgotPasswordBtn = document.getElementById('forgotPasswordBtn');
+    const forgotPasswordModal = document.getElementById('forgotPasswordModal');
+    const forgotPasswordForm = document.getElementById('forgotPasswordForm');
+    const recoveryInput = document.getElementById('recoveryInput');
+    const submitRecoveryBtn = document.getElementById('submitRecoveryBtn');
+    const cancelRecoveryBtn = document.getElementById('cancelRecoveryBtn');
+    const modalAlertContainer = document.getElementById('modalAlertContainer');
+
+    // Enhanced form validation
+    function validateEmail(email) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email);
+    }
+
+    function validatePassword(password) {
+      return password.length === 4 && /^\d{4}$/.test(password);
+    }
+
+    function validatePhone(phone) {
+      return /^[0-9]{10}$/.test(phone);
+    }
+
+    // Visual feedback for form inputs
+    function updateFormGroup(group, isValid, isFocused = false) {
+      group.classList.toggle('focused', isFocused);
+      group.classList.toggle('valid', isValid && !isFocused);
+      group.classList.toggle('invalid', !isValid && !isFocused);
+    }
+
+    // Security indicator for password
+    function updateSecurityIndicator(password) {
+      const length = password.length;
+      const percentage = (length / 4) * 100;
+
+      securityFill.style.width = percentage + '%';
+
+      if (length === 0) {
+        passwordStatus.textContent = '';
+        passwordStatus.className = 'status-message';
+        securityFill.style.background = 'var(--gray-300)';
+      } else if (length === 4 && /^\d{4}$/.test(password)) {
+        passwordStatus.innerHTML = '<i class="fas fa-check-circle"></i> Valid security code';
+        passwordStatus.className = 'status-message valid';
+        securityFill.style.background = 'var(--success)';
+      } else {
+        passwordStatus.innerHTML = '<i class="fas fa-exclamation-circle"></i> Must be 4 digits';
+        passwordStatus.className = 'status-message invalid';
+        securityFill.style.background = 'var(--warning)';
+      }
+    }
+
+    // Enhanced alert system
+    function showAlert(message, type, container = alertContainer) {
+      const alertClass = type === 'error' ? 'alert-error' : 'alert-success';
+      const icon = type === 'error' ? 'fas fa-exclamation-circle' : 'fas fa-check-circle';
+
+      container.innerHTML = `
+        <div class="alert ${alertClass}">
+          <i class="${icon}"></i>
+          <span>${message}</span>
+        </div>
+      `;
+
+      // Auto-hide success messages
+      if (type === 'success') {
+        setTimeout(() => {
+          const alert = container.querySelector('.alert');
+          if (alert) {
+            alert.style.animation = 'slideInDown 0.3s ease-out reverse';
+            setTimeout(() => {
+              container.innerHTML = '';
+            }, 300);
+          }
+        }, 5000);
+      }
+    }
+
+    // Modal functions
+    function showModal() {
+      forgotPasswordModal.classList.add('show');
+      modalAlertContainer.innerHTML = '';
+      recoveryInput.value = '';
+      setTimeout(() => recoveryInput.focus(), 300);
+    }
+
+    function hideModal() {
+      forgotPasswordModal.classList.remove('show');
+    }
+
+    // Form submission handler
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+
+      // Client-side validation
+      if (!email || !password) {
+        showAlert('Please fill in all fields', 'error');
+        return;
+      }
+
+      if (!validateEmail(email)) {
+        showAlert('Please enter a valid email address', 'error');
+        emailInput.focus();
+        return;
+      }
+
+      if (!validatePassword(password)) {
+        showAlert('Security code must be exactly 4 digits', 'error');
+        passwordInput.focus();
+        return;
+      }
+
+      // Update button state
+      loginBtn.disabled = true;
+      loginBtn.innerHTML = `
+        <span class="loading-spinner"></span>
+        Authenticating...
+      `;
+
+      try {
+        const response = await fetch(`${API}/coordinator/login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          // Store authentication data
+          localStorage.setItem('coordinatorToken', data.token);
+          localStorage.setItem('coordinatorData', JSON.stringify(data.coordinator));
+
+          // Success feedback
+          showAlert('Login successful! Redirecting to results...', 'success');
+          loginBtn.innerHTML = `
+            <i class="fas fa-check-circle"></i>
+            Success!
+          `;
+          loginBtn.style.background = 'var(--success)';
+
+          // Redirect after delay
+          setTimeout(() => {
+            //window.location.href = '/corrdinator-dasboard.html';
+            window.location.href = '/result-view.html';
+          }, 1500);
+
+        } else {
+          showAlert(data.message || 'Invalid credentials. Please try again.', 'error');
+        }
+
+      } catch (error) {
+        console.error('Login error:', error);
+        showAlert('Connection failed. Please check your internet connection and try again.', 'error');
+      } finally {
+        // Reset button if not successful
+        if (!localStorage.getItem('coordinatorToken')) {
+          setTimeout(() => {
+            loginBtn.disabled = false;
+            loginBtn.innerHTML = `
+              <i class="fas fa-sign-in-alt"></i>
+              Login to Dashboard
+            `;
+            loginBtn.style.background = 'var(--primary)';
+          }, 1000);
+        }
+      }
+    });
+
+    // Forgot Password Form Handler
+    forgotPasswordForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const recoveryValue = recoveryInput.value.trim();
+
+      if (!recoveryValue) {
+        showAlert('Please enter your email or phone number', 'error', modalAlertContainer);
+        return;
+      }
+
+      // Determine if input is email or phone
+      const isEmail = validateEmail(recoveryValue);
+      const isPhone = validatePhone(recoveryValue);
+
+      if (!isEmail && !isPhone) {
+        showAlert('Please enter a valid email address ', 'error', modalAlertContainer);
+        return;
+      }
+
+      // Update button state
+      submitRecoveryBtn.disabled = true;
+      submitRecoveryBtn.innerHTML = `
+        <span class="loading-spinner"></span>
+        Sending...
+      `;
+
+      try {
+        const requestData = isEmail 
+          ? { email: recoveryValue }
+          : { phone: recoveryValue };
+
+        const response = await fetch(`${API}/coordinator/forgot-password`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(requestData)
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          showAlert(data.message || 'Recovery email sent successfully! Please check your email.', 'success', modalAlertContainer);
+          setTimeout(() => {
+            hideModal();
+          }, 3000);
+        } else {
+          showAlert(data.message || 'Failed to send recovery email. Please try again.', 'error', modalAlertContainer);
+        }
+
+      } catch (error) {
+        console.error('Recovery error:', error);
+        showAlert('Connection failed. Please check your internet connection and try again.', 'error', modalAlertContainer);
+      } finally {
+        // Reset button
+        setTimeout(() => {
+          submitRecoveryBtn.disabled = false;
+          submitRecoveryBtn.innerHTML = `
+            <i class="fas fa-paper-plane"></i>
+            Send Recovery Email
+          `;
+        }, 1000);
+      }
+    });
+
+    // Event Listeners
+    forgotPasswordBtn.addEventListener('click', showModal);
+    cancelRecoveryBtn.addEventListener('click', hideModal);
+
+    // Close modal on backdrop click
+    forgotPasswordModal.addEventListener('click', (e) => {
+      if (e.target === forgotPasswordModal) {
+        hideModal();
+      }
+    });
+
+    // Input event listeners
+    emailInput.addEventListener('focus', () => {
+      updateFormGroup(document.getElementById('emailGroup'), true, true);
+    });
+
+    emailInput.addEventListener('blur', () => {
+      const isValid = validateEmail(emailInput.value);
+      updateFormGroup(document.getElementById('emailGroup'), isValid, false);
+    });
+
+    emailInput.addEventListener('input', () => {
+      const isValid = validateEmail(emailInput.value);
+      updateFormGroup(document.getElementById('emailGroup'), isValid, true);
+    });
+
+    passwordInput.addEventListener('focus', () => {
+      updateFormGroup(document.getElementById('passwordGroup'), true, true);
+    });
+
+    passwordInput.addEventListener('blur', () => {
+      const isValid = validatePassword(passwordInput.value);
+      updateFormGroup(document.getElementById('passwordGroup'), isValid, false);
+    });
+
+    passwordInput.addEventListener('input', (e) => {
+      const password = e.target.value;
+      const isValid = validatePassword(password);
+
+      updateFormGroup(document.getElementById('passwordGroup'), isValid, true);
+      updateSecurityIndicator(password);
+
+      // Only allow numeric input
+      e.target.value = password.replace(/[^0-9]/g, '');
+    });
+
+    // Prevent non-numeric input on keydown
+    passwordInput.addEventListener('keydown', (e) => {
+      const allowedKeys = ['Backspace', 'Delete', 'Tab', 'Escape', 'Enter'];
+      const isNumber = (e.key >= '0' && e.key <= '9');
+      const isAllowed = allowedKeys.includes(e.key) ||
+        (e.ctrlKey && ['a', 'c', 'v', 'x'].includes(e.key.toLowerCase()));
+
+      if (!isNumber && !isAllowed) {
+        e.preventDefault();
+      }
+    });
+
+    // Auto-focus email input on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        emailInput.focus();
+      }, 500);
+    });
+
+    // Check if user is already logged in
+    if (localStorage.getItem('coordinatorToken')) {
+      showAlert('Already logged in. Redirecting...', 'success');
+      setTimeout(() => {
+        window.location.href = '/result-view.html';
+      }, 1500);
+    }
+
+    // Enhanced keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        if (forgotPasswordModal.classList.contains('show')) {
+          hideModal();
+        } else {
+          document.activeElement.blur();
+          alertContainer.innerHTML = '';
+        }
+      }
+    });
+
+    // Handle paste events for password field
+    passwordInput.addEventListener('paste', (e) => {
+      e.preventDefault();
+      const pastedData = (e.clipboardData || window.clipboardData).getData('text');
+      const numericData = pastedData.replace(/[^0-9]/g, '').slice(0, 4);
+      passwordInput.value = numericData;
+      updateSecurityIndicator(numericData);
+    });
+
+    // Check registration status and block signup link if closed
+    async function checkRegistrationStatusForSignup() {
+      try {
+        const res = await fetch(API + '/public/registration-status');
+        const data = await res.json();
+        
+        const signupLink = document.getElementById('signupLink');
+        
+        if (data.success && !data.data.isOpen) {
+          // Registration is closed - block the link
+          signupLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            alert('Registration is currently closed. Registration is no longer available. Please check back later or contact the organizing team for more information.');
+            return false;
+          });
+          
+          // Style the link to show it's disabled
+          signupLink.style.opacity = '0.6';
+          signupLink.style.cursor = 'not-allowed';
+          signupLink.title = 'Registration is currently closed';
+          signupLink.href = '#';
+        }
+      } catch (error) {
+        console.error('Failed to check registration status:', error);
+        // If check fails, allow navigation (default behavior)
+      }
+    }
+
+    // Check registration status on page load
+    checkRegistrationStatusForSignup();
+  </script>
+</body>
+
+</html>

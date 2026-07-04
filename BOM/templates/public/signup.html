@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+{% load static %}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Coordinator Registration | Brain-O-Math</title>
+  <meta name="description" content="Register as a Brain-O-Math coordinator to manage students and event participation." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-dp6rqX3JxvFecYI3PzIxw3c6GjzDsQ2yoT3y5yHXEo5/Acg5Rk3tvd3u4qn+g7wX2lH6xvz6vX0Do1WZK3L5bQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    :root {
+      --bg: #f5f7ff;
+      --surface: #ffffff;
+      --surface-strong: #edf2ff;
+      --text: #111827;
+      --muted: #6b7280;
+      --accent: #4f46e5;
+      --accent-dark: #4338ca;
+      --success: #059669;
+      --error: #dc2626;
+      --border: #d1d5db;
+      --radius: 20px;
+      --shadow: 0 20px 50px rgba(15, 23, 42, 0.08);
+      --transition: 0.25s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      min-height: 100%;
+      font-family: 'Inter', sans-serif;
+      background: radial-gradient(circle at top left, rgba(79, 70, 229, 0.18), transparent 35%),
+                  radial-gradient(circle at bottom right, rgba(59, 130, 246, 0.12), transparent 35%),
+                  var(--bg);
+      color: var(--text);
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .page-shell {
+      width: 100%;
+      max-width: 900px;
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .info-panel {
+      background: linear-gradient(180deg, rgba(79,70,229,0.12), rgba(99,102,241,0.05));
+      border: 1px solid rgba(79, 70, 229, 0.12);
+      border-radius: var(--radius);
+      padding: 3rem;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .info-panel h1 {
+      font-size: clamp(2rem, 2.5vw, 2.6rem);
+      letter-spacing: -0.03em;
+      margin-bottom: 0.5rem;
+    }
+
+    .info-panel p {
+      line-height: 1.8;
+      color: var(--muted);
+    }
+
+    .info-panel .feature-list {
+      list-style: none;
+      padding: 0;
+      display: grid;
+      gap: 1rem;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: var(--muted);
+    }
+
+    .feature-item i {
+      width: 2rem;
+      height: 2rem;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      background: rgba(79, 70, 229, 0.12);
+      color: var(--accent);
+    }
+
+    .form-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      border: 1px solid rgba(148, 163, 184, 0.18);
+    }
+
+    .form-header {
+      padding: 2rem;
+      background: var(--surface-strong);
+    }
+
+    .form-header h2 {
+      font-size: 1.875rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .form-header p {
+      color: var(--muted);
+      line-height: 1.75;
+    }
+
+    .form-body {
+      padding: 2rem;
+    }
+
+    .alert {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem 1.25rem;
+      border-radius: 14px;
+      margin-bottom: 1.25rem;
+      font-size: 0.95rem;
+      border: 1px solid transparent;
+    }
+
+    .alert-show {
+      display: flex;
+    }
+
+    .alert-success {
+      background: #ecfdf5;
+      color: #166534;
+      border-color: #a7f3d0;
+    }
+
+    .alert-error {
+      background: #fef2f2;
+      color: #b91c1c;
+      border-color: #fecaca;
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-label {
+      display: flex;
+      gap: 0.6rem;
+      align-items: center;
+      margin-bottom: 0.65rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .form-label i {
+      color: var(--accent);
+      min-width: 1.2rem;
+      text-align: center;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 1rem 1.1rem;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      font-size: 0.98rem;
+      color: var(--text);
+      background: #fff;
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.12);
+    }
+
+    .validation-message {
+      margin-top: 0.45rem;
+      font-size: 0.86rem;
+      line-height: 1.5;
+      color: var(--error);
+      display: none;
+    }
+
+    .validation-message.show {
+      display: block;
+    }
+
+    .validation-message.valid {
+      color: var(--success);
+    }
+
+    .form-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .signup-button {
+      border: none;
+      border-radius: 14px;
+      padding: 1rem 1.2rem;
+      color: white;
+      background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform var(--transition), box-shadow var(--transition), background var(--transition);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+    }
+
+    .signup-button:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 34px rgba(79, 70, 229, 0.2);
+    }
+
+    .signup-button:disabled {
+      background: #94a3b8;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .text-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.95rem;
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      justify-content: center;
+      padding: 0.85rem 1rem;
+      border-radius: 14px;
+      background: rgba(79, 70, 229, 0.06);
+      border: 1px solid rgba(79, 70, 229, 0.12);
+      transition: background var(--transition), transform var(--transition);
+    }
+
+    .text-link:hover {
+      background: rgba(79, 70, 229, 0.12);
+      transform: translateY(-1px);
+    }
+
+    .small-note {
+      color: var(--muted);
+      font-size: 0.94rem;
+      line-height: 1.7;
+    }
+
+    .form-footer {
+      padding: 1.75rem 2rem;
+      background: var(--surface-strong);
+      border-top: 1px solid rgba(148, 163, 184, 0.16);
+      text-align: center;
+    }
+
+    .form-footer a {
+      color: var(--muted);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .form-footer a:hover {
+      color: var(--accent-dark);
+    }
+
+    .loading-spinner {
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      border-top: 2px solid #fff;
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 900px) {
+      .page-shell {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      body { padding: 1.25rem; }
+      .info-panel, .form-card { padding: 1.5rem; }
+      .form-header { padding: 1.5rem; }
+      .form-body { padding: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <section class="info-panel">
+      <div>
+        <h1>Register as a Coordinator</h1>
+        <p>Complete the form to create your Brain-O-Math coordinator account. Once registered, you can manage student registration, track payments, and access the coordinator dashboard.</p>
+      </div>
+      <ul class="feature-list">
+        <li class="feature-item"><i class="fas fa-user-check"></i> Quick coordinator registration</li>
+        <li class="feature-item"><i class="fas fa-mobile-alt"></i> Use phone-based security code</li>
+        <li class="feature-item"><i class="fas fa-shield-alt"></i> Secure account access</li>
+        <li class="feature-item"><i class="fas fa-chalkboard-teacher"></i> Manage students and payments</li>
+      </ul>
+      <p class="small-note">After registration, your login password will be the last 4 digits of your registered phone number. Keep this number handy.</p>
+    </section>
+
+    <article class="form-card">
+      <div class="form-header">
+        <h2>Create Coordinator Account</h2>
+        <p>Fill in the details below and click Create Account. All fields are required.</p>
+      </div>
+
+      <div class="form-body">
+        <div id="alertContainer"></div>
+        <form id="signupForm">
+          <div class="form-group">
+            <label class="form-label" for="schoolName"><i class="fas fa-school"></i> School Name</label>
+            <input type="text" id="schoolName" class="form-input" required placeholder="Enter your school name" minlength="3" autocomplete="organization" />
+            <div class="validation-message" id="schoolNameMsg"></div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="schoolAddress"><i class="fas fa-map-marker-alt"></i> School Address</label>
+            <input type="text" id="schoolAddress" class="form-input" required placeholder="Enter complete school address" minlength="10" autocomplete="street-address" />
+            <div class="validation-message" id="schoolAddressMsg"></div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="coordinatorName"><i class="fas fa-user"></i> Coordinator Name</label>
+            <input type="text" id="coordinatorName" class="form-input" required placeholder="Enter your full name" minlength="3" autocomplete="name" />
+            <div class="validation-message" id="coordinatorNameMsg"></div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="coordinatorPhone"><i class="fas fa-phone"></i> Phone Number</label>
+            <input type="tel" id="coordinatorPhone" class="form-input" required placeholder="10-digit mobile number" pattern="[0-9]{10}" maxlength="10" autocomplete="tel" />
+            <div class="validation-message" id="coordinatorPhoneMsg"></div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="coordinatorEmail"><i class="fas fa-envelope"></i> Email Address</label>
+            <input type="email" id="coordinatorEmail" class="form-input" required placeholder="Enter your email address" autocomplete="email" />
+            <div class="validation-message" id="coordinatorEmailMsg"></div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="signup-button" id="signupBtn"><i class="fas fa-user-plus"></i> Create Account</button>
+            <a href="/coordinator/login/" class="text-link"><i class="fas fa-sign-in-alt"></i> Already have an account? Login</a>
+          </div>
+        </form>
+      </div>
+
+      <div class="form-footer">
+        <a href="/">← Back to Home</a>
+      </div>
+    </article>
+  </div>
+
+  <script>
+    const API = '/api';
+    const signupForm = document.getElementById('signupForm');
+    const signupBtn = document.getElementById('signupBtn');
+    const alertContainer = document.getElementById('alertContainer');
+    const fields = ['schoolName', 'schoolAddress', 'coordinatorName', 'coordinatorPhone', 'coordinatorEmail'];
+
+    const validators = {
+      schoolName: (val) => val.length >= 3 ? { valid: true } : { valid: false, msg: 'School name must be at least 3 characters.' },
+      schoolAddress: (val) => val.length >= 10 ? { valid: true } : { valid: false, msg: 'Address must be at least 10 characters.' },
+      coordinatorName: (val) => /^[A-Za-z\s]{3,}$/.test(val) ? { valid: true } : { valid: false, msg: 'Name should use letters only and be at least 3 characters.' },
+      coordinatorPhone: (val) => /^[0-9]{10}$/.test(val) ? { valid: true } : { valid: false, msg: 'Enter a valid 10-digit phone number.' },
+      coordinatorEmail: (val) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val) ? { valid: true } : { valid: false, msg: 'Enter a valid email address.' }
+    };
+
+    function showAlert(message, type) {
+      const alertClass = type === 'error' ? 'alert-error' : 'alert-success';
+      const icon = type === 'error' ? 'fas fa-exclamation-circle' : 'fas fa-check-circle';
+      alertContainer.innerHTML = `<div class="alert ${alertClass}"><i class="${icon}"></i><span>${message}</span></div>`;
+      if (type === 'success') {
+        setTimeout(() => { alertContainer.innerHTML = ''; }, 4000);
+      }
+    }
+
+    function validateField(fieldId) {
+      const field = document.getElementById(fieldId);
+      const value = field.value.trim();
+      const msgEl = document.getElementById(fieldId + 'Msg');
+      const validator = validators[fieldId];
+      if (!validator) return true;
+      const result = validator(value);
+      field.className = result.valid ? 'form-input' : 'form-input';
+      if (result.valid) {
+        msgEl.className = 'validation-message';
+        msgEl.textContent = '';
+      } else {
+        msgEl.className = 'validation-message show invalid';
+        msgEl.textContent = result.msg;
+      }
+      return result.valid;
+    }
+
+    fields.forEach((fieldId) => {
+      const field = document.getElementById(fieldId);
+      field.addEventListener('input', () => {
+        field.value = fieldId === 'coordinatorPhone' ? field.value.replace(/[^0-9]/g, '').slice(0, 10) : field.value;
+        validateField(fieldId);
+      });
+      field.addEventListener('blur', () => validateField(fieldId));
+    });
+
+    signupForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      let valid = true;
+      const payload = {};
+      fields.forEach((fieldId) => {
+        const field = document.getElementById(fieldId);
+        payload[fieldId] = field.value.trim();
+        if (!validateField(fieldId)) {
+          valid = false;
+        }
+      });
+      if (!valid) {
+        showAlert('Please fill in all fields correctly.', 'error');
+        return;
+      }
+      signupBtn.disabled = true;
+      signupBtn.innerHTML = '<span class="loading-spinner"></span> Creating Account...';
+      try {
+        const response = await fetch(`${API}/coordinator/signup`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await response.json();
+        if (response.ok && data.success) {
+          showAlert('Account created successfully! Redirecting to login...', 'success');
+          signupBtn.innerHTML = '<i class="fas fa-check-circle"></i> Account Created';
+          setTimeout(() => { window.location.href = '/coordinator/login/'; }, 1700);
+        } else {
+          showAlert(data.message || 'Registration failed. Please try again.', 'error');
+          signupBtn.disabled = false;
+          signupBtn.innerHTML = '<i class="fas fa-user-plus"></i> Create Account';
+        }
+      } catch (error) {
+        showAlert('Unable to connect to server. Please try again.', 'error');
+        signupBtn.disabled = false;
+        signupBtn.innerHTML = '<i class="fas fa-user-plus"></i> Create Account';
+      }
+    });
+  </script>
+</body>
+</html>

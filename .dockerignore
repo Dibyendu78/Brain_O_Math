@@ -1,0 +1,12 @@
+.venv
+node_modules
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+db.sqlite3
+.env
+.git
+.gitignore
+package-lock.json
+npm-debug.log

@@ -1,0 +1,19 @@
+app:
+  name: BOM_Django
+  host: 0.0.0.0
+  port: 8000
+  settings_module: BOM.settings
+  debug: true
+  secret_key: "django-insecure-replace-this"
+  allowed_hosts:
+    - localhost
+    - 127.0.0.1
+    - 0.0.0.0
+
+database:
+  engine: sqlite3
+  name: /app/db.sqlite3
+
+environment:
+  python_version: 3.14
+  install_requirements: requirements.txt

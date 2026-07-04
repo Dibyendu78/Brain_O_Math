@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>View Results - Brain-O-Math Olympiad</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="description"
+        content="View student exam results and download score cards and participation certificates for Brain-O-Math Olympiad">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        :root {
+            /* Color System */
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --primary-light: #60a5fa;
+            --secondary: #64748b;
+            --success: #10b981;
+            --success-dark: #059669;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --danger-dark: #dc2626;
+            --info: #06b6d4;
+
+            /* Neutrals */
+            --white: #ffffff;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+
+            /* Spacing Scale */
+            --space-1: 0.25rem;
+            --space-2: 0.5rem;
+            --space-3: 0.75rem;
+            --space-4: 1rem;
+            --space-5: 1.25rem;
+            --space-6: 1.5rem;
+            --space-8: 2rem;
+            --space-10: 2.5rem;
+            --space-12: 3rem;
+            --space-16: 4rem;
+
+            /* Border Radius */
+            --radius-sm: 0.25rem;
+            --radius-md: 0.5rem;
+            --radius-lg: 0.75rem;
+            --radius-xl: 1rem;
+            --radius-2xl: 1.5rem;
+
+            /* Shadows */
+            --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.1);
+
+            /* Typography */
+            --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+            --text-xs: 0.75rem;
+            --text-sm: 0.875rem;
+            --text-base: 1rem;
+            --text-lg: 1.125rem;
+            --text-xl: 1.25rem;
+            --text-2xl: 1.5rem;
+            --text-3xl: 1.875rem;
+            --text-4xl: 2.25rem;
+
+            /* Transitions */
+            --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Base Reset */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background: var(--gray-50);
+            color: var(--gray-900);
+            line-height: 1.6;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Header */
+        .header {
+            background: var(--white);
+            border-bottom: 1px solid var(--gray-200);
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .header-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: var(--space-4) var(--space-6);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+
+        .brand-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .brand-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .header-brand h1 {
+            font-size: var(--text-xl);
+            font-weight: 700;
+            color: var(--primary);
+            letter-spacing: -0.025em;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-info .name {
+            font-weight: 600;
+            color: var(--gray-900);
+            font-size: var(--text-sm);
+        }
+
+        .user-info .role {
+            font-size: var(--text-xs);
+            color: var(--gray-500);
+        }
+
+        .logout-btn {
+            background: var(--danger);
+            color: var(--white);
+            border: none;
+            padding: var(--space-2) var(--space-4);
+            border-radius: var(--radius-md);
+            font-size: var(--text-sm);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+
+        .logout-btn:hover {
+            background: var(--danger-dark);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: var(--space-6);
+        }
+
+        /* Page Title */
+        .page-title {
+            margin-bottom: var(--space-8);
+        }
+
+        .page-title h1 {
+            font-size: var(--text-3xl);
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: var(--space-2);
+            letter-spacing: -0.025em;
+        }
+
+        .page-title p {
+            color: var(--gray-600);
+            font-size: var(--text-base);
+        }
+
+        /* Content Card */
+        .content-card {
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: var(--space-6);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: var(--space-6);
+            border-bottom: 1px solid var(--gray-200);
+            background: var(--gray-50);
+        }
+
+        .card-header h2 {
+            font-size: var(--text-xl);
+            font-weight: 600;
+            color: var(--gray-900);
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+
+        .card-header .header-icon {
+            color: var(--primary);
+        }
+
+        .card-content {
+            padding: var(--space-6);
+        }
+
+        /* Controls and Filters */
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-4);
+            margin-bottom: var(--space-6);
+            align-items: flex-end;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-2);
+        }
+
+        .filter-group label {
+            font-weight: 600;
+            font-size: var(--text-sm);
+            color: var(--gray-700);
+        }
+
+        .filter-group select {
+            padding: var(--space-3);
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-md);
+            font-size: var(--text-sm);
+            background: var(--white);
+            color: var(--gray-900);
+            transition: all var(--transition-base);
+        }
+
+        .filter-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        /* Table */
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: var(--space-6);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--gray-200);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--white);
+        }
+
+        thead th {
+            background: var(--primary);
+            color: var(--white);
+            padding: var(--space-4);
+            font-weight: 600;
+            text-align: left;
+            font-size: var(--text-sm);
+            white-space: nowrap;
+        }
+
+        tbody tr {
+            transition: background-color var(--transition-fast);
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        tbody tr:hover {
+            background: var(--gray-50);
+        }
+
+        tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        tbody td {
+            padding: var(--space-4);
+            color: var(--gray-700);
+            font-size: var(--text-sm);
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-2);
+            padding: var(--space-3) var(--space-6);
+            border: 2px solid transparent;
+            border-radius: var(--radius-md);
+            font-size: var(--text-sm);
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            font-family: inherit;
+            white-space: nowrap;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: var(--white);
+        }
+
+        .btn-success:hover:not(:disabled) {
+            background: var(--success-dark);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: var(--space-2);
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .action-buttons button {
+            padding: var(--space-2) var(--space-3);
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-size: var(--text-xs);
+            display: flex;
+            align-items: center;
+            gap: var(--space-1);
+            font-weight: 500;
+        }
+
+        .download-btn {
+            background: var(--success);
+            color: var(--white);
+        }
+
+        .download-btn:hover:not(:disabled) {
+            background: var(--success-dark);
+            transform: scale(1.05);
+        }
+
+        .download-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            gap: var(--space-2);
+            justify-content: center;
+            align-items: center;
+            margin-top: var(--space-4);
+            flex-wrap: wrap;
+        }
+
+        .pagination button {
+            padding: var(--space-2) var(--space-3);
+            border: 1px solid var(--gray-300);
+            background: var(--white);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-size: var(--text-sm);
+            min-width: 40px;
+            color: var(--gray-700);
+        }
+
+        .pagination button.active {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+        }
+
+        .pagination button:hover:not(.active):not(:disabled) {
+            background: var(--gray-100);
+            border-color: var(--gray-400);
+        }
+
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: var(--space-12);
+            color: var(--gray-500);
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: var(--space-4);
+        }
+
+        .empty-state-icon i {
+            color: var(--gray-400);
+        }
+
+        .loading-spinner {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: var(--space-4);
+            }
+
+            .main-container {
+                padding: var(--space-4);
+            }
+
+            .controls {
+                grid-template-columns: 1fr;
+            }
+
+            .table-container {
+                font-size: var(--text-xs);
+            }
+
+            tbody td {
+                padding: var(--space-2);
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                gap: var(--space-1);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-container {
+                padding: var(--space-3) var(--space-4);
+            }
+
+            .main-container {
+                padding: var(--space-3);
+            }
+
+            .card-content {
+                padding: var(--space-4);
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+            .header,
+            .btn,
+            .controls,
+            .pagination {
+                display: none !important;
+            }
+
+            .main-container {
+                max-width: none;
+                padding: 0;
+            }
+
+            .content-card {
+                box-shadow: none;
+                border: 1px solid var(--gray-300);
+            }
+        }
+
+        /* Success Message */
+        .success-message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--success);
+            color: var(--white);
+            padding: var(--space-4) var(--space-6);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            z-index: 1000;
+            animation: slideInRight 0.3s ease-out;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <div class="header-brand">
+                <div class="brand-icon">
+                    <img src="logo.jpg" alt="Brain-O-Math Logo">
+                </div>
+                <h1>Brain-O-Math Olympiad</h1>
+            </div>
+            <div class="header-right">
+                <div class="user-info">
+                    <div class="name" id="coordinatorName">Loading...</div>
+                    <div class="role">Result View</div>
+                </div>
+                <button class="logout-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <!-- Page Title -->
+        <div class="page-title">
+            <h1>Student Results & Downloads</h1>
+            <p>View student exam results, download score cards and participation certificates</p>
+        </div>
+
+        <!-- Student Results Section -->
+        <div class="content-card">
+            <div class="card-header">
+                <h2>
+                    <i class="fas fa-chart-bar header-icon"></i>
+                    Student Results
+                </h2>
+            </div>
+            <div class="card-content">
+                <!-- Filters -->
+                <div class="controls">
+                    <div class="filter-group">
+                        <label for="resultsClassFilter">
+                            <i class="fas fa-graduation-cap"></i> Filter by Class:
+                        </label>
+                        <select id="resultsClassFilter" onchange="loadStudentResults()">
+                            <option value="">All Classes</option>
+                            <option value="3">Class 3</option>
+                            <option value="4">Class 4</option>
+                            <option value="5">Class 5</option>
+                            <option value="6">Class 6</option>
+                            <option value="7">Class 7</option>
+                            <option value="8">Class 8</option>
+                            <option value="9">Class 9</option>
+                            <option value="10">Class 10</option>
+                            <option value="11">Class 11</option>
+                            <option value="12">Class 12</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="resultsSubjectFilter">
+                            <i class="fas fa-book"></i> Filter by Subject:
+                        </label>
+                        <select id="resultsSubjectFilter" onchange="loadStudentResults()">
+                            <option value="">All Subjects</option>
+                            <option value="math">Mathematics</option>
+                            <option value="science">Science</option>
+                            <option value="both">Both</option>
+                        </select>
+                    </div>
+
+                    <div style="display: flex; gap: var(--space-2); flex-direction: column;">
+                        <button id="downloadReportCardsBtn" class="btn btn-success"
+                            onclick="downloadAllReportCards()" style="flex:1;">
+                            <i class="fas fa-download"></i> Download All Score Cards
+                        </button>
+
+                        <button id="downloadCertificatesBtn" onclick="downloadAllCertificates()"
+                            class="btn btn-success">
+                            <i class="fas fa-download"></i> Download All Certificates
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Results Table -->
+                <div class="table-container">
+                    <table id="resultsTable">
+                        <thead>
+                            <tr>
+                                <th><i class="fas fa-hashtag"></i> Roll</th>
+                                <th><i class="fas fa-user"></i> Student</th>
+                                <th><i class="fas fa-graduation-cap"></i> Class</th>
+                                <th><i class="fas fa-book"></i> Subject</th>
+                                <th><i class="fas fa-calculator"></i> Math</th>
+                                <th><i class="fas fa-flask"></i> Science</th>
+                                <th><i class="fas fa-download"></i> Downloads</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resultsTableBody">
+                            <tr>
+                                <td colspan="7" style="padding: 20px; text-align: center; color: #999;">
+                                    Loading student results...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Results pagination -->
+                <div id="resultsPagination" class="pagination"></div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // ===============================
+        // Configuration
+        // ===============================
+        const API = 'https://brain-o-math.onrender.com/api';
+        //const API = 'http://localhost:5000/api'
+        // ===============================
+        // Global variables
+        // ===============================
+        let coordinatorToken = localStorage.getItem('coordinatorToken');
+        let resultsData = [];
+        let currentResultsPage = 1;
+        const resultsPerPage = 10;
+
+        // ===============================
+        // Authentication check
+        // ===============================
+        if (!coordinatorToken) {
+            window.location.href = '/coordinator-login.html';
+        }
+
+        // ===============================
+        // Helper functions
+        // ===============================
+        function formatSubjects(subjects) {
+            if (subjects === 'both') return 'Math & Science';
+            if (subjects === 'math') return 'Mathematics';
+            if (subjects === 'science') return 'Science';
+            return subjects;
+        }
+
+        function showSuccessMessage(message) {
+            const existingMessage = document.querySelector('.success-message');
+            if (existingMessage) {
+                existingMessage.remove();
+            }
+
+            const successDiv = document.createElement('div');
+            successDiv.className = 'success-message';
+            successDiv.innerHTML = `
+                <i class="fas fa-check-circle"></i>
+                ${message}
+            `;
+
+            document.body.appendChild(successDiv);
+
+            setTimeout(() => {
+                successDiv.style.animation = 'slideOutRight 0.3s ease-in';
+                setTimeout(() => {
+                    if (successDiv.parentNode) {
+                        successDiv.parentNode.removeChild(successDiv);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        function showNotification(message, type = 'info') {
+            // Remove existing notification
+            const existingNotification = document.querySelector('.notification');
+            if (existingNotification) {
+                existingNotification.remove();
+            }
+
+            const notificationDiv = document.createElement('div');
+            notificationDiv.className = `notification notification-${type}`;
+            
+            let icon = 'fa-info-circle';
+            if (type === 'success') icon = 'fa-check-circle';
+            if (type === 'error') icon = 'fa-exclamation-circle';
+            if (type === 'warning') icon = 'fa-exclamation-triangle';
+            
+            notificationDiv.innerHTML = `
+                <i class="fas ${icon}"></i>
+                <span>${message}</span>
+                <button class="notification-close" onclick="this.parentElement.remove()">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            
+            notificationDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 16px 20px;
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                font-size: 14px;
+                z-index: 10000;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                animation: slideInRight 0.3s ease-out;
+                max-width: 400px;
+            `;
+
+            // Set colors based on type
+            const colors = {
+                success: { bg: '#d4edda', text: '#155724', border: '#c3e6cb' },
+                error: { bg: '#f8d7da', text: '#721c24', border: '#f5c6cb' },
+                warning: { bg: '#fff3cd', text: '#856404', border: '#ffeeba' },
+                info: { bg: '#d1ecf1', text: '#0c5460', border: '#bee5eb' }
+            };
+
+            const color = colors[type] || colors.info;
+            notificationDiv.style.backgroundColor = color.bg;
+            notificationDiv.style.color = color.text;
+            notificationDiv.style.borderLeft = `4px solid ${color.border}`;
+
+            // Style the close button
+            const closeBtn = notificationDiv.querySelector('.notification-close');
+            closeBtn.style.cssText = `
+                background: none;
+                border: none;
+                color: inherit;
+                cursor: pointer;
+                padding: 0;
+                display: flex;
+                align-items: center;
+                font-size: 16px;
+                margin-left: 8px;
+            `;
+
+            document.body.appendChild(notificationDiv);
+
+            // Auto-close after 5 seconds
+            setTimeout(() => {
+                notificationDiv.style.animation = 'slideOutRight 0.3s ease-in';
+                setTimeout(() => {
+                    if (notificationDiv.parentNode) {
+                        notificationDiv.parentNode.removeChild(notificationDiv);
+                    }
+                }, 300);
+            }, 5000);
+        }
+
+        // ===============================
+        // Load Dashboard
+        // ===============================
+        async function loadDashboard() {
+            try {
+                const coordinatorData = JSON.parse(localStorage.getItem('coordinatorData') || '{}');
+                document.getElementById('coordinatorName').textContent = coordinatorData.coordinatorName || 'Coordinator';
+            } catch (error) {
+                console.error('Dashboard load error:', error);
+            }
+        }
+
+        // ===============================
+        // Student Results Management
+        // ===============================
+        async function loadStudentResults() {
+            try {
+                const classFilter = document.getElementById('resultsClassFilter')?.value || '';
+                const subjectFilter = document.getElementById('resultsSubjectFilter')?.value || '';
+
+                let url = `${API}/coordinator/student-results`;
+                const params = new URLSearchParams();
+                if (classFilter) params.append('class', classFilter);
+                if (subjectFilter) params.append('subject', subjectFilter);
+
+                if (params.toString()) {
+                    url += '?' + params.toString();
+                }
+
+                console.log('📊 Fetching results from:', url);
+
+                const res = await fetch(url, {
+                    headers: {
+                        'Authorization': `Bearer ${coordinatorToken}`
+                    }
+                });
+
+                const j = await res.json();
+                console.log('📥 Results Response:', j);
+
+                if (j.success) {
+                    resultsData = j.data || [];
+                    console.log('✓ Loaded', resultsData.length, 'students');
+                    currentResultsPage = 1;
+                    displayResultsTable();
+                } else {
+                    console.error('❌ API Error:', j.message);
+                    document.getElementById('resultsTableBody').innerHTML = `
+                        <tr>
+                            <td colspan="7" style="padding: 20px; text-align: center; color: #999;">
+                                ${j.message || 'No results available'}
+                            </td>
+                        </tr>
+                    `;
+                }
+            } catch (error) {
+                console.error('❌ Load Results Error:', error);
+                document.getElementById('resultsTableBody').innerHTML = `
+                    <tr>
+                        <td colspan="7" style="padding: 20px; text-align: center; color: #c00;">
+                            Error loading results: ${error.message}
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        function displayResultsTable() {
+            const startIdx = (currentResultsPage - 1) * resultsPerPage;
+            const endIdx = startIdx + resultsPerPage;
+            const pageData = resultsData.slice(startIdx, endIdx);
+
+            if (pageData.length === 0) {
+                document.getElementById('resultsTableBody').innerHTML = `
+                    <tr>
+                        <td colspan="7" style="padding: 20px; text-align: center; color: #999;">
+                            No students found
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            document.getElementById('resultsTableBody').innerHTML = pageData.map(student => {
+                // Normalize subject choice
+                const subjects = (student.subjects || '').toLowerCase();
+                const selectedMath = subjects === 'math' || subjects === 'both';
+                const selectedScience = subjects === 'science' || subjects === 'both';
+
+                const hasMathMarks = selectedMath && student.marks && student.marks.math !== null && student.marks.math !== undefined;
+                const hasScienceMarks = selectedScience && student.marks && student.marks.science !== null && student.marks.science !== undefined;
+
+                // Format marks with subject selection check
+                const mathDisplay = selectedMath 
+                    ? (hasMathMarks ? `${student.marks.math}/60` : '-/60')
+                    : 'N/A';
+                const scienceDisplay = selectedScience 
+                    ? (hasScienceMarks ? `${student.marks.science}/60` : '-/60')
+                    : 'N/A';
+                
+                // Check if student is absent (no marks entered for their chosen subjects)
+                const isAbsent = !hasMathMarks && !hasScienceMarks;
+                
+                return `
+                <tr>
+                    <td>${student.rollNumber || '-'}</td>
+                    <td>${student.name}</td>
+                    <td>Class ${student.class}</td>
+                    <td>${formatSubjects(student.subjects)}</td>
+                    <td style="text-align: center;">
+                        ${mathDisplay}
+                    </td>
+                    <td style="text-align: center;">
+                        ${scienceDisplay}
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <button onclick="downloadReportCard('${student._id}')" class="download-btn" title="${isAbsent ? 'Student was absent - cannot download' : 'Download Score Card'}" ${isAbsent ? 'disabled' : ''}>
+                                <i class="fas fa-download"></i> Score Card
+                            </button>
+                            <button onclick="downloadCertificate('${student._id}')" class="download-btn" title="${isAbsent ? 'Student was absent - cannot download' : 'Download Certificate'}" ${isAbsent ? 'disabled' : ''}>
+                                <i class="fas fa-download"></i> Certificate
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+            }).join('');
+
+            displayResultsPagination();
+        }
+
+        function displayResultsPagination() {
+            const totalPages = Math.ceil(resultsData.length / resultsPerPage);
+            const paginationDiv = document.getElementById('resultsPagination');
+            paginationDiv.innerHTML = '';
+
+            if (totalPages <= 1) return;
+
+            for (let i = 1; i <= totalPages; i++) {
+                const btn = document.createElement('button');
+                btn.textContent = i;
+                btn.className = i === currentResultsPage ? 'active' : '';
+                btn.onclick = () => {
+                    currentResultsPage = i;
+                    displayResultsTable();
+                };
+                paginationDiv.appendChild(btn);
+            }
+        }
+
+        async function downloadReportCard(studentId) {
+            try {
+                // Get student data from already loaded resultsData
+                const studentData = resultsData.find(s => s._id === studentId);
+
+                const resp = await fetch(`${API}/admin/results/download-report-card/${studentId}`, {
+                    method: 'GET',
+                    headers: { 'Authorization': `Bearer ${coordinatorToken}` }
+                });
+
+                if (!resp.ok) {
+                    const errorData = await resp.json().catch(() => ({ message: 'Failed to download report card' }));
+                    showNotification(errorData.message || 'Failed to download report card', 'error');
+                    return;
+                }
+
+                const blob = await resp.blob();
+                let filename = 'report-card.pdf';
+                
+                // Generate filename with student name and roll number
+                if (studentData && (studentData.name || studentData.rollNumber)) {
+                    const name = (studentData.name || 'Student').replace(/[^a-z0-9]/gi, '_').toLowerCase();
+                    const rollNum = studentData.rollNumber || 'unknown';
+                    filename = `${name}_${rollNum}_report-card.pdf`;
+                }
+
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+                
+                showNotification('Report card downloaded successfully', 'success');
+            } catch (error) {
+                console.error('Download Report Card Error:', error);
+                showNotification('Error downloading report card: ' + error.message, 'error');
+            }
+        }
+
+        async function downloadCertificate(studentId) {
+            try {
+                // Get student data from already loaded resultsData
+                const studentData = resultsData.find(s => s._id === studentId);
+
+                const resp = await fetch(`${API}/admin/results/download-certificate/${studentId}`, {
+                    method: 'GET',
+                    headers: { 'Authorization': `Bearer ${coordinatorToken}` }
+                });
+
+                if (!resp.ok) {
+                    const errorData = await resp.json().catch(() => ({ message: 'Failed to download certificate' }));
+                    showNotification(errorData.message || 'Failed to download certificate', 'error');
+                    return;
+                }
+
+                const blob = await resp.blob();
+                let filename = 'certificate.pdf';
+                
+                // Generate filename with student name and roll number
+                if (studentData && (studentData.name || studentData.rollNumber)) {
+                    const name = (studentData.name || 'Student').replace(/[^a-z0-9]/gi, '_').toLowerCase();
+                    const rollNum = studentData.rollNumber || 'unknown';
+                    filename = `${name}_${rollNum}_certificate.pdf`;
+                }
+
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+                
+                showNotification('Certificate downloaded successfully', 'success');
+            } catch (error) {
+                console.error('Download Certificate Error:', error);
+                showNotification('Error downloading certificate: ' + error.message, 'error');
+            }
+        }
+
+        async function downloadAllReportCards() {
+            const btn = document.getElementById('downloadReportCardsBtn');
+            btn.disabled = true;
+            const old = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Preparing...';
+            try {
+                const resp = await fetch(`${API}/coordinator/results/download-report-cards`, {
+                    method: 'GET',
+                    headers: { 'Authorization': `Bearer ${coordinatorToken}` }
+                });
+
+                if (!resp.ok) {
+                    const j = await resp.json().catch(() => ({ message: 'Failed' }));
+                    alert(j.message || 'Failed to prepare report cards');
+                    return;
+                }
+
+                const blob = await resp.blob();
+                const disp = resp.headers.get('content-disposition');
+                let filename = 'report-cards.pdf';
+                if (disp) {
+                    const m = /filename\*=UTF-8''(.+)$/.exec(disp) || /filename="?([^";]+)"?/.exec(disp);
+                    if (m) filename = decodeURIComponent(m[1]);
+                }
+
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+
+            } catch (e) {
+                console.error(e);
+                alert('Error downloading report cards');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = old;
+            }
+        }
+
+        async function downloadAllCertificates() {
+            const btn = document.getElementById('downloadCertificatesBtn');
+            btn.disabled = true;
+            const old = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Preparing...';
+            try {
+                const resp = await fetch(`${API}/coordinator/results/download-certificates`, {
+                    method: 'GET',
+                    headers: { 'Authorization': `Bearer ${coordinatorToken}` }
+                });
+
+                if (!resp.ok) {
+                    const j = await resp.json().catch(() => ({ message: 'Failed' }));
+                    alert(j.message || 'Failed to prepare certificates');
+                    return;
+                }
+
+                const blob = await resp.blob();
+                const disp = resp.headers.get('content-disposition');
+                let filename = 'certificates.pdf';
+                if (disp) {
+                    const m = /filename\*=UTF-8''(.+)$/.exec(disp) || /filename="?([^";]+)"?/.exec(disp);
+                    if (m) filename = decodeURIComponent(m[1]);
+                }
+
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+
+            } catch (e) {
+                console.error(e);
+                alert('Error downloading certificates');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = old;
+            }
+        }
+
+        // ===============================
+        // Logout Function
+        // ===============================
+        function logout() {
+            localStorage.removeItem('coordinatorToken');
+            localStorage.removeItem('coordinatorData');
+            window.location.href = '/coordinator-login.html';
+        }
+
+        // ===============================
+        // Initialize Dashboard
+        // ===============================
+        document.addEventListener('DOMContentLoaded', function () {
+            loadDashboard();
+            loadStudentResults();
+        });
+    </script>
+</body>
+
+</html>

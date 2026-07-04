@@ -1,0 +1,263 @@
+// reportCardGenerator.js
+// Certificate-Styled PDF Report Card Generator for Brain O Math Olympiad
+
+const PDFDocument = require('pdfkit');
+const fs = require('fs');
+const path = require('path');
+
+class ReportCardGenerator {
+  constructor() {
+    this.logoPath = path.resolve(__dirname, './logo.png'); // faded background logo
+  }
+
+  async generateReportCard(student = {}) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const doc = new PDFDocument({
+          size: 'A5',
+          layout: 'landscape',
+          margins: 0
+        });
+
+        const bufs = [];
+        doc.on('data', d => bufs.push(d));
+        doc.on('end', () => resolve(Buffer.concat(bufs)));
+        doc.on('error', reject);
+
+        await this._drawReportCard(doc, student);
+        doc.end();
+
+      } catch (err) {
+        reject(err);
+      }
+    });
+  }
+
+  async _drawReportCard(doc, student) {
+    const pageWidth = doc.page.width;
+    const pageHeight = doc.page.height;
+
+    // Layout
+    const margin = 20;
+    const innerMargin = 12;
+    const contentWidth = pageWidth - margin * 2;
+
+    /* ----------------------------------------------------
+     * BACKGROUND + BORDERS
+     * -------------------------------------------------- */
+    // Soft white-cream background
+    doc.rect(0, 0, pageWidth, pageHeight).fill('#fffdf7');
+
+
+    // Outer Border
+    doc.save()
+      .lineWidth(4)
+      .strokeColor('#a67c52')
+      .roundedRect(margin, margin, pageWidth - margin * 2, pageHeight - margin * 2, 18)
+      .stroke()
+      .restore();
+
+    // Inner Border
+    doc.save()
+      .lineWidth(1.8)
+      .strokeColor('#d8c08a')
+      .roundedRect(
+        margin + innerMargin,
+        margin + innerMargin,
+        pageWidth - (margin + innerMargin) * 2,
+        pageHeight - (margin + innerMargin) * 2,
+        12
+      )
+      .stroke()
+      .restore();
+
+    /* ----------------------------------------------------
+     * BIG FADED LOGO (CENTER)
+     * -------------------------------------------------- */
+    try {
+      doc.save();
+      doc.opacity(0.10);
+
+      const logoWidth = pageWidth * 0.7;
+      const logoX = (pageWidth - logoWidth) / 2;
+      const logoY = (pageHeight - logoWidth) / 2 +15;
+
+      doc.image(this.logoPath, logoX, logoY, { width: logoWidth });
+      doc.restore();
+    } catch { }
+
+    /* ----------------------------------------------------
+     * TITLE
+     * -------------------------------------------------- */
+    const titleY = margin + 15;
+
+    doc
+      .font('Times-Bold')
+      .fontSize(28)
+      .fillColor('#222')
+      .text("Brain O Math Olympiad 2025", 0, titleY + 5, {
+        width: pageWidth,
+        align: 'center'
+      });
+
+    doc
+      .font('Helvetica-Bold')
+      .fontSize(20)
+      .text('SCORE CARD', 0, titleY + 34, {
+        width: pageWidth,
+        align: 'center'
+      });
+
+    /* ----------------------------------------------------
+     * STUDENT INFORMATION
+     * -------------------------------------------------- */
+    const leftX = margin + 18;
+    const infoY = titleY + 70;
+
+    doc
+      .font('Helvetica-Bold')
+      .fontSize(12)
+      .fillColor('#0b4f6c')
+      .text('STUDENT INFORMATION', leftX, infoY - 20);
+
+    let y = infoY;
+    const labelWidth = Math.min(110, Math.floor(contentWidth * 0.32));
+
+    const writeField = (label, value) => {
+      doc.font('Helvetica-Bold').fontSize(10).fillColor('#222');
+      doc.text(label, leftX, y);
+
+      doc.font('Helvetica').fontSize(10).fillColor('#000');
+      doc.text(value, leftX + labelWidth, y);
+
+      y += 18;
+    };
+
+    writeField('Student Name:', student.name || 'N/A');
+    writeField('Roll Number:', student.rollNumber || 'N/A');
+    writeField('Class:', student.class ? `Class ${student.class}` : 'N/A');
+    writeField('Category:', student.category || 'N/A');
+    writeField('School:', student.schoolName || 'N/A');
+
+    const subjects =
+      student.subjects === 'both'
+        ? 'Mathematics & Science'
+        : student.subjects === 'math'
+        ? 'Mathematics'
+        : student.subjects === 'science'
+        ? 'Science'
+        : 'N/A';
+
+    writeField('Subject Choice:', subjects);
+
+    /* ----------------------------------------------------
+     * SUBJECT PERFORMANCE SECTION
+     * -------------------------------------------------- */
+    const scoreTitleY = y + 10;
+
+    doc
+      .font('Helvetica-Bold')
+      .fontSize(12)
+      .fillColor('#0b4f6c')
+      .text('SUBJECT PERFORMANCE', leftX, scoreTitleY - 10);
+
+    y = scoreTitleY + 18;
+
+    const availableWidth = contentWidth - 36; // gap between boxes
+    const twoBoxWidth = Math.floor(availableWidth / 2);
+    const singleBoxWidth = availableWidth;
+
+    /* BOX DRAWER */
+    const drawScoreBox = (x, width, subject, marks, rank) => {
+      doc.save()
+        .lineWidth(1.2)
+        .strokeColor('#d8c08a')
+        .roundedRect(x, y, width, 120, 8)
+        .stroke()
+        .restore();
+
+      doc.font('Helvetica-Bold').fontSize(11).fillColor('#0b4f6c');
+      doc.text(subject.toUpperCase(), x + 12, y + 10);
+
+      // Marks
+      doc.font('Helvetica').fontSize(10).fillColor('#000');
+      doc.text('Marks Scored:', x + 12, y + 36);
+      doc.text(
+        marks !== null ? `${marks} / 60` : 'N.A.',
+        x + Math.min(110, width - 50),
+        y + 36
+      );
+
+      // Percentage
+      doc.text('Percentage:', x + 12, y + 56);
+      const perc = marks !== null ? `${((marks / 60) * 100).toFixed(2)}%` : 'N.A.';
+      doc.text(
+        perc,
+        x + Math.min(110, width - 50),
+        y + 56
+      );
+
+      // Rank
+      
+    };
+
+    const mathMarks = student.marks?.math ?? null;
+    const scienceMarks = student.marks?.science ?? null;
+
+    /* SUBJECT CHOICE RESOLUTION */
+    let choice = 'none';
+
+    if (['both', 'math', 'science'].includes((student.subjects || '').toLowerCase())) {
+      choice = student.subjects.toLowerCase();
+    } else {
+      if (mathMarks !== null && scienceMarks !== null) choice = 'both';
+      else if (mathMarks !== null) choice = 'math';
+      else if (scienceMarks !== null) choice = 'science';
+    }
+
+    /* ----------------------------------------------------
+     * DRAW BOXES BASED ON SUBJECT CHOICE
+     * -------------------------------------------------- */
+    if (choice === 'both') {
+      const startX = leftX;
+
+      drawScoreBox(startX, twoBoxWidth, 'Mathematics', mathMarks, student.rank?.math || student.rank || null);
+      drawScoreBox(
+        startX + twoBoxWidth + 3,
+        twoBoxWidth,
+        'Science',
+        scienceMarks,
+        student.rank?.science || null
+      );
+
+    } else if (choice === 'math') {
+      drawScoreBox(leftX, singleBoxWidth, 'Mathematics', mathMarks, student.rank?.math || student.rank || null);
+
+    } else if (choice === 'science') {
+      drawScoreBox(leftX, singleBoxWidth, 'Science', scienceMarks, student.rank?.science || null);
+
+    } else {
+      doc.font('Helvetica').fontSize(10).fillColor('#333');
+      doc.text('No subject performance available.', leftX, y + 40);
+    }
+
+    /* ----------------------------------------------------
+     * FOOTER
+     * -------------------------------------------------- */
+    doc
+      .font('Helvetica')
+      .fontSize(11)
+      .fillColor('#555')
+      .text("This score card is generated by Brain O Math Olympiad 2025.", 0, pageHeight - 55, {
+        width: pageWidth,
+        align: 'center'
+      });
+
+    doc.text('For any queries, contact: brainomathorg@gmail.com', 0, pageHeight - 45, {
+      width: pageWidth,
+      align: 'center'
+    });
+  }
+}
+
+module.exports = new ReportCardGenerator();
