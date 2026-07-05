@@ -4,3 +4,8 @@
 .venv
 /node_modules
 nodel_modules
+*.pyc
+*.pyo
+*.pyd
+__pycache__     
+.pem

@@ -396,6 +396,21 @@
             gap: 0.5rem;
         }
 
+        @media (min-width: 769px) {
+            .form-grid {
+                grid-template-columns: repeat(3, 1fr) 1.25fr;
+                grid-template-areas:
+                    "name class category subjects"
+                    "parent_name parent_contact . subjects";
+            }
+            .form-name { grid-area: name; }
+            .form-class { grid-area: class; }
+            .form-category { grid-area: category; }
+            .form-subjects { grid-area: subjects; }
+            .form-parent-name { grid-area: parent_name; }
+            .form-parent-contact { grid-area: parent_contact; }
+        }
+
         .form-label {
             font-size: 0.85rem;
             font-weight: 700;
@@ -2553,14 +2568,14 @@
                 <div id="studentForm" class="hidden">
                     <h3 class="form-title" id="formTitle">Add New Student</h3>
                     <div class="form-grid">
-                        <div class="form-group">
+                        <div class="form-group form-name">
                             <label class="form-label required" for="studentName">
                                 <i class="fas fa-user"></i>
                                 Student Name
                             </label>
                             <input class="form-input" id="studentName" placeholder="Enter student name" required>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group form-class">
                             <label class="form-label required" for="studentClass">
                                 <i class="fas fa-graduation-cap"></i>
                                 Class
@@ -2579,7 +2594,7 @@
                                 <option value="12">12</option>
                             </select>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group form-category">
                             <label class="form-label required" for="studentCategory">
                                 <i class="fas fa-tag"></i>
                                 Category
@@ -2587,7 +2602,7 @@
                             <input class="form-input" id="studentCategory" readonly
                                 placeholder="Auto-filled based on class">
                         </div>
-                        <div class="form-group">
+                        <div class="form-group form-subjects">
                             <label class="form-label required">
                                 <i class="fas fa-book"></i>
                                 Subjects
@@ -2598,16 +2613,14 @@
                                         value="english">
                                     <label for="subject_english">
                                         <span class="subject-name">English</span>
-                                        <span class="subject-fee">₹{{ event_config.registration_fee_per_subject
-                                            }}</span>
+                                        <span class="subject-fee">₹{{ event_config.registration_fee_per_subject }}</span>
                                     </label>
                                 </div>
                                 <div class="subject-checkbox-card">
                                     <input type="checkbox" id="subject_math" class="subject-checkbox" value="math">
                                     <label for="subject_math">
                                         <span class="subject-name">Mathematics</span>
-                                        <span class="subject-fee">₹{{ event_config.registration_fee_per_subject
-                                            }}</span>
+                                        <span class="subject-fee">₹{{ event_config.registration_fee_per_subject }}</span>
                                     </label>
                                 </div>
                                 <div class="subject-checkbox-card">
@@ -2615,30 +2628,28 @@
                                         value="science">
                                     <label for="subject_science">
                                         <span class="subject-name">Science</span>
-                                        <span class="subject-fee">₹{{ event_config.registration_fee_per_subject
-                                            }}</span>
+                                        <span class="subject-fee">₹{{ event_config.registration_fee_per_subject }}</span>
                                     </label>
                                 </div>
                                 <div class="subject-checkbox-card">
                                     <input type="checkbox" id="subject_cs" class="subject-checkbox" value="cs">
                                     <label for="subject_cs">
                                         <span class="subject-name">Computer Science</span>
-                                        <span class="subject-fee">₹{{ event_config.registration_fee_per_subject
-                                            }}</span>
+                                        <span class="subject-fee">₹{{ event_config.registration_fee_per_subject }}</span>
                                     </label>
                                 </div>
                             </div>
                             <small style="display:block; margin-top:0.35rem; color:var(--gray-500);">Select one or more
                                 subjects. Fee is ₹{{ event_config.registration_fee_per_subject }} per subject.</small>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group form-parent-name">
                             <label class="form-label" for="parentName">
                                 <i class="fas fa-user-friends"></i>
                                 Parent's Name (optional)
                             </label>
                             <input class="form-input" id="parentName" placeholder="Enter parent's name (optional)">
                         </div>
-                        <div class="form-group">
+                        <div class="form-group form-parent-contact">
                             <label class="form-label" for="parentContact">
                                 <i class="fas fa-mobile-alt"></i>
                                 Parent's Contact

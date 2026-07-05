@@ -30,8 +30,13 @@ SECRET_KEY = 'django-insecure-683)nqhjet4fd2eiaux&)n(c(gyi6u)2qpnv&rqck(60a4#ce$
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = [
+    "13.232.85.66",
+    "brainomath.online",
+    "www.brainomath.online",
+    "localhost",
+    "127.0.0.1",
+]
 
 # Application definition
 
