@@ -27,8 +27,10 @@ def student_payload(student):
         "coordinatorEmail": student.coordinator.user.email,
         "registrationId": getattr(getattr(student.coordinator, "payment", None), "registration_id", ""),
         "marks": {
+            "english": student.english_marks,
             "math": student.math_marks,
             "science": student.science_marks,
+            "cs": student.cs_marks,
         },
     }
 

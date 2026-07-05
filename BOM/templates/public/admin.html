@@ -8,6 +8,770 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
+:root {
+  --primary: #4f46e5;
+  --primary-hover: #4338ca;
+  --primary-light: #eef2ff;
+  --secondary: #64748b;
+  --bg-main: #f8fafc;
+  --bg-card: #ffffff;
+  --text-main: #0f172a;
+  --text-muted: #475569;
+  --border-color: #e2e8f0;
+  --success: #10b981;
+  --success-dark: #059669;
+  --danger: #ef4444;
+  --danger-dark: #dc2626;
+  --warning: #f59e0b;
+  --info: #06b6d4;
+  --radius-lg: 16px;
+  --radius-md: 10px;
+  --radius-sm: 6px;
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg-main);
+  color: var(--text-main);
+  min-height: 100vh;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  width: 100%;
+}
+
+/* Scrollbar Customization */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-main);
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Layout */
+.main-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* Header styling */
+.header {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem 2rem;
+  margin-bottom: 2rem;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.header h1 {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  letter-spacing: -0.025em;
+}
+
+.header h1 i {
+  font-size: 1.5rem;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* Quick Event Toggle Style */
+.event-toggle-box {
+  background: var(--primary-light);
+  border: 1px dashed var(--primary);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* Switch Styles */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+}
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #cbd5e1;
+  transition: .3s;
+  border-radius: 24px;
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .3s;
+  border-radius: 50%;
+}
+input:checked + .slider {
+  background-color: var(--primary);
+}
+input:checked + .slider:before {
+  transform: translateX(20px);
+}
+
+/* Stats Cards */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.stat-card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; width: 4px; height: 100%;
+  background: var(--primary);
+}
+
+.stat-card.success-accent::after { background: var(--success); }
+.stat-card.warning-accent::after { background: var(--warning); }
+.stat-card.info-accent::after { background: var(--info); }
+.stat-card.danger-accent::after { background: var(--danger); }
+
+.stat-info h3 {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 0.25rem;
+  color: var(--text-main);
+  letter-spacing: -0.05em;
+}
+
+.stat-info p {
+  color: var(--secondary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--primary-light);
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  transition: transform 0.3s;
+}
+
+.stat-card:hover .stat-icon {
+  transform: rotate(10deg) scale(1.1);
+}
+
+.stat-card.success-accent .stat-icon { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+.stat-card.warning-accent .stat-icon { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+.stat-card.info-accent .stat-icon { background: rgba(6, 182, 212, 0.1); color: var(--info); }
+.stat-card.danger-accent .stat-icon { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+
+/* Navigation Tabs */
+.tab-nav {
+  display: flex;
+  background: var(--bg-card);
+  padding: 0.375rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  margin-bottom: 2rem;
+  gap: 0.25rem;
+  overflow-x: auto;
+  box-shadow: var(--shadow-sm);
+}
+
+.tab-nav button {
+  background: none;
+  border: none;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--secondary);
+  cursor: pointer;
+  border-radius: var(--radius-md);
+  transition: all 0.2s;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tab-nav button:hover {
+  color: var(--primary);
+  background: var(--primary-light);
+}
+
+.tab-nav button.active {
+  background: var(--primary);
+  color: white;
+  box-shadow: var(--shadow-md);
+}
+
+/* Tab content styling */
+.tab-content {
+  display: none;
+  animation: fadeIn 0.35s ease-out;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Card layout inside tabs */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 2rem;
+}
+
+.card h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Toolbars & Controls */
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  background: var(--bg-main);
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+}
+
+.search-box {
+  position: relative;
+  flex-grow: 1;
+  max-width: 400px;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 0.625rem 1rem 0.625rem 2.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  outline: none;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.search-box input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+}
+
+.search-box i {
+  position: absolute;
+  left: 0.875rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--secondary);
+}
+
+.filter-box {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.filter-box select {
+  padding: 0.625rem 2rem 0.625rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  outline: none;
+  background-color: var(--bg-card);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1rem;
+}
+
+.filter-box select:focus {
+  border-color: var(--primary);
+}
+
+/* Custom Table Styles */
+.table-container {
+  overflow-x: auto;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 1.5rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.925rem;
+  background: var(--bg-card);
+}
+
+thead {
+  background: var(--bg-main);
+  border-bottom: 2px solid var(--border-color);
+}
+
+th {
+  padding: 1rem 1.25rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+td {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-main);
+  vertical-align: middle;
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+tbody tr:hover {
+  background-color: rgba(248, 250, 252, 0.8);
+}
+
+/* Badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.badge.pending { background: #fef3c7; color: #d97706; }
+.badge.verified { background: #d1fae5; color: #065f46; }
+.badge.rejected { background: #fee2e2; color: #991b1b; }
+.badge.processing { background: #e0f2fe; color: #0369a1; }
+
+/* Buttons styling */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+  font-family: inherit;
+  text-decoration: none;
+}
+
+.btn-primary { background: var(--primary); color: white; }
+.btn-primary:hover:not(:disabled) { background: var(--primary-hover); box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3); }
+
+.btn-secondary { background: white; border-color: var(--border-color); color: var(--text-muted); }
+.btn-secondary:hover:not(:disabled) { background: var(--bg-main); border-color: #cbd5e1; }
+
+.btn-success { background: var(--success); color: white; }
+.btn-success:hover:not(:disabled) { background: var(--success-dark); }
+
+.btn-danger { background: var(--danger); color: white; }
+.btn-danger:hover:not(:disabled) { background: var(--danger-dark); }
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Action button styles */
+.actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.actions .btn {
+  padding: 0.4rem 0.75rem;
+  font-size: 0.8rem;
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.pagination-info {
+  font-size: 0.875rem;
+  color: var(--secondary);
+  font-weight: 500;
+}
+
+.pagination-buttons {
+  display: flex;
+  gap: 0.375rem;
+}
+
+.pagination-buttons button {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  min-width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.pagination-buttons button:hover:not(:disabled) {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: var(--primary-light);
+}
+
+.pagination-buttons button.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.pagination-buttons button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Modals */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(15, 23, 42, 0.6);
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.modal.active {
+  display: flex;
+  animation: modalFadeIn 0.3s ease-out;
+}
+
+.modal-content {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  max-width: 600px;
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-xl);
+  border: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.modal-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  color: var(--secondary);
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.modal-close:hover {
+  color: var(--danger);
+}
+
+.modal-body {
+  padding: 1.5rem;
+}
+
+.modal-footer {
+  padding: 1.25rem 1.5rem;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+/* Detail info grid inside modals */
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.detail-item.full-width {
+  grid-column: span 2;
+}
+
+.detail-item label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--secondary);
+  letter-spacing: 0.05em;
+}
+
+.detail-item span {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+/* Result entry inputs inside tables */
+.res-input {
+  width: 80px;
+  padding: 0.4rem 0.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.res-input:focus {
+  border-color: var(--primary);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.15);
+}
+
+/* Custom styles for Messaging & Forms */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.form-group textarea,
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  outline: none;
+  font-family: inherit;
+  font-size: 0.95rem;
+  transition: all 0.2s;
+}
+
+.form-group textarea:focus,
+.form-group input:focus,
+.form-group select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+}
+
+/* UTR Verify Box styling */
+.utr-verify-box {
+  background: var(--bg-main);
+  border: 1.5px dashed var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.utr-verify-box p {
+  font-weight: 700;
+  font-size: 1.25rem;
+  letter-spacing: 2px;
+  color: var(--primary);
+  font-family: monospace;
+}
+
+.status-message {
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* Responsive Rules */
+@media (max-width: 900px) {
+  .header {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 1.25rem 1.5rem;
+  }
+  .header-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .detail-grid {
+    grid-template-columns: 1fr;
+  }
+  .detail-item.full-width {
+    grid-column: span 1;
+  }
+}
+
+@media (max-width: 600px) {
+  .main-container {
+    padding: 1rem;
+  }
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+  .toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .filter-box {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .filter-box select,
+  .search-box {
+    width: 100%;
+    max-width: none;
+  }
+}
+</style>
+<!--
 * {
   margin: 0;
   padding: 0;
@@ -579,6 +1343,8 @@ select:focus {
     padding: 0.75rem 1rem;
   }
 }
+-->
+-->
 </style>
 </head>
 <body>
@@ -870,8 +1636,10 @@ select:focus {
                 <th><i class="fas fa-book"></i> Subjects</th>
                 <th><i class="fas fa-school"></i> School</th>
                 <th><i class="fas fa-user-tie"></i> Coordinator</th>
-                <th><i class="fas fa-calculator"></i> Math Marks</th>
-                <th><i class="fas fa-flask"></i> Science Marks</th>
+                <th><i class="fas fa-font"></i> English</th>
+                <th><i class="fas fa-calculator"></i> Math</th>
+                <th><i class="fas fa-flask"></i> Science</th>
+                <th><i class="fas fa-desktop"></i> CS</th>
                 <th><i class="fas fa-cog"></i> Actions</th>
               </tr>
             </thead>
@@ -1634,10 +2402,20 @@ function studentPager(total) {
 }
 
 function formatSubjects(subjects) {
-  if (subjects === 'both') return 'Math & Science';
-  if (subjects === 'math') return 'Mathematics';
-  if (subjects === 'science') return 'Science';
-  return subjects;
+  if (!subjects) return 'N/A';
+  const mapping = {
+    'english': 'English',
+    'math': 'Mathematics',
+    'science': 'Science',
+    'cs': 'Computer Science',
+    'both': 'Math & Science'
+  };
+  return String(subjects)
+    .split(',')
+    .map(s => s.trim().toLowerCase())
+    .filter(Boolean)
+    .map(s => mapping[s] || s)
+    .join(', ') || 'N/A';
 }
 
 // Event listeners
@@ -1881,13 +2659,7 @@ async function loadAdmitCards() {
       const category = getCategoryFromClass(s.class);
       
       // Format subjects for display
-      let subjectsText = 'N/A';
-      if (s.subjects) {
-        if (s.subjects === 'both') subjectsText = 'Math & Science';
-        else if (s.subjects === 'math') subjectsText = 'Mathematics';
-        else if (s.subjects === 'science') subjectsText = 'Science';
-        else subjectsText = s.subjects;
-      }
+      const subjectsText = formatSubjects(s.subjects);
       
       // Format payment status for display
       let paymentStatusText = s.paymentStatus || 'pending';
@@ -2309,13 +3081,7 @@ async function exportToCSV() {
       // Use helper to determine category from class if available
       const category = (typeof getCategoryFromClass === 'function') ? getCategoryFromClass(s.class) : (s.category || 'N/A');
       // Map subjects to readable labels (same as table)
-      let subjectsText = 'N/A';
-      if (s.subjects) {
-        if (s.subjects === 'both') subjectsText = 'Math & Science';
-        else if (s.subjects === 'math') subjectsText = 'Mathematics';
-        else if (s.subjects === 'science') subjectsText = 'Science';
-        else subjectsText = s.subjects;
-      }
+      const subjectsText = formatSubjects(s.subjects);
       csv += `"${s.studentId || (s._id || '').toString().substring(0, 8)}","${s.name || ''}","${s.class || ''}","${category}","${subjectsText}","${s.rollNumber || 'N/A'}","${s.school?.schoolName || 'N/A'}","${status}","${date}"\n`;
     });
     
@@ -2374,7 +3140,7 @@ async function loadResultEntryStats() {
 
 async function loadResultsForEntry() {
   const tbody = qs('#resultTable tbody');
-  tbody.innerHTML = '<tr><td colspan="9" class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="11" class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</td></tr>';
 
   try {
     let url = `${API}/admin/results/students?page=${resultPage}`;
@@ -2389,7 +3155,7 @@ async function loadResultsForEntry() {
     if (!j.data || j.data.length === 0) {
       tbody.innerHTML = `
         <tr>
-          <td colspan="9" class="empty-state">
+          <td colspan="11" class="empty-state">
             <i class="fas fa-inbox"></i>
             <p>No students found</p>
           </td>
@@ -2401,17 +3167,19 @@ async function loadResultsForEntry() {
     j.data.forEach(s => {
       const tr = document.createElement('tr');
       
-      let subjectsText = 'N/A';
-      if (s.subjects) {
-        if (s.subjects === 'both') subjectsText = 'Math & Science';
-        else if (s.subjects === 'math') subjectsText = 'Mathematics';
-        else if (s.subjects === 'science') subjectsText = 'Science';
-        else subjectsText = s.subjects;
-      }
+      const subjectsText = formatSubjects(s.subjects);
+      const activeSubs = String(s.subjects || '').split(',').map(sub => sub.trim().toLowerCase());
 
+      const englishMarks = s.marks?.english !== undefined && s.marks?.english !== null ? s.marks.english : '';
       const mathMarks = s.marks?.math !== undefined && s.marks?.math !== null ? s.marks.math : '';
       const scienceMarks = s.marks?.science !== undefined && s.marks?.science !== null ? s.marks.science : '';
+      const csMarks = s.marks?.cs !== undefined && s.marks?.cs !== null ? s.marks.cs : '';
       
+      const hasEnglish = activeSubs.includes('english');
+      const hasMath = activeSubs.includes('math') || activeSubs.includes('both');
+      const hasScience = activeSubs.includes('science') || activeSubs.includes('both');
+      const hasCs = activeSubs.includes('cs');
+
       tr.innerHTML = `
         <td><span style="font-family: monospace; font-weight: bold; color: #3b82f6;">${s.rollNumber || 'N/A'}</span></td>
         <td><strong>${s.name}</strong></td>
@@ -2420,13 +3188,23 @@ async function loadResultsForEntry() {
         <td>${s.schoolName || 'N/A'}</td>
         <td>${s.coordinatorName || 'N/A'}</td>
         <td>
-          ${s.subjects === 'math' || s.subjects === 'both' ? 
-            `<input type="number" id="mathMarks_${s._id}" class="marks-input" min="0" max="60" value="${mathMarks}" placeholder="0-60" style="width: 80px; padding: 6px; border: 1px solid #cbd5e0; border-radius: 4px;">` 
+          ${hasEnglish ? 
+            `<input type="number" id="englishMarks_${s._id}" class="marks-input" min="0" max="60" value="${englishMarks}" placeholder="0-60" style="width: 70px; padding: 6px; border: 1px solid #cbd5e0; border-radius: 4px;">` 
             : `<span style="color: #999;">N/A</span>`}
         </td>
         <td>
-          ${s.subjects === 'science' || s.subjects === 'both' ? 
-            `<input type="number" id="scienceMarks_${s._id}" class="marks-input" min="0" max="60" value="${scienceMarks}" placeholder="0-60" style="width: 80px; padding: 6px; border: 1px solid #cbd5e0; border-radius: 4px;">` 
+          ${hasMath ? 
+            `<input type="number" id="mathMarks_${s._id}" class="marks-input" min="0" max="60" value="${mathMarks}" placeholder="0-60" style="width: 70px; padding: 6px; border: 1px solid #cbd5e0; border-radius: 4px;">` 
+            : `<span style="color: #999;">N/A</span>`}
+        </td>
+        <td>
+          ${hasScience ? 
+            `<input type="number" id="scienceMarks_${s._id}" class="marks-input" min="0" max="60" value="${scienceMarks}" placeholder="0-60" style="width: 70px; padding: 6px; border: 1px solid #cbd5e0; border-radius: 4px;">` 
+            : `<span style="color: #999;">N/A</span>`}
+        </td>
+        <td>
+          ${hasCs ? 
+            `<input type="number" id="csMarks_${s._id}" class="marks-input" min="0" max="60" value="${csMarks}" placeholder="0-60" style="width: 70px; padding: 6px; border: 1px solid #cbd5e0; border-radius: 4px;">` 
             : `<span style="color: #999;">N/A</span>`}
         </td>
         <td>
@@ -2545,23 +3323,38 @@ async function loadResultsForEntry() {
 
 async function saveStudentMarks(studentId) {
   try {
+    const englishInput = qs(`#englishMarks_${studentId}`);
     const mathInput = qs(`#mathMarks_${studentId}`);
     const scienceInput = qs(`#scienceMarks_${studentId}`);
+    const csInput = qs(`#csMarks_${studentId}`);
 
+    const englishMarks = englishInput ? (englishInput.value === '' ? null : parseInt(englishInput.value)) : undefined;
     const mathMarks = mathInput ? (mathInput.value === '' ? null : parseInt(mathInput.value)) : undefined;
     const scienceMarks = scienceInput ? (scienceInput.value === '' ? null : parseInt(scienceInput.value)) : undefined;
+    const csMarks = csInput ? (csInput.value === '' ? null : parseInt(csInput.value)) : undefined;
 
     // Validate marks
-    if (mathMarks !== undefined && mathMarks !== null) {
-      if (mathMarks < 0 || mathMarks > 100) {
-        alert('Math marks must be between 0 and 100');
+    if (englishMarks !== undefined && englishMarks !== null) {
+      if (englishMarks < 0 || englishMarks > 60) {
+        alert('English marks must be between 0 and 60');
         return;
       }
     }
-
+    if (mathMarks !== undefined && mathMarks !== null) {
+      if (mathMarks < 0 || mathMarks > 60) {
+        alert('Math marks must be between 0 and 60');
+        return;
+      }
+    }
     if (scienceMarks !== undefined && scienceMarks !== null) {
-      if (scienceMarks < 0 || scienceMarks > 100) {
-        alert('Science marks must be between 0 and 100');
+      if (scienceMarks < 0 || scienceMarks > 60) {
+        alert('Science marks must be between 0 and 60');
+        return;
+      }
+    }
+    if (csMarks !== undefined && csMarks !== null) {
+      if (csMarks < 0 || csMarks > 60) {
+        alert('Computer Science marks must be between 0 and 60');
         return;
       }
     }
@@ -2570,8 +3363,10 @@ async function saveStudentMarks(studentId) {
       method: 'PUT',
       headers: headers(),
       body: JSON.stringify({
+        englishMarks: englishMarks,
         mathMarks: mathMarks,
-        scienceMarks: scienceMarks
+        scienceMarks: scienceMarks,
+        csMarks: csMarks
       })
     });
 
@@ -2605,29 +3400,33 @@ async function saveAllMarksOnCurrentPage() {
 
     rows.forEach(row => {
       // Find all input fields in this row
+      const englishInput = row.querySelector('input[id*="englishMarks_"]');
       const mathInput = row.querySelector('input[id*="mathMarks_"]');
       const scienceInput = row.querySelector('input[id*="scienceMarks_"]');
+      const csInput = row.querySelector('input[id*="csMarks_"]');
 
-      if (mathInput || scienceInput) {
-        // Extract student ID from input ID (format: mathMarks_[studentId] or scienceMarks_[studentId])
+      if (englishInput || mathInput || scienceInput || csInput) {
         let studentId = null;
-        if (mathInput) {
-          studentId = mathInput.id.replace('mathMarks_', '');
-        } else if (scienceInput) {
-          studentId = scienceInput.id.replace('scienceMarks_', '');
-        }
+        if (englishInput) studentId = englishInput.id.replace('englishMarks_', '');
+        else if (mathInput) studentId = mathInput.id.replace('mathMarks_', '');
+        else if (scienceInput) studentId = scienceInput.id.replace('scienceMarks_', '');
+        else if (csInput) studentId = csInput.id.replace('csMarks_', '');
 
         if (studentId) {
+          const englishMarks = englishInput ? (englishInput.value === '' ? null : parseInt(englishInput.value)) : undefined;
           const mathMarks = mathInput ? (mathInput.value === '' ? null : parseInt(mathInput.value)) : undefined;
           const scienceMarks = scienceInput ? (scienceInput.value === '' ? null : parseInt(scienceInput.value)) : undefined;
+          const csMarks = csInput ? (csInput.value === '' ? null : parseInt(csInput.value)) : undefined;
 
           // Only add if at least one mark was entered
-          if (mathMarks !== undefined || scienceMarks !== undefined) {
+          if (englishMarks !== undefined || mathMarks !== undefined || scienceMarks !== undefined || csMarks !== undefined) {
             hasAnyMarks = true;
             students.push({
               studentId,
+              englishMarks,
               mathMarks,
-              scienceMarks
+              scienceMarks,
+              csMarks
             });
           }
         }
@@ -2641,15 +3440,27 @@ async function saveAllMarksOnCurrentPage() {
 
     // Validate all marks before sending
     for (const student of students) {
+      if (student.englishMarks !== null && student.englishMarks !== undefined) {
+        if (student.englishMarks < 0 || student.englishMarks > 60) {
+          alert(`English marks for one student must be between 0 and 60`);
+          return;
+        }
+      }
       if (student.mathMarks !== null && student.mathMarks !== undefined) {
-        if (student.mathMarks < 0 || student.mathMarks > 100) {
-          alert(`Math marks for one student must be between 0 and 100`);
+        if (student.mathMarks < 0 || student.mathMarks > 60) {
+          alert(`Math marks for one student must be between 0 and 60`);
           return;
         }
       }
       if (student.scienceMarks !== null && student.scienceMarks !== undefined) {
-        if (student.scienceMarks < 0 || student.scienceMarks > 100) {
-          alert(`Science marks for one student must be between 0 and 100`);
+        if (student.scienceMarks < 0 || student.scienceMarks > 60) {
+          alert(`Science marks for one student must be between 0 and 60`);
+          return;
+        }
+      }
+      if (student.csMarks !== null && student.csMarks !== undefined) {
+        if (student.csMarks < 0 || student.csMarks > 60) {
+          alert(`Computer Science marks for one student must be between 0 and 60`);
           return;
         }
       }
@@ -2763,13 +3574,8 @@ async function loadStudentsForEditing() {
     j.data.forEach(s => {
       const tr = document.createElement('tr');
       
-      let subjectsText = 'N/A';
-      if (s.subjects) {
-        if (s.subjects === 'both') subjectsText = 'Math & Science';
-        else if (s.subjects === 'math') subjectsText = 'Mathematics';
-        else if (s.subjects === 'science') subjectsText = 'Science';
-        else subjectsText = s.subjects;
-      }
+      // Format subjects for display
+      const subjectsText = formatSubjects(s.subjects);
 
       tr.innerHTML = `
         <td><span style="font-family: monospace; font-weight: bold; color: #3b82f6;">${s.rollNumber || 'N/A'}</span></td>

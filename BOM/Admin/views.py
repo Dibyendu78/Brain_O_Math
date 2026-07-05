@@ -126,7 +126,15 @@ def api_students(request):
 def api_marks(request, student_id=None):
     data = _body(request)
     if student_id:
-        students = [{"studentId": student_id, "mathMarks": data.get("mathMarks"), "scienceMarks": data.get("scienceMarks")}]
+        students = [
+            {
+                "studentId": student_id,
+                "englishMarks": data.get("englishMarks"),
+                "mathMarks": data.get("mathMarks"),
+                "scienceMarks": data.get("scienceMarks"),
+                "csMarks": data.get("csMarks"),
+            }
+        ]
     else:
         students = data.get("students", [])
 
@@ -136,11 +144,22 @@ def api_marks(request, student_id=None):
             student = Student.objects.get(id=row.get("studentId"))
         except Student.DoesNotExist:
             continue
+        student.english_marks = _optional_int(row.get("englishMarks"))
         student.math_marks = _optional_int(row.get("mathMarks"))
         student.science_marks = _optional_int(row.get("scienceMarks"))
-        student.save(update_fields=["math_marks", "science_marks", "updated_at"])
+        student.cs_marks = _optional_int(row.get("csMarks"))
+        student.save(update_fields=["english_marks", "math_marks", "science_marks", "cs_marks", "updated_at"])
         success_count += 1
-    return JsonResponse({"success": True, "data": {"successCount": success_count, "total": len(students), "failureCount": len(students) - success_count}})
+    return JsonResponse(
+        {
+            "success": True,
+            "data": {
+                "successCount": success_count,
+                "total": len(students),
+                "failureCount": len(students) - success_count,
+            },
+        }
+    )
 
 
 @csrf_exempt

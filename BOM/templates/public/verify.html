@@ -5,44 +5,231 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Invigilator - Student Verify</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-dp6rqX3JxvFecYI3PzIxw3c6GjzDsQ2yoT3y5yHXEo5/Acg5Rk3tvd3u4qn+g7wX2lH6xvz6vX0Do1WZK3L5bQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
-    :root{--bg:#f5f7fb;--card:#ffffff;--muted:#6b7280;--accent:#1e3a8a;--accent-2:#3b82f6}
-    body{font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);margin:0;display:flex;min-height:100vh;align-items:center;justify-content:center;padding:28px}
-    .container{max-width:900px;width:100%}
-    .card{background:var(--card);border-radius:12px;box-shadow:0 6px 20px rgba(20,25,40,0.08);padding:22px}
-    header{display:flex;align-items:center;gap:16px}
-    .logo{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;overflow:hidden}
-    h1{font-size:18px;margin:0}
-    p.lead{margin:6px 0 0;color:var(--muted)}
-    .controls{margin-top:18px;display:flex;gap:10px}
-    input[type=text]{flex:1;padding:10px;border:1px solid #e6eefb;border-radius:8px;font-size:15px}
-    button{background:var(--accent-2);color:#fff;padding:10px 14px;border:none;border-radius:8px;cursor:pointer}
-    .result{margin-top:18px}
-    .grid{display:grid;grid-template-columns:1fr 320px;gap:18px}
-    .info{padding:14px;border-radius:10px;border:1px solid #eef2ff}
-    .info h2{margin:0 0 8px;font-size:16px;color:var(--accent)}
-    .row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed #f1f5f9}
-    .row:last-child{border-bottom:none}
-    .label{color:var(--muted);font-size:13px}
-    .value{font-weight:600}
-    .school-card{padding:14px;border-radius:10px;background:linear-gradient(180deg,#fff,#fbfdff);border:1px solid #eef2ff}
-    .empty{opacity:0.6;color:var(--muted)}
-    footer{margin-top:18px;text-align:right;color:var(--muted);font-size:13px}
-    @media(max-width:780px){.grid{grid-template-columns:1fr;}.school-card{order:2}}
+    :root {
+      color-scheme: light;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --muted: #475569;
+      --text: #0f172a;
+      --primary: #2563eb;
+      --primary-light: #eff6ff;
+      --border: #e2e8f0;
+      --radius: 16px;
+      --radius-sm: 10px;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      font-family: 'Inter', sans-serif;
+      background: radial-gradient(circle at 10% 20%, rgba(37, 99, 235, 0.05), transparent 45%),
+                  radial-gradient(circle at 90% 80%, rgba(79, 70, 229, 0.04), transparent 45%),
+                  var(--bg);
+      margin: 0;
+      display: flex;
+      min-height: 100vh;
+      align-items: center;
+      justify-content: center;
+      padding: 28px;
+      position: relative;
+      overflow-x: hidden;
+      width: 100%;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(rgba(148, 163, 184, 0.03) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(148, 163, 184, 0.03) 1px, transparent 1px);
+      background-size: 24px 24px;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .container {
+      max-width: 820px;
+      width: 100%;
+      position: relative;
+      z-index: 2;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: 0 20px 40px rgba(15, 23, 42, 0.04);
+      border: 1px solid var(--border);
+      padding: 2.2rem;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1.5rem;
+    }
+
+    .logo {
+      width: 56px;
+      height: 56px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      overflow: hidden;
+    }
+
+    h1 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+
+    .controls {
+      margin-bottom: 1.5rem;
+    }
+    
+    .controls h2 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .result {
+      margin-top: 1rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 1.5rem;
+    }
+
+    .info {
+      padding: 1.5rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: #ffffff;
+    }
+
+    .info h2 {
+      margin-top: 0;
+      margin-bottom: 1.25rem;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--primary);
+      letter-spacing: -0.01em;
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px dashed var(--border);
+      font-size: 0.92rem;
+      gap: 16px;
+    }
+
+    .row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .label {
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .value {
+      font-weight: 600;
+      color: var(--text);
+      text-align: right;
+    }
+
+    .school-card {
+      padding: 1.5rem;
+      border-radius: var(--radius-sm);
+      background: var(--primary-light);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 1.25rem;
+    }
+    
+    .school-card h3 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .empty {
+      color: var(--muted);
+      font-size: 0.92rem;
+      font-style: italic;
+      text-align: center;
+      padding: 2rem 1rem;
+    }
+
+    footer {
+      margin-top: 2rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+      font-weight: 500;
+      border-top: 1px solid var(--border);
+      padding-top: 1.5rem;
+    }
+
+    @media (max-width: 780px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+      .school-card {
+        order: 2;
+      }
+      .card {
+        padding: 1.5rem;
+      }
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="card">
       <header>
-        <div class="logo"><img src="{% static 'public/logo.jpg' %}" alt="Brain O Math Logo" style="width:100%;height:100%;object-fit:contain;border-radius:50%;"></div>
+        <div class="logo">
+          <img src="{% static 'public/logo.jpg' %}" alt="Brain O Math Logo" style="width:100%;height:100%;object-fit:cover;">
+        </div>
         <div>
-          <h1>Invigilator — Student Verification</h1>
+          <h1>Invigilator Verification</h1>
         </div>
       </header>
 
       <div class="controls">
-        <h1>Student Infromation</h1>
+        <h2><i class="fas fa-id-card"></i> Student Information</h2>
       </div>
 
       <div class="result" id="result">
@@ -56,20 +243,17 @@
         </div>
       </div>
 
-        <footer>
-            &copy; 2025 Brain-O-Math. All rights reserved.  
-        </footer>
+      <footer>
+        &copy; {{ event_config.event_year }} Brain-O-Math. All rights reserved.  
+      </footer>
     </div>
   </div>
 
   <script>
-    //here
-    
     const q = new URLSearchParams(location.search);
     const infobox = document.getElementById('infobox');
     const schoolbox = document.getElementById('schoolbox');
 
-    // Auto-load data from URL parameter (sent by QR code)
     const dataFromUrl = q.get('data');
     if (dataFromUrl) {
       try {
@@ -94,25 +278,24 @@
         <div class="row"><div class="label">Subject choice</div><div class="value">${escapeHtml(d.subjects || '—')}</div></div>
         <div class="row"><div class="label">School</div><div class="value">${escapeHtml(d.schoolName || '—')}</div></div>
         <div class="row"><div class="label">Coordinator</div><div class="value">${escapeHtml(d.coordinatorName || '—')}</div></div>
-        
       `;
 
       schoolbox.innerHTML = `
-        <h3 style="margin-top:0;color:var(--accent)">${escapeHtml(d.schoolName || '—')}</h3>
-        <div style="font-size:13px;color:var(--muted)">Coordinator: <strong>${escapeHtml(d.coordinatorName || '—')}</strong></div>
-        <div style="margin-top:8px">Coordinator Email: <a href="mailto:${escapeHtml(d.coordinatorEmail || '')}">${escapeHtml(d.coordinatorEmail || '—')}</a></div>
-        <hr style="margin:12px 0;border:none;border-top:1px solid #f1f5f9">
-        <div>Registration ID: <strong>${escapeHtml(d.registrationId || '—')}</strong></div>
+        <div>
+          <h3 style="margin-bottom:8px;">${escapeHtml(d.schoolName || '—')}</h3>
+          <div style="font-size:13px;color:var(--muted)">Coordinator: <strong style="color:var(--text);">${escapeHtml(d.coordinatorName || '—')}</strong></div>
+          <div style="margin-top:6px;font-size:13px;color:var(--muted)">Email: <a href="mailto:${escapeHtml(d.coordinatorEmail || '')}" style="color:var(--primary);text-decoration:none;font-weight:500;">${escapeHtml(d.coordinatorEmail || '—')}</a></div>
+        </div>
+        <div style="border-top:1px solid var(--border);padding-top:12px;font-size:13px;color:var(--muted)">
+          Registration ID: <strong style="color:var(--text);">${escapeHtml(d.registrationId || '—')}</strong>
+        </div>
       `;
     }
 
     function decodeBase64UrlJson(s) {
-      // base64url -> base64
       s = s.replace(/-/g, '+').replace(/_/g, '/');
       while (s.length % 4) s += '=';
-      // decode base64 to binary string
       const bin = atob(s);
-      // convert binary string to UTF-8 string
       let utf8 = '';
       for (let i = 0; i < bin.length; i++) {
         utf8 += String.fromCharCode(bin.charCodeAt(i));
@@ -120,7 +303,6 @@
       try {
         return JSON.parse(utf8);
       } catch (e) {
-        // fallback using decodeURIComponent for multibyte chars
         try {
           const decoded = decodeURIComponent(escape(bin));
           return JSON.parse(decoded);

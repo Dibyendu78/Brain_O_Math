@@ -8,15 +8,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>Brain-O-Math | Mathematics/Science Olympiad</title>
-    <meta name="description"
-        content="Brain-O-Math for Math / Science Olympiads and registrations. Join now!" />
-    <meta name="keywords"
-        content="Brain-O-Math, Math Olympiad, Science / Math Competition,Inter School Olympiad,Science / Mathematics " />
-    <link rel="canonical" href="https://brainomath.online/" />
 
-    <meta property="og:title" content="Brain-O-Math Olympiad" />
-    <meta property="og:description"
-        content="Register now for the Brain-O-Math Olympiad — an interactive math/science competition platform for students." />
+    <meta name="description" content="Official website for the Brain-O-Math Olympiad. Participate in Mathematics, Science, English, and Computer Science assessments." />
+    <meta name="keywords" content="Brain-O-Math, Mathematics Olympiad, Science Olympiad, English Olympiad, Computer Science Olympiad, School competition" />
+    <meta name="author" content="Brain-O-Math" />
+
+    <meta property="og:title" content="Brain-O-Math | Mathematics/Science Olympiad" />
+    <meta property="og:description" content="Official website for the Brain-O-Math Olympiad. Participate in Mathematics, Science, English, and Computer Science assessments." />
     <meta property="og:url" content="https://brainomath.online" />
     <meta property="og:type" content="website" />
     <meta property="og:image" content="{% static 'public/favicon-512.png' %}" />
@@ -42,9 +40,39 @@
     </script>
 
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+        @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css');
+
         :root {
             color-scheme: light;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --primary-light: #eff6ff;
+            --accent: #4f46e5;
+            --accent-light: #e0e7ff;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --bg-main: #f8fafc;
+            --bg-card: #ffffff;
+            --border-color: #e2e8f0;
+            --border-hover: #cbd5e1;
+            
+            --font-display: 'Plus Jakarta Sans', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            --radius-full: 9999px;
+            
+            --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            --shadow-premium: 0 25px 50px -12px rgba(15, 23, 42, 0.08);
+            
+            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             scroll-behavior: smooth;
         }
 
@@ -52,12 +80,15 @@
             box-sizing: border-box;
         }
 
-        body {
+        html, body {
             margin: 0;
             min-height: 100vh;
-            background: #f5f7fb;
-            color: #1f2937;
+            background: var(--bg-main);
+            color: var(--text-main);
+            font-family: var(--font-body);
             line-height: 1.6;
+            overflow-x: hidden;
+            width: 100%;
         }
 
         img {
@@ -81,43 +112,57 @@
             left: 0;
             width: 100%;
             height: 4px;
-            background: linear-gradient(90deg, #2563eb 0%, #38bdf8 100%);
-            opacity: 0.17;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
+            opacity: 0.8;
             z-index: 9999;
         }
 
         .site-alert {
-            background: #eef2ff;
-            color: #1e293b;
-            border-bottom: 1px solid #c7d2fe;
+            background: linear-gradient(90deg, #eff6ff 0%, #f5f3ff 100%);
+            color: var(--text-main);
+            border-bottom: 1px solid var(--border-color);
             padding: 14px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             gap: 20px;
+            font-weight: 500;
         }
 
         .site-alert .alert-text {
             font-size: 0.95rem;
             max-width: 92%;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .site-alert .alert-text i {
+            color: var(--primary);
         }
 
         .site-alert .close-btn {
             background: transparent;
             border: none;
-            color: #1f2937;
+            color: var(--text-muted);
             font-size: 1.5rem;
             line-height: 1;
             cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+        
+        .site-alert .close-btn:hover {
+            color: var(--text-main);
         }
 
         header {
             position: sticky;
             top: 0;
             z-index: 900;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid #e2e8f0;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+            transition: var(--transition-smooth);
         }
 
         .nav-inner {
@@ -125,43 +170,53 @@
             align-items: center;
             justify-content: space-between;
             gap: 24px;
-            padding: 18px 0;
+            padding: 14px 0;
         }
 
         .brand {
             display: inline-flex;
             align-items: center;
-            gap: 16px;
+            gap: 14px;
         }
 
         .brand img {
-            width: 56px;
-            height: 56px;
-            border-radius: 14px;
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
             object-fit: cover;
-            box-shadow: 0 14px 40px rgba(15, 23, 42, 0.08);
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition-smooth);
+        }
+        
+        .brand:hover img {
+            transform: scale(1.05);
+            box-shadow: var(--shadow-md);
         }
 
         .brand-text {
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 2px;
         }
 
         .brand-text span {
-            font-size: 1.2rem;
-            font-weight: 700;
+            font-family: var(--font-display);
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--text-main);
+            letter-spacing: -0.02em;
         }
 
         .brand-text small {
-            color: #475569;
-            font-size: 0.88rem;
+            color: var(--text-muted);
+            font-size: 0.82rem;
+            font-weight: 500;
         }
 
         .nav-links {
             display: flex;
             flex-wrap: wrap;
-            gap: 14px;
+            gap: 8px;
             align-items: center;
             list-style: none;
             margin: 0;
@@ -173,30 +228,34 @@
         }
 
         .nav-links a {
-            color: #334155;
-            font-size: 0.95rem;
-            font-weight: 500;
-            padding: 10px 14px;
-            border-radius: 10px;
-            transition: background 0.25s ease, transform 0.25s ease;
+            color: var(--text-muted);
+            font-size: 0.92rem;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: var(--radius-md);
+            transition: var(--transition-smooth);
         }
 
         .nav-links a:hover,
         .nav-links a:focus-visible {
-            background: #e2e8f0;
-            transform: translateY(-1px);
+            color: var(--primary);
+            background: var(--primary-light);
         }
 
-        .nav-action {
-            background: #2563eb;
+        .nav-links a.nav-action {
+            background: var(--primary);
             color: #ffffff;
-            padding: 11px 20px;
-            border-radius: 999px;
+            padding: 10px 20px;
+            border-radius: var(--radius-full);
             font-weight: 600;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
         }
 
-        .nav-action:hover {
-            background: #1d4ed8;
+        .nav-links a.nav-action:hover {
+            background: var(--primary-hover);
+            color: #ffffff;
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.2);
+            transform: translateY(-1px);
         }
 
         .hamburger {
@@ -205,27 +264,51 @@
             background: transparent;
             cursor: pointer;
             padding: 10px;
+            border-radius: var(--radius-sm);
+            transition: var(--transition-smooth);
+        }
+        
+        .hamburger:hover {
+            background: var(--border-color);
         }
 
         .hamburger span {
             display: block;
-            width: 24px;
+            width: 20px;
             height: 2px;
-            background: #334155;
-            margin: 5px 0;
-            border-radius: 999px;
+            background: var(--text-main);
+            margin: 4px 0;
+            border-radius: var(--radius-full);
+            transition: var(--transition-smooth);
         }
 
         .hero {
-            background: linear-gradient(180deg, #e0efff 0%, #f8fafc 100%);
-            padding: 70px 0 50px;
+            background: linear-gradient(135deg, rgba(248, 250, 252, 0.95) 0%, rgba(241, 245, 249, 0.90) 100%),
+                        url('https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            padding: 90px 0 70px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: linear-gradient(rgba(148, 163, 184, 0.04) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(148, 163, 184, 0.04) 1px, transparent 1px);
+            background-size: 24px 24px;
+            pointer-events: none;
         }
 
         .hero-grid {
             display: grid;
-            grid-template-columns: 1.3fr 0.9fr;
-            gap: 32px;
+            grid-template-columns: 1.25fr 0.95fr;
+            gap: 48px;
             align-items: center;
+            position: relative;
+            z-index: 2;
         }
 
         .hero-heading {
@@ -233,24 +316,29 @@
         }
 
         .hero-heading h1 {
-            font-size: clamp(2.5rem, 4vw, 3.6rem);
-            line-height: 1.05;
-            margin-bottom: 20px;
+            font-family: var(--font-display);
+            font-size: clamp(2.4rem, 4.5vw, 3.5rem);
+            line-height: 1.1;
+            margin-top: 0;
+            margin-bottom: 24px;
             letter-spacing: -0.04em;
+            color: var(--text-main);
+            font-weight: 800;
         }
 
         .hero-heading p {
             margin: 0;
-            max-width: 620px;
-            color: #475569;
+            max-width: 580px;
+            color: var(--text-muted);
             font-size: 1.05rem;
+            line-height: 1.7;
         }
 
         .hero-actions {
             display: flex;
             flex-wrap: wrap;
-            gap: 14px;
-            margin: 30px 0 18px;
+            gap: 16px;
+            margin: 36px 0 24px;
         }
 
         .cta-button {
@@ -258,23 +346,34 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
-            background: #2563eb;
+            background: var(--primary);
             color: #fff;
-            padding: 16px 24px;
-            border-radius: 999px;
+            padding: 14px 28px;
+            border-radius: var(--radius-full);
             font-weight: 700;
-            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.2);
+            transition: var(--transition-smooth);
         }
 
         .cta-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 18px 45px rgba(37, 99, 235, 0.18);
+            box-shadow: 0 8px 24px rgba(37, 99, 235, 0.3);
+            background: var(--primary-hover);
         }
 
         .cta-button.secondary {
+            background: #ffffff;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .cta-button.secondary:hover {
             background: #f8fafc;
-            color: #1e293b;
-            border: 1px solid #cbd5e1;
+            border-color: var(--border-hover);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
         }
 
         .hero-links {
@@ -285,8 +384,18 @@
         }
 
         .text-link {
-            color: #2563eb;
+            color: var(--primary);
             font-weight: 600;
+            font-size: 0.95rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: var(--transition-smooth);
+        }
+        
+        .text-link:hover {
+            color: var(--primary-hover);
+            transform: translateX(2px);
         }
 
         .hero-panel {
@@ -295,47 +404,85 @@
         }
 
         .panel-card {
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-radius: 24px;
-            padding: 28px;
-            box-shadow: 0 18px 55px rgba(15, 23, 42, 0.08);
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-xl);
+            padding: 32px;
+            box-shadow: var(--shadow-lg);
         }
 
         .panel-card h2 {
-            margin: 0 0 14px;
-            font-size: 1.3rem;
+            margin: 0 0 20px;
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .panel-card ul {
+            list-style: none;
+            padding: 0;
             margin: 0;
-            padding-left: 18px;
-            color: #475569;
-            list-style: disc outside;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .panel-card li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px dashed var(--border-color);
+            font-size: 0.92rem;
+            color: var(--text-muted);
+            gap: 16px;
+        }
+
+        .panel-card li:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        
+        .date-badge {
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 4px 10px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 0.85rem;
+            white-space: nowrap;
         }
 
         .section {
-            padding: 80px 0;
+            padding: 90px 0;
         }
 
         .section-heading {
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            margin-bottom: 40px;
+            gap: 8px;
+            margin-bottom: 48px;
         }
 
         .section-heading .section-label {
-            color: #2563eb;
-            font-size: 0.9rem;
+            color: var(--primary);
+            font-size: 0.85rem;
             font-weight: 700;
-            letter-spacing: 0.15em;
+            letter-spacing: 0.12em;
             text-transform: uppercase;
         }
 
         .section-heading h2 {
             margin: 0;
-            font-size: clamp(2rem, 3vw, 2.8rem);
+            font-family: var(--font-display);
+            font-size: clamp(1.8rem, 3.2vw, 2.5rem);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            color: var(--text-main);
         }
 
         .about-grid,
@@ -346,13 +493,19 @@
         }
 
         .about-grid {
-            grid-template-columns: 1.5fr 1fr;
+            grid-template-columns: 1.25fr 1fr;
+            align-items: start;
         }
 
         .about-copy {
-            color: #475569;
-            font-size: 1rem;
+            color: var(--text-muted);
+            font-size: 1.05rem;
             line-height: 1.8;
+        }
+        
+        .about-copy p {
+            margin-top: 0;
+            margin-bottom: 20px;
         }
 
         .feature-list {
@@ -363,27 +516,42 @@
         .feature-item,
         .info-card,
         .award-card {
-            padding: 24px;
-            border-radius: 20px;
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 10px 28px rgba(15, 23, 42, 0.06);
+            padding: 28px;
+            border-radius: var(--radius-lg);
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition-smooth);
+        }
+        
+        .feature-item:hover,
+        .info-card:hover,
+        .award-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-premium);
+            border-color: rgba(37, 99, 235, 0.2);
         }
 
         .feature-item h3,
         .info-card h3,
         .award-card h3 {
             margin: 0 0 12px;
-            font-size: 1.1rem;
-            color: #0f172a;
+            font-family: var(--font-display);
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .feature-item p,
         .info-card p,
         .award-card p {
             margin: 0;
-            color: #475569;
-            font-size: 0.98rem;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
         }
 
         .detail-grid {
@@ -391,19 +559,40 @@
         }
 
         .info-card ul {
-            margin: 0;
-            padding-left: 18px;
-            color: #475569;
-            list-style: disc outside;
+            margin: 16px 0 0;
+            padding-left: 0;
+            color: var(--text-muted);
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .info-card li {
+            position: relative;
+            padding-left: 20px;
+            font-size: 0.92rem;
+        }
+        
+        .info-card li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 8px;
+            width: 6px;
+            height: 6px;
+            border-radius: var(--radius-full);
+            background: var(--primary);
         }
 
         .info-card strong,
         .award-card strong {
-            color: #0f172a;
+            color: var(--text-main);
+            font-weight: 600;
         }
 
         .award-grid {
-            grid-template-columns: repeat(3, minmax(0, 1fr));
+            grid-template-columns: 1.25fr 1fr 1fr 1fr;
         }
 
         .award-card {
@@ -413,28 +602,82 @@
             justify-content: space-between;
         }
 
+        .about-image-card {
+            margin-top: 24px;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            height: 260px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .about-image-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition-smooth);
+        }
+
+        .about-image-card:hover img {
+            transform: scale(1.03);
+        }
+
+        .award-image-card {
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            min-height: 220px;
+        }
+
+        .award-image-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition-smooth);
+        }
+
+        .award-image-card:hover img {
+            transform: scale(1.03);
+        }
+
         .footer {
-            background: #1e293b;
-            color: #e2e8f0;
-            padding: 40px 0 60px;
+            background: #0f172a;
+            color: #cbd5e1;
+            padding: 60px 0 70px;
+            border-top: 1px solid #1e293b;
         }
 
         .footer .footer-content {
             display: grid;
-            grid-template-columns: 1.5fr 1fr;
-            gap: 28px;
+            grid-template-columns: 1.25fr 1fr;
+            gap: 48px;
             align-items: start;
         }
 
         .footer h3 {
-            margin: 0 0 18px;
-            font-size: 1.2rem;
+            margin: 0 0 20px;
+            font-family: var(--font-display);
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #ffffff;
         }
 
-        .footer p,
+        .footer p {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
         .footer a {
             color: #cbd5e1;
-            font-size: 0.98rem;
+            font-size: 0.95rem;
+            transition: var(--transition-smooth);
+        }
+        
+        .footer a:hover {
+            color: #ffffff;
+            text-decoration: underline;
         }
 
         .footer-list {
@@ -442,50 +685,61 @@
             padding: 0;
             margin: 0;
             display: grid;
-            gap: 12px;
+            gap: 10px;
         }
 
         .footer-list li a {
-            color: #f8fafc;
+            color: #94a3b8;
+            font-weight: 500;
+        }
+        
+        .footer-list li a:hover {
+            color: #ffffff;
+            padding-left: 2px;
         }
 
         .footer-note {
             margin-top: 24px;
-            color: #94a3b8;
-            font-size: 0.92rem;
+            color: #64748b;
+            font-size: 0.85rem;
+            border-top: 1px solid #1e293b;
+            padding-top: 24px;
         }
 
         .wa-help,
         .wa-fab {
             position: fixed;
-            right: 20px;
+            right: 24px;
             z-index: 980;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            border-radius: 999px;
+            border-radius: var(--radius-full);
             text-decoration: none;
-            transition: transform 0.3s ease;
+            transition: var(--transition-smooth);
         }
 
         .wa-help {
-            bottom: 104px;
+            bottom: 96px;
             width: auto;
-            min-width: 180px;
-            padding: 14px 18px;
+            padding: 12px 24px;
             background: #0f172a;
             color: #f8fafc;
-            font-size: 0.95rem;
-            border: 1px solid rgba(148, 163, 184, 0.2);
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: var(--shadow-lg);
+            gap: 8px;
         }
 
         .wa-fab {
-            bottom: 20px;
-            width: 54px;
-            height: 54px;
+            bottom: 24px;
+            width: 56px;
+            height: 56px;
             background: #25d366;
-            border: 1px solid rgba(0, 0, 0, 0.08);
-            padding: 10px;
+            border: none;
+            padding: 14px;
+            box-shadow: 0 4px 16px rgba(37, 211, 102, 0.3);
         }
 
         .wa-fab img {
@@ -494,14 +748,34 @@
             filter: brightness(0) invert(1);
         }
 
-        .wa-help:hover,
-        .wa-fab:hover {
+        .wa-help:hover {
             transform: translateY(-2px);
+            background: #1e293b;
+            box-shadow: var(--shadow-xl);
+        }
+        
+        .wa-fab:hover {
+            transform: translateY(-2px) rotate(8deg);
+            box-shadow: 0 8px 24px rgba(37, 211, 102, 0.4);
         }
 
         @media (max-width: 960px) {
             .hero-grid {
                 grid-template-columns: 1fr;
+                gap: 36px;
+            }
+            
+            .hero-heading {
+                text-align: center;
+                margin: 0 auto;
+            }
+            
+            .hero-actions {
+                justify-content: center;
+            }
+            
+            .hero-links {
+                justify-content: center;
             }
 
             .about-grid,
@@ -514,19 +788,35 @@
 
         @media (max-width: 720px) {
             .nav-inner {
-                flex-direction: column;
-                align-items: stretch;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                position: relative;
             }
 
             .nav-links {
                 display: none;
                 flex-direction: column;
-                width: 100%;
-                margin-top: 14px;
-                padding: 16px;
+                width: calc(100% + 32px);
+                position: absolute;
+                top: 100%;
+                left: -16px;
                 background: #ffffff;
-                border: 1px solid #e2e8f0;
-                border-radius: 18px;
+                border-bottom: 1px solid var(--border-color);
+                box-shadow: var(--shadow-lg);
+                padding: 16px;
+                gap: 4px;
+            }
+            
+            .nav-links li {
+                width: 100%;
+            }
+            
+            .nav-links a {
+                display: block;
+                padding: 12px 16px;
+                width: 100%;
+                border-radius: var(--radius-sm);
             }
 
             .nav-links.active {
@@ -538,20 +828,60 @@
             }
 
             .hero {
-                padding-top: 52px;
-            }
-
-            .hero-actions {
-                justify-content: stretch;
-            }
-
-            .cta-button {
-                width: 100%;
+                padding-top: 50px;
+                padding-bottom: 50px;
             }
 
             .site-alert {
                 flex-direction: column;
                 align-items: flex-start;
+                gap: 8px;
+            }
+            
+            .site-alert .close-btn {
+                position: absolute;
+                top: 10px;
+                right: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .brand img {
+                width: 40px;
+                height: 40px;
+            }
+            .brand {
+                gap: 8px;
+            }
+            .brand-text span {
+                font-size: 1.1rem;
+            }
+            .brand-text small {
+                font-size: 0.72rem;
+                max-width: 170px;
+                line-height: 1.3;
+            }
+            .hero-actions {
+                flex-direction: column;
+                gap: 12px;
+                width: 100%;
+            }
+            .hero-actions .cta-button {
+                width: 100%;
+                padding: 12px 20px;
+            }
+            .panel-card li {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+                padding: 12px 0;
+            }
+            .date-badge {
+                align-self: flex-start;
+                white-space: normal;
+                word-break: break-word;
+                font-size: 0.85rem;
+                padding: 4px 8px;
             }
         }
     </style>
@@ -561,7 +891,7 @@
     <div class="progress-bar" id="progressBar"></div>
 
     <div class="site-alert" id="siteAlert">
-        <div class="alert-text">Report cards and certificates will be released mid-December 2025. Register before 18 November 2025.</div>
+        <div class="alert-text"><i class="fas fa-info-circle"></i> {{ event_config.announcement_message }} Register before {{ event_config.last_date_to_apply|date:"d F Y" }}.</div>
         <button class="close-btn" id="alertCloseBtn" aria-label="Close notification">&times;</button>
     </div>
 
@@ -571,7 +901,7 @@
                 <img src="{% static 'public/logo.jpg' %}" alt="Brain-O-Math Logo">
                 <div class="brand-text">
                     <span>Brain-O-Math</span>
-                    <small>Mathematics & Science Olympiad 2025</small>
+                    <small>Mathematics & Science Olympiad {{ event_config.event_year }}</small>
                 </div>
             </a>
             <nav>
@@ -597,23 +927,27 @@
             <div class="container hero-grid">
                 <div class="hero-heading">
                     <h1>Empowering Schools with a Better Olympiad Experience</h1>
-                    <p>The Brain-O-Math Olympiad provides a reliable national platform for Mathematics and Science learning, assessment, and recognition.</p>
+                    <p>The Brain-O-Math Olympiad provides a reliable national platform for Mathematics, Science, English, and Computer Science learning, assessment, and recognition.</p>
                     <div class="hero-actions">
-                        <a href="/coordinator/signup/" class="cta-button" id="registerNowBtn1">Register Now</a>
-                        <a href="/coordinator/signup/" class="cta-button secondary" id="registerNowBtn2">Coordinator Signup</a>
+                        <a href="/coordinator/login/" class="cta-button" id="registerNowBtn1">Coordinator Login</a>
+                        <a href="/coordinator/signup/" class="cta-button secondary" id="registerNowBtn2">Register Now</a>
                     </div>
                     <div class="hero-links" id="heroLinksContainer">
-                        <a href="https://drive.google.com/file/d/13rx7WxS8U0DYaQ0w4gv7dxd0k1II4kw6/view?usp=drivesdk" class="text-link" target="_blank" rel="noopener">Download Handbook</a>
+                        <a href="{{ event_config.handbook_url }}" class="text-link" target="_blank" rel="noopener"><i class="fas fa-file-pdf"></i> Download Handbook</a>
                     </div>
                 </div>
                 <div class="hero-panel">
                     <div class="panel-card">
-                        <h2>Key Dates</h2>
+                        <h2><i class="fas fa-calendar-alt"></i> Key Dates</h2>
                         <ul>
-                            <li>Registration deadline: 18 November 2025</li>
-                            <li>Admit card release: 20 November 2025</li>
-                            <li>Exam date: 22 November 2025</li>
-                            <li>Result declaration: 16 December 2025</li>
+                            <li><span>Last date to apply</span> <span class="date-badge">{{ event_config.last_date_to_apply|date:"d F Y" }}</span></li>
+                            <li><span>Admit card release</span> <span class="date-badge">{{ event_config.admit_card_release_date|date:"d F Y" }}</span></li>
+                            <li><span>English exam</span> <span class="date-badge">{{ event_config.english_exam_date|date:"d F Y" }} ({{ event_config.english_exam_time }})</span></li>
+                            <li><span>Computer Science exam</span> <span class="date-badge">{{ event_config.computer_science_exam_date|date:"d F Y" }} ({{ event_config.computer_science_exam_time }})</span></li>
+                            <li><span>Mathematics exam</span> <span class="date-badge">{{ event_config.mathematics_exam_date|date:"d F Y" }} ({{ event_config.mathematics_exam_time }})</span></li>
+                            <li><span>Science exam</span> <span class="date-badge">{{ event_config.science_exam_date|date:"d F Y" }} ({{ event_config.science_exam_time }})</span></li>
+                            <li><span>Result declaration</span> <span class="date-badge">{{ event_config.result_declaration_date|date:"d F Y" }}</span></li>
+                            <li><span>Award ceremony</span> <span class="date-badge">{{ event_config.award_ceremony_date|date:"d F Y" }}</span></li>
                         </ul>
                     </div>
                 </div>
@@ -627,22 +961,27 @@
                     <h2>Structured competition for school learners</h2>
                 </div>
                 <div class="about-grid">
-                    <div class="about-copy">
-                        <p>Organized by <a href="https://www.doonheritageschool.co.in" target="_blank" rel="noopener">Doon Heritage School, Siliguri</a>, the Brain-O-Math Olympiad 2025 is an interschool assessment in Mathematics and Science. It supports critical thinking, reasoning, and confidence-building through a fair and well-managed competitive process.</p>
-                        <p>The program is designed to create a positive experience for students, coordinators, and schools. It follows transparent procedures for question design, evaluation, and result publication.</p>
+                    <div class="about-content">
+                        <div class="about-copy">
+                            <p>Organized by <a href="{{ event_config.organizer_link }}" target="_blank" rel="noopener">{{ event_config.organizer_name }}</a>, the Brain-O-Math Olympiad {{ event_config.event_year }} is an interschool assessment for students from Classes III to XII. It supports critical thinking, reasoning, and confidence-building through a fair and well-managed competitive process.</p>
+                            <p>The program is designed to create a positive experience for students, coordinators, and schools. It follows transparent procedures for question design, evaluation, and result publication.</p>
+                        </div>
+                        <div class="about-image-card">
+                            <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=800&q=80" alt="Students writing exam">
+                        </div>
                     </div>
                     <div class="feature-list">
                         <div class="feature-item">
-                            <h3>Focused learning</h3>
-                            <p>Assessment resources and exam structure motivate strong analytical skills across classes 3 to 12.</p>
+                            <h3><i class="fas fa-brain"></i> Focused learning</h3>
+                            <p>Assessment resources and a four-subject structure motivate strong analytical skills across Classes III to XII.</p>
                         </div>
                         <div class="feature-item">
-                            <h3>Fair evaluation</h3>
-                            <p>Clear marking guidelines and timely result updates support credibility for students and teachers.</p>
+                            <h3><i class="fas fa-check-circle"></i> Fair evaluation</h3>
+                            <p>Clear marking guidelines and prompt result updates support credibility for students and teachers.</p>
                         </div>
                         <div class="feature-item">
-                            <h3>School collaboration</h3>
-                            <p>Coordinators manage student registration and communication directly, making participation easy for schools.</p>
+                            <h3><i class="fas fa-school"></i> School collaboration</h3>
+                            <p>Coordinators manage student registration and communication directly, making participation smooth for schools.</p>
                         </div>
                     </div>
                 </div>
@@ -653,44 +992,46 @@
             <div class="container">
                 <div class="section-heading">
                     <span class="section-label">Exam details</span>
-                    <h2>Registration, pattern and schedule</h2>
+                    <h2>Registration, categories and schedule</h2>
                 </div>
                 <div class="detail-grid">
                     <div class="info-card">
-                        <h3>Registration and fees</h3>
-                        <p>Online registration is open for coordinators. Schools may also use the handbook for offline registration and payment.</p>
+                        <h3><i class="fas fa-wallet"></i> Registration and fees</h3>
+                        <p>Online registration is open for coordinators. Each selected subject is charged at the official rate below.</p>
                         <ul>
-                            <li>Single subject fee: ₹70</li>
-                            <li>Both subjects fee: ₹140</li>
-                            <li>Payment methods accepted: UPI and cash</li>
+                            <li>Registration fee: ₹{{ event_config.registration_fee_per_subject }} per subject</li>
+                            <li>Subjects offered: English, Mathematics, Science, and Computer Science</li>
+                            <li>Payment method: UTR-based registration through the coordinator dashboard</li>
                         </ul>
                     </div>
                     <div class="info-card">
-                        <h3>Exam pattern</h3>
-                        <p>The examination uses OMR sheets and multiple-choice questions to ensure quick evaluation and fair scoring.</p>
+                        <h3><i class="fas fa-layer-group"></i> Categories and subjects</h3>
                         <ul>
-                            <li>50 MCQs per subject</li>
-                            <li>Total marks: 60 per subject</li>
-                            <li>Duration: 1 hour per subject</li>
-                            <li>No negative marking</li>
+                            <li>Category A: Classes III–IV</li>
+                            <li>Category B: Classes V–VI</li>
+                            <li>Category C: Classes VII–VIII</li>
+                            <li>Category D: Classes IX–X</li>
+                            <li>Category E: Classes XI–XII</li>
+                            <li>All categories cover English, Mathematics, Science, and Computer Science</li>
                         </ul>
                     </div>
                     <div class="info-card">
-                        <h3>Exam schedule</h3>
-                        <p>Classes 3 to 12 follow a structured timeline with a short break between subjects.</p>
+                        <h3><i class="fas fa-clipboard-list"></i> Question paper blueprint</h3>
                         <ul>
-                            <li>Mathematics: 10:00 AM to 11:00 AM</li>
-                            <li>Break: 11:00 AM to 11:30 AM</li>
-                            <li>Science: 11:30 AM to 12:30 PM</li>
+                            <li>English: 50 questions, 60 marks</li>
+                            <li>Computer Science: 50 questions, 60 marks</li>
+                            <li>Science: 50 questions, 60 marks</li>
+                            <li>Mathematics: 50 questions, 60 marks</li>
+                            <li>Each paper includes an Achievers Section (HOTS)</li>
                         </ul>
                     </div>
                     <div class="info-card">
-                        <h3>Result and award delivery</h3>
-                        <p>Results are shared with coordinating teachers and award certificates are distributed through schools.</p>
+                        <h3><i class="fas fa-trophy"></i> Results and awards</h3>
+                        <p>Results are shared through the official result view and award details are announced on the ceremony day.</p>
                         <ul>
-                            <li>Result declaration: 16 December 2025</li>
-                            <li>Certificates and awards delivered by 18 December 2025</li>
-                            <li>Communication via Email and WhatsApp</li>
+                            <li>Result declaration: {{ event_config.result_declaration_date|date:"d F Y" }}</li>
+                            <li>Award ceremony: {{ event_config.award_ceremony_date|date:"d F Y" }}</li>
+                            <li>Award: {{ event_config.award_description }}</li>
                         </ul>
                     </div>
                 </div>
@@ -704,17 +1045,20 @@
                     <h2>Honoring strong performance</h2>
                 </div>
                 <div class="award-grid">
-                    <div class="award-card">
-                        <h3>Top performers</h3>
-                        <p>Outstanding students receive recognition and certificates for their academic achievement.</p>
+                    <div class="award-image-card">
+                        <img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=800&q=80" alt="Awards Ceremony">
                     </div>
                     <div class="award-card">
-                        <h3>School accolades</h3>
-                        <p>Schools that participate actively are acknowledged for their support in promoting academic competition.</p>
+                        <h3><i class="fas fa-medal"></i> Silver medal award</h3>
+                        <p>{{ event_config.award_description }}</p>
                     </div>
                     <div class="award-card">
-                        <h3>Certificates and medals</h3>
-                        <p>Participants receive certificates, and high achievers earn special awards and certificates of excellence.</p>
+                        <h3><i class="fas fa-award"></i> Official recognition</h3>
+                        <p>Top performers receive certificates and public recognition through the official award ceremony process.</p>
+                    </div>
+                    <div class="award-card">
+                        <h3><i class="fas fa-ribbon"></i> School participation</h3>
+                        <p>Schools are acknowledged for their support in promoting a fair and trusted academic competition.</p>
                     </div>
                 </div>
             </div>
@@ -727,15 +1071,15 @@
                 <h3>Get support</h3>
                 <p>Please contact our coordinator team for questions about registration, exam materials, or award delivery.</p>
                 <ul class="footer-list">
-                    <li><a href="https://wa.me/917384687034?text=Hi%20I%27d%20like%20to%20know%20more%20about%20Brain-O-Math." target="_blank" rel="noopener">WhatsApp support</a></li>
-                    <li><a href="/coordinator/login/">Coordinator login</a></li>
-                    <li><a href="/admin-login/">Admin login</a></li>
+                    <li><a href="{{ event_config.contact_whatsapp_url }}" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> WhatsApp support</a></li>
+                    <li><a href="/coordinator/login/"><i class="fas fa-sign-in-alt"></i> Coordinator login</a></li>
+                    <li><a href="/admin-login/"><i class="fas fa-user-shield"></i> Admin login</a></li>
                 </ul>
             </div>
             <div>
                 <h3>Organized by</h3>
-                <p>Doon Heritage School, Siliguri</p>
-                <p>Brain-O-Math Olympiad 2025 is designed to support students with a clear, fair, and trusted examination process.</p>
+                <p>{{ event_config.organizer_name }}</p>
+                <p>Brain-O-Math Olympiad {{ event_config.event_year }} is designed to support students with a clear, fair, and trusted examination process.</p>
                 <div class="footer-note">All content and navigation remain unchanged. This page has been updated with a refreshed structure and layout.</div>
             </div>
         </div>
@@ -744,7 +1088,7 @@
     <script>
         const hamburger = document.getElementById('hamburger');
         const navLinks = document.getElementById('navLinks');
-
+ 
         if (hamburger) {
             hamburger.addEventListener('click', () => {
                 navLinks.classList.toggle('active');
@@ -809,7 +1153,7 @@
             }
         });
 
-        console.log('Brain-O-Math Olympiad 2025 - Website Loaded Successfully.');
+        console.log('Brain-O-Math Olympiad {{ event_config.event_year }} - Website Loaded Successfully.');
 
         const API = '/api';
 
@@ -829,7 +1173,7 @@
                         resultLink.href = '/coordinator/results/';
                         resultLink.className = 'text-link';
                         resultLink.id = 'viewResultsLink';
-                        resultLink.textContent = 'View Results';
+                        resultLink.innerHTML = '<i class="fas fa-poll"></i> View Results';
                         heroLinksContainer.prepend(resultLink);
                     }
                 }
@@ -887,7 +1231,7 @@
             }
         })();
     </script>
-    <a class="wa-help" href="https://wa.me/917384687034?text=Hi%20I%27d%20like%20to%20know%20more%20about%20Brain-O-Math." target="_blank" rel="noopener" aria-label="Any help? Chat on WhatsApp">Any help?</a>
+    <a class="wa-help" href="https://wa.me/917384687034?text=Hi%20I%27d%20like%20to%20know%20more%20about%20Brain-O-Math." target="_blank" rel="noopener" aria-label="Any help? Chat on WhatsApp"><i class="fab fa-whatsapp"></i> Any help?</a>
     <a class="wa-fab" href="https://wa.me/917384687034?text=Hi%20I%27d%20like%20to%20know%20more%20about%20Brain-O-Math." target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
         <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
     </a>

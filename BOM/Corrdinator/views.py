@@ -65,7 +65,12 @@ def _student_dict(student, index=None):
         "parentContact": student.parent_contact,
         "rollNumber": student.roll_number,
         "admitCardReleased": student.admit_card_released,
-        "marks": {"math": student.math_marks, "science": student.science_marks},
+        "marks": {
+            "english": student.english_marks,
+            "math": student.math_marks,
+            "science": student.science_marks,
+            "cs": student.cs_marks
+        },
         "coordinatorName": student.coordinator.coordinator_name,
         "coordinatorEmail": student.coordinator.user.email,
         "schoolName": student.coordinator.school_name,

@@ -13,6 +13,9 @@ def registration_status(request):
                 "status": "open" if settings.is_open else "closed",
                 "message": settings.message,
                 "resultsPublished": settings.results_published,
+                "eventYear": settings.event_year,
+                "registrationFeePerSubject": settings.registration_fee_per_subject,
+                "lastDateToApply": settings.last_date_to_apply.isoformat(),
             },
         }
     )

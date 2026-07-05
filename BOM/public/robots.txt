@@ -1,3 +1,0 @@
-User-agent: *
-Allow: /
-Sitemap: https://brainomath.online/sitemap.xml
