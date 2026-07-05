@@ -139,14 +139,19 @@ class ReportCardGenerator {
     writeField('Category:', student.category || 'N/A');
     writeField('School:', student.schoolName || 'N/A');
 
-    const subjects =
-      student.subjects === 'both'
-        ? 'Mathematics & Science'
-        : student.subjects === 'math'
-        ? 'Mathematics'
-        : student.subjects === 'science'
-        ? 'Science'
-        : 'N/A';
+    const subjectMap = {
+      'english': 'English',
+      'math': 'Mathematics',
+      'science': 'Science',
+      'cs': 'Computer Science',
+      'both': 'Mathematics & Science'
+    };
+    const subjects = String(student.subjects || '')
+      .split(',')
+      .map(s => s.trim().toLowerCase())
+      .filter(Boolean)
+      .map(s => subjectMap[s] || s)
+      .join(', ') || 'N/A';
 
     writeField('Subject Choice:', subjects);
 
@@ -203,39 +208,40 @@ class ReportCardGenerator {
 
     const mathMarks = student.marks?.math ?? null;
     const scienceMarks = student.marks?.science ?? null;
+    const englishMarks = student.marks?.english ?? null;
+    const csMarks = student.marks?.cs ?? null;
 
     /* SUBJECT CHOICE RESOLUTION */
-    let choice = 'none';
+    const activeSubjects = String(student.subjects || '')
+      .split(',')
+      .map(s => s.trim().toLowerCase())
+      .filter(s => ['english', 'math', 'science', 'cs'].includes(s));
 
-    if (['both', 'math', 'science'].includes((student.subjects || '').toLowerCase())) {
-      choice = student.subjects.toLowerCase();
-    } else {
-      if (mathMarks !== null && scienceMarks !== null) choice = 'both';
-      else if (mathMarks !== null) choice = 'math';
-      else if (scienceMarks !== null) choice = 'science';
+    if (activeSubjects.length === 0) {
+      if (mathMarks !== null) activeSubjects.push('math');
+      if (scienceMarks !== null) activeSubjects.push('science');
+      if (englishMarks !== null) activeSubjects.push('english');
+      if (csMarks !== null) activeSubjects.push('cs');
     }
 
     /* ----------------------------------------------------
-     * DRAW BOXES BASED ON SUBJECT CHOICE
+     * DRAW BOXES BASED ON ACTIVE SUBJECTS
      * -------------------------------------------------- */
-    if (choice === 'both') {
-      const startX = leftX;
+    const count = activeSubjects.length;
+    if (count > 0) {
+      const boxWidth = Math.floor((availableWidth - (count - 1) * 8) / count);
+      const subjectNames = {
+        'english': 'English',
+        'math': 'Mathematics',
+        'science': 'Science',
+        'cs': 'Computer Science'
+      };
 
-      drawScoreBox(startX, twoBoxWidth, 'Mathematics', mathMarks, student.rank?.math || student.rank || null);
-      drawScoreBox(
-        startX + twoBoxWidth + 3,
-        twoBoxWidth,
-        'Science',
-        scienceMarks,
-        student.rank?.science || null
-      );
-
-    } else if (choice === 'math') {
-      drawScoreBox(leftX, singleBoxWidth, 'Mathematics', mathMarks, student.rank?.math || student.rank || null);
-
-    } else if (choice === 'science') {
-      drawScoreBox(leftX, singleBoxWidth, 'Science', scienceMarks, student.rank?.science || null);
-
+      activeSubjects.forEach((sub, index) => {
+        const x = leftX + index * (boxWidth + 8);
+        const marks = student.marks?.[sub] ?? null;
+        drawScoreBox(x, boxWidth, subjectNames[sub] || sub, marks, null);
+      });
     } else {
       doc.font('Helvetica').fontSize(10).fillColor('#333');
       doc.text('No subject performance available.', leftX, y + 40);
