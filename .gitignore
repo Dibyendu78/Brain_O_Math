@@ -9,3 +9,4 @@ nodel_modules
 *.pyd
 __pycache__     
 .pem
+bom.pem
