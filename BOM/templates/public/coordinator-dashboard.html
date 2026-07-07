@@ -3901,7 +3901,7 @@
                 utr1Complete = true;
 
                 // Show second UTR field and enable it
-                utrConfirmGroup.style.display = 'block';
+                utrConfirmGroup.classList.remove('hidden');
                 utrInput2.disabled = false;
                 utrInput2.focus();
             } else if (value.length >= 6) {
@@ -3911,7 +3911,7 @@
                 utr1Complete = false;
 
                 // Hide second field if first is incomplete
-                utrConfirmGroup.style.display = 'none';
+                utrConfirmGroup.classList.add('hidden');
                 utrInput2.disabled = true;
                 utrInput2.value = '';
                 submitBtn.disabled = true;
@@ -3922,7 +3922,7 @@
                 utr1Complete = false;
 
                 // Hide second field
-                utrConfirmGroup.style.display = 'none';
+                utrConfirmGroup.classList.add('hidden');
                 utrInput2.disabled = true;
                 utrInput2.value = '';
                 submitBtn.disabled = true;
