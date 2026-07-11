@@ -2606,6 +2606,25 @@
                 padding: 1rem 1.25rem;
             }
         }
+
+        /* Strong mobile alignment fixes for toolbar */
+        @media (max-width: 768px) {
+            .toolbar {
+                padding: var(--space-3) !important;
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: stretch !important;
+                width: 100% !important;
+                box-sizing: border-box !important;
+                gap: var(--space-3) !important;
+            }
+            .toolbar > * {
+                width: 100% !important;
+                max-width: 100% !important;
+                box-sizing: border-box !important;
+                margin: 0 !important;
+            }
+        }
         -->
     </style>
 </head>
@@ -2617,7 +2636,7 @@
             <div class="header-brand">
                 <div class="brand-icon">
                     <img src="{% static 'public/logo.jpg' %}" alt="Brain-O-Math Logo"
-                        style="width: 48px; height: 48px;">
+                        style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover;">
                 </div>
                 <h1>Brain-O-Math Olympiad</h1>
             </div>
@@ -2783,10 +2802,10 @@
                         <div class="form-group form-parent-contact">
                             <label class="form-label" for="parentContact">
                                 <i class="fas fa-mobile-alt"></i>
-                                Parent's Contact
+                                Parent's Contact (optional)
                             </label>
                             <input class="form-input" id="parentContact" pattern="[0-9]{10}"
-                                placeholder="Enter 10-digit contact number">
+                                placeholder="Enter 10-digit contact number (optional)">
                         </div>
                     </div>
 
