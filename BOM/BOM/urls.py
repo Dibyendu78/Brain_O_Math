@@ -38,6 +38,7 @@ def syllabus_view(request):
 urlpatterns = [
     path("", home, name="home"),
     path("syllabus/", syllabus_view, name="syllabus"),
+    path("syllabus.html", syllabus_view, name="syllabus_html"),
     path("django-admin/", django_admin.site.urls),
     path("account/", include("Account.urls")),
     path("coordinator/", include("Corrdinator.urls")),
