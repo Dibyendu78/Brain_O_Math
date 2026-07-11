@@ -232,6 +232,35 @@
       box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
     }
 
+    .password-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      padding: 0;
+      font-size: 1.1rem;
+      transition: color 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+
+    .password-toggle:hover {
+      color: var(--text);
+    }
+
     .validation-message {
       margin-top: 0.45rem;
       font-size: 0.85rem;
@@ -377,11 +406,11 @@
       </div>
       <ul class="feature-list">
         <li class="feature-item"><i class="fas fa-user-check"></i> Quick coordinator registration</li>
-        <li class="feature-item"><i class="fas fa-mobile-alt"></i> Use phone-based security code</li>
+        <li class="feature-item"><i class="fas fa-lock"></i> Create your own secure password</li>
         <li class="feature-item"><i class="fas fa-shield-alt"></i> Secure account access</li>
         <li class="feature-item"><i class="fas fa-chalkboard-teacher"></i> Manage students and payments</li>
       </ul>
-      <p class="small-note">After registration, your login password will be the last 4 digits of your registered phone number. Keep this number handy.</p>
+      <p class="small-note">After registration, you will use the password you created to log in.</p>
     </section>
 
     <article class="form-card">
@@ -423,6 +452,40 @@
             <div class="validation-message" id="coordinatorEmailMsg"></div>
           </div>
 
+          <div class="form-group">
+            <label class="form-label" for="password"><i class="fas fa-lock"></i> Password</label>
+            <div class="password-wrapper">
+              <input type="password" id="password" class="form-input" style="padding-right: 2.5rem;" required placeholder="Create a password (min 6 chars)" minlength="6" autocomplete="new-password" />
+              <button type="button" class="password-toggle" onclick="togglePasswordVisibility('password', this)" aria-label="Toggle password visibility">
+                <svg id="eye-icon-pass" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+              </button>
+            </div>
+            <div class="validation-message" id="passwordMsg"></div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="confirmPassword"><i class="fas fa-lock"></i> Confirm Password</label>
+            <div class="password-wrapper">
+              <input type="password" id="confirmPassword" class="form-input" style="padding-right: 2.5rem;" required placeholder="Confirm your password" autocomplete="new-password" />
+              <button type="button" class="password-toggle" onclick="togglePasswordVisibility('confirmPassword', this)" aria-label="Toggle password visibility">
+                <svg id="eye-icon-confirm" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+              </button>
+            </div>
+            <div class="validation-message" id="confirmPasswordMsg"></div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="captchaAnswer" id="captchaLabel"><i class="fas fa-calculator"></i> Math Check</label>
+            <input type="number" id="captchaAnswer" class="form-input" required placeholder="Enter the sum" />
+            <div class="validation-message" id="captchaAnswerMsg"></div>
+          </div>
+
           <div class="form-actions">
             <button type="submit" class="signup-button" id="signupBtn"><i class="fas fa-user-plus"></i> Create Account</button>
             <a href="/coordinator/login/" class="text-link"><i class="fas fa-sign-in-alt"></i> Already have an account? Login</a>
@@ -441,14 +504,42 @@
     const signupForm = document.getElementById('signupForm');
     const signupBtn = document.getElementById('signupBtn');
     const alertContainer = document.getElementById('alertContainer');
-    const fields = ['schoolName', 'schoolAddress', 'coordinatorName', 'coordinatorPhone', 'coordinatorEmail'];
+    const fields = ['schoolName', 'schoolAddress', 'coordinatorName', 'coordinatorPhone', 'coordinatorEmail', 'password', 'confirmPassword', 'captchaAnswer'];
+    
+    let captchaTotal = 0;
+    function generateCaptcha() {
+        const num1 = Math.floor(Math.random() * 10) + 1;
+        const num2 = Math.floor(Math.random() * 10) + 1;
+        captchaTotal = num1 + num2;
+        const captchaLabel = document.getElementById('captchaLabel');
+        if(captchaLabel) captchaLabel.innerHTML = `<i class="fas fa-calculator"></i> What is ${num1} + ${num2}?`;
+    }
+    document.addEventListener("DOMContentLoaded", generateCaptcha);
+
+    function togglePasswordVisibility(inputId, button) {
+      const input = document.getElementById(inputId);
+      const svg = button.querySelector('svg');
+      if (input.type === 'password') {
+        input.type = 'text';
+        svg.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>';
+      } else {
+        input.type = 'password';
+        svg.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>';
+      }
+    }
 
     const validators = {
       schoolName: (val) => val.length >= 3 ? { valid: true } : { valid: false, msg: 'School name must be at least 3 characters.' },
       schoolAddress: (val) => val.length >= 10 ? { valid: true } : { valid: false, msg: 'Address must be at least 10 characters.' },
       coordinatorName: (val) => /^[A-Za-z\s]{3,}$/.test(val) ? { valid: true } : { valid: false, msg: 'Name should use letters only and be at least 3 characters.' },
       coordinatorPhone: (val) => /^[0-9]{10}$/.test(val) ? { valid: true } : { valid: false, msg: 'Enter a valid 10-digit phone number.' },
-      coordinatorEmail: (val) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val) ? { valid: true } : { valid: false, msg: 'Enter a valid email address.' }
+      coordinatorEmail: (val) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val) ? { valid: true } : { valid: false, msg: 'Enter a valid email address.' },
+      password: (val) => val.length >= 6 ? { valid: true } : { valid: false, msg: 'Password must be at least 6 characters.' },
+      confirmPassword: (val) => {
+          const pass = document.getElementById('password').value;
+          return val === pass && val.length > 0 ? { valid: true } : { valid: false, msg: 'Passwords do not match.' };
+      },
+      captchaAnswer: (val) => parseInt(val) === captchaTotal ? { valid: true } : { valid: false, msg: 'Incorrect answer.' }
     };
 
     function showAlert(message, type) {
@@ -481,7 +572,8 @@
     fields.forEach((fieldId) => {
       const field = document.getElementById(fieldId);
       field.addEventListener('input', () => {
-        field.value = fieldId === 'coordinatorPhone' ? field.value.replace(/[^0-9]/g, '').slice(0, 10) : field.value;
+        if (fieldId === 'coordinatorPhone') field.value = field.value.replace(/[^0-9]/g, '').slice(0, 10);
+        if (fieldId === 'password') validateField('confirmPassword');
         validateField(fieldId);
       });
       field.addEventListener('blur', () => validateField(fieldId));

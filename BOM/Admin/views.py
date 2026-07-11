@@ -2,6 +2,8 @@ import csv
 import json
 
 from django.contrib.auth import authenticate
+from django.core.mail import send_mail
+from django.conf import settings
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
@@ -276,3 +278,32 @@ def _optional_int(value):
 @jwt_required(roles=[User.ADMIN])
 def api_schools(request):
     return JsonResponse({"success": True, "data": [_profile_dict(profile) for profile in CoordinatorProfile.objects.all()]})
+
+
+@csrf_exempt
+@jwt_required(roles=[User.ADMIN])
+def api_send_message_to_coordinators(request):
+    data = _body(request)
+    message_content = data.get("message", "").strip()
+    
+    if not message_content:
+        return JsonResponse({"success": False, "message": "Message cannot be empty"}, status=400)
+    
+    coordinators = CoordinatorProfile.objects.select_related("user").all()
+    success_count = 0
+    
+    for profile in coordinators:
+        if profile.user and profile.user.email:
+            try:
+                send_mail(
+                    "Message from Brain-O-Math Admin",
+                    message_content,
+                    settings.DEFAULT_FROM_EMAIL,
+                    [profile.user.email],
+                    fail_silently=True,
+                )
+                success_count += 1
+            except Exception as e:
+                print(f"Error sending email to {profile.user.email}: {e}")
+                
+    return JsonResponse({"success": True, "data": {"successCount": success_count}})

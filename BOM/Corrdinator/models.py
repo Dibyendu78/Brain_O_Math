@@ -9,6 +9,7 @@ class CoordinatorProfile(models.Model):
     coordinator_name = models.CharField(max_length=255)
     coordinator_phone = models.CharField(max_length=10)
     is_verified = models.BooleanField(default=False)
+    force_password_reset = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

@@ -735,11 +735,13 @@
             padding: 30px 25px;
             position: relative;
             z-index: 2;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
         }
 
         /* Individual award items */
         .award-item {
-            margin: 20px 0;
             padding: 20px;
             background: rgba(255, 255, 255, 0.7);
             border-radius: 14px;
@@ -1491,10 +1493,11 @@
 
                         <div class="update-card fade-in-up">
                             <h3><i class="fas fa-calendar-alt text-accent"></i> IMPORTANT DATES</h3>
-                            <p><strong>Registration Deadline:</strong> {{ event_config.last_date_to_apply|date:"d F Y" }}<br>
-                                <strong>Admit card Release:</strong> {{ event_config.admit_card_release_date|date:"d F Y" }}<br>
-                                <strong>Exam Date:</strong> See specific subject dates below<br>
-                                <strong>Result Declaration:</strong> {{ event_config.result_declaration_date|date:"d F Y" }}
+                            <p><strong>Registration Deadline:</strong> 02nd August 2026<br>
+                                <strong>Admit card Release:</strong> 04th August 2026<br>
+                                <strong>Exam Date:</strong> Saturday, 07th August and 8th August 2026<br>
+                                <strong>Result Declaration:</strong> 8th September 2026<br>
+                                <strong>Award Ceremony:</strong> 25th September 2026
                             </p>
                         </div>
 
@@ -1520,33 +1523,20 @@
 
                         <div class="update-card fade-in-up">
                             <h3>⏰ EXAM SCHEDULE</h3>
-                            <p><strong>Mathematics:</strong> {{ event_config.mathematics_exam_date|date:"d F Y" }} ({{ event_config.mathematics_exam_time }})<br>
-                                <strong>Science:</strong> {{ event_config.science_exam_date|date:"d F Y" }} ({{ event_config.science_exam_time }})<br>
-                                <strong>English:</strong> {{ event_config.english_exam_date|date:"d F Y" }} ({{ event_config.english_exam_time }})<br>
-                                <strong>Computer Science:</strong> {{ event_config.computer_science_exam_date|date:"d F Y" }} ({{ event_config.computer_science_exam_time }})<br>
+                            <p><strong>Classes 3-12:</strong><br>
+                                10:00-11:00 AM: Mathematics<br>
+                                11:00-11:30 AM: Break<br>
+                                11:30 AM-12:30 PM: Science
                             </p>
                         </div>
 
                         <div class="update-card fade-in-up">
                             <h3><i class="fas fa-bullseye text-accent"></i> RESULTS & AWARDS</h3>
-                            <p>Results will be declared by {{ event_config.result_declaration_date|date:"d F Y" }} and shared via Email/WhatsApp to
+                            <p>Results will be declared on 8th September and shared via Email/WhatsApp to
                                 coordinating teachers. Awards and certificates will be sent to respective schools by
-                                {{ event_config.award_ceremony_date|date:"d F Y" }}.</p>
+                                25th September 2026.</p>
                         </div>
-                                <!-- QUESTION PAPER BLUEPRINT -->
-                    <div class="section-breakdown">
-                        <h3><i class="fas fa-clipboard-list text-accent"></i> Question paper blueprint</h3>
-                        <div class="table-container">
-                            <ul style="margin-left: 20px; font-size: 1.05rem; line-height: 1.8; color: var(--text-muted);">
-                                <li>English: 50 questions, 60 marks</li>
-                                <li>Computer Science: 50 questions, 60 marks</li>
-                                <li>Science: 50 questions, 60 marks</li>
-                                <li>Mathematics: 50 questions, 60 marks</li>
-                                <li>Each paper includes an Achievers Section (HOTS)</li>
-                            </ul>
-                        </div>
-                    </div>
-                </section>      </section>
+                </section>
             </main>
 
             <!-- Sidebar -->
@@ -1556,19 +1546,21 @@
                     <div class="widget-header"><i class="fas fa-clipboard-list text-accent"></i> Exam Details</div>
                     <div class="widget-content" id="details">
                         <div class="exam-detail">
-                            <strong>Exam Date:</strong> See specific subject dates below
+                            <strong>Exam Date:</strong>
+                            <p style="margin: 8px 0; color: #475569;">7th August 2026, Friday (English & Computer Science)</p>
+                            <p style="margin: 8px 0; color: #475569;">8th August 2026,Saturday (Mathematics & Science)</p>
                         </div>
                         <div class="exam-detail">
-                            <strong>Registration Deadline:</strong> {{ event_config.last_date_to_apply|date:"d F Y" }}
+                            <strong>Registration Deadline:</strong> 02nd August 2026
                         </div>
                         <div class="exam-detail">
-                            <strong>Admit card Release:</strong> {{ event_config.admit_card_release_date|date:"d F Y" }}
+                            <strong>Admit card Release:</strong> 04th August 2026
                         </div>
                         <div class="exam-detail">
-                            <strong>Result Declaration:</strong> {{ event_config.result_declaration_date|date:"d F Y" }}
+                            <strong>Result Declaration:</strong> 8th September 2026
                         </div>
                         <div class="exam-detail">
-                            <strong>Awards Distribution:</strong> {{ event_config.award_ceremony_date|date:"d F Y" }}
+                            <strong>Awards Distribution:</strong> 25th September 2026
                         </div>
                         <div class="exam-detail">
                             <strong>Venue:</strong> {{ event_config.organizer_name }}
@@ -1598,27 +1590,27 @@
                                 <tr>
                                     <td>A</td>
                                     <td>Classes III-IV</td>
-                                    <td>English, Math, Science, CS</td>
+                                    <td>Mathematics, Science, English & Computer Science</td>
                                 </tr>
                                 <tr>
                                     <td>B</td>
                                     <td>Classes V-VI</td>
-                                    <td>English, Math, Science, CS</td>
+                                    <td>Mathematics, Science, English & Computer Science</td>
                                 </tr>
                                 <tr>
                                     <td>C</td>
                                     <td>Classes VII-VIII</td>
-                                    <td>English, Math, Science, CS</td>
+                                    <td>Mathematics, Science, English & Computer Science</td>
                                 </tr>
                                 <tr>
                                     <td>D</td>
                                     <td>Classes IX-X</td>
-                                    <td>English, Math, Science, CS</td>
+                                    <td>Mathematics, Science, English & Computer Science</td>
                                 </tr>
                                 <tr>
                                     <td>E</td>
                                     <td>Classes XI-XII</td>
-                                    <td>English, Math, Science, CS</td>
+                                    <td>Mathematics, Science, English & Computer Science</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -1661,6 +1653,9 @@
                     </div>
                 </div>
 
+            </aside>
+        </div>
+        <div style="margin-top: 40px; margin-bottom: 40px;">
                 <!-- Awards Widget -->
                 <div class="awards-widget fade-in-up" id="awards">
                     <div class="widget-header"><i class="fas fa-trophy text-accent"></i> Awards & Recognition</div>
@@ -1680,7 +1675,244 @@
 
                     </div>
                 </div>
-            </aside>
+<br>
+                                <!-- QUESTION PAPER BLUEPRINT -->
+                    <div class="section-breakdown">
+                        <h3><i class="fas fa-clipboard-list text-accent"></i> Question Paper Blueprints</h3>
+                        
+                        <!-- English Olympiad -->
+                        <h4 style="color: #1e40af; margin-top: 25px; margin-bottom: 10px;">English Olympiad (Classes III–XII)</h4>
+                        <div class="table-container" style="margin-bottom: 25px;">
+                            <table class="breakdown-table">
+                                <thead>
+                                    <tr>
+                                        <th>Section</th>
+                                        <th>Questions</th>
+                                        <th>Marks per Question</th>
+                                        <th>Total Marks</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Word & Structure Knowledge</td>
+                                        <td>30</td>
+                                        <td>1</td>
+                                        <td>30</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Reading Comprehension</td>
+                                        <td>10</td>
+                                        <td>1</td>
+                                        <td>10</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Language Expression</td>
+                                        <td>5</td>
+                                        <td>1</td>
+                                        <td>5</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Achievers Section (HOTS)</td>
+                                        <td>5</td>
+                                        <td>3</td>
+                                        <td>15</td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td>Grand Total</td>
+                                        <td>50</td>
+                                        <td></td>
+                                        <td>60</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+
+                        <!-- Computer Science Olympiad -->
+                        <h4 style="color: #1e40af; margin-bottom: 10px;">Computer Science Olympiad (Classes III–XII)</h4>
+                        <div class="table-container" style="margin-bottom: 25px;">
+                            <table class="breakdown-table">
+                                <thead>
+                                    <tr>
+                                        <th>Section</th>
+                                        <th>Questions</th>
+                                        <th>Marks per Question</th>
+                                        <th>Total Marks</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Logical Reasoning</td>
+                                        <td>10</td>
+                                        <td>1</td>
+                                        <td>10</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Computer Science</td>
+                                        <td>30</td>
+                                        <td>1</td>
+                                        <td>30</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Artificial Intelligence</td>
+                                        <td>5</td>
+                                        <td>1</td>
+                                        <td>5</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Achievers Section (HOTS)</td>
+                                        <td>5</td>
+                                        <td>3</td>
+                                        <td>15</td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td>Grand Total</td>
+                                        <td>50</td>
+                                        <td></td>
+                                        <td>60</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+
+                        <!-- Science Olympiad (Classes III–X) -->
+                        <h4 style="color: #1e40af; margin-bottom: 10px;">Science Olympiad (Classes III–X)</h4>
+                        <div class="table-container" style="margin-bottom: 25px;">
+                            <table class="breakdown-table">
+                                <thead>
+                                    <tr>
+                                        <th>Section</th>
+                                        <th>Questions</th>
+                                        <th>Marks per Question</th>
+                                        <th>Total Marks</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Logical Reasoning</td>
+                                        <td>10</td>
+                                        <td>1</td>
+                                        <td>10</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Science</td>
+                                        <td>35</td>
+                                        <td>1</td>
+                                        <td>35</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Achievers Section (HOTS)</td>
+                                        <td>5</td>
+                                        <td>3</td>
+                                        <td>15</td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td>Grand Total</td>
+                                        <td>50</td>
+                                        <td></td>
+                                        <td>60</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+
+                        <!-- Science Olympiad (Classes XI–XII) -->
+                        <h4 style="color: #1e40af; margin-bottom: 10px;">Science Olympiad (Classes XI–XII)</h4>
+                        <div class="table-container" style="margin-bottom: 25px;">
+                            <table class="breakdown-table">
+                                <thead>
+                                    <tr>
+                                        <th>Section</th>
+                                        <th>Questions</th>
+                                        <th>Marks per Question</th>
+                                        <th>Total Marks</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Physics & Chemistry</td>
+                                        <td>25</td>
+                                        <td>1</td>
+                                        <td>25</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Achievers Section (HOTS)</td>
+                                        <td>5</td>
+                                        <td>3</td>
+                                        <td>15</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Mathematics or Biology</td>
+                                        <td>20</td>
+                                        <td>1</td>
+                                        <td>20</td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td>Grand Total</td>
+                                        <td>50</td>
+                                        <td></td>
+                                        <td>60</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+
+                        <!-- Mathematics Olympiad -->
+                        <h4 style="color: #1e40af; margin-bottom: 10px;">Mathematics Olympiad (Classes III–XII)</h4>
+                        <div class="table-container">
+                            <table class="breakdown-table">
+                                <thead>
+                                    <tr>
+                                        <th>Section</th>
+                                        <th>Questions</th>
+                                        <th>Marks per Question</th>
+                                        <th>Total Marks</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Logical Reasoning</td>
+                                        <td>15</td>
+                                        <td>1</td>
+                                        <td>15</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Mathematical Reasoning / Applied Mathematics</td>
+                                        <td>20</td>
+                                        <td>1</td>
+                                        <td>20</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Everyday Mathematics</td>
+                                        <td>10</td>
+                                        <td>1</td>
+                                        <td>10</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Achievers Section (HOTS)</td>
+                                        <td>5</td>
+                                        <td>3</td>
+                                        <td>15</td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td>Grand Total</td>
+                                        <td>50</td>
+                                        <td></td>
+                                        <td>60</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
         </div>
     </div>
 
@@ -1715,11 +1947,11 @@
                 </div>
                 <div class="footer-section">
                     <h4>Important Dates</h4>
-                    <p>Registration Deadline: {{ event_config.last_date_to_apply|date:"d F Y" }}</p>
-                    <p>Admit card Release: {{ event_config.admit_card_release_date|date:"d F Y" }}</p>
-                    <p>Exam Date: See specific subject dates below</p>
-                    <p>Result Declaration: {{ event_config.result_declaration_date|date:"d F Y" }}</p>
-                    <p>Awards Distribution: {{ event_config.award_ceremony_date|date:"d F Y" }}</p>
+                    <p>Registration Deadline: 02nd August 2026</p>
+                    <p>Admit card Release: 04th August 2026</p>
+                    <p>Exam Date: Saturday, 07th August and 8th August 2026</p>
+                    <p>Result Declaration: 8th September 2026</p>
+                    <p>Awards Distribution: 25th September 2026</p>
                 </div>
             </div>
 

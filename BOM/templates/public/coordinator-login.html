@@ -217,6 +217,35 @@
       box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
     }
 
+    .password-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      padding: 0;
+      font-size: 1.1rem;
+      transition: color 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+
+    .password-toggle:hover {
+      color: var(--text);
+    }
+
     .security-indicator {
       height: 6px;
       margin-top: 0.75rem;
@@ -483,7 +512,7 @@
         <p>Sign in to access your Brain-O-Math coordination dashboard. Use your registered email and security code to continue.</p>
       </div>
       <ul class="tips-list">
-        <li class="tips-item"><i class="fas fa-key"></i> The security code is the last 4 digits of your registered phone number.</li>
+        <li class="tips-item"><i class="fas fa-key"></i> Use the password you created during registration.</li>
         <li class="tips-item"><i class="fas fa-envelope"></i> Use the same email address you registered with.</li>
         <li class="tips-item"><i class="fas fa-lock"></i> Keep your login details secure.</li>
       </ul>
@@ -493,7 +522,7 @@
     <section class="login-card">
       <div class="login-header">
         <h2>Coordinator Login</h2>
-        <p>Enter your email and security code to continue to the coordinator portal.</p>
+        <p>Enter your email and password to continue to the coordinator portal.</p>
       </div>
 
       <div class="login-body">
@@ -505,9 +534,16 @@
           </div>
 
           <div class="form-group" id="passwordGroup">
-            <label class="form-label" for="password"><i class="fas fa-shield-alt"></i> Security Code</label>
-            <input type="password" id="password" class="form-input" required placeholder="Last 4 digits of your phone number" maxlength="4" pattern="[0-9]{4}" autocomplete="current-password" />
-            <div class="security-indicator"><div class="security-fill" id="securityFill"></div></div>
+            <label class="form-label" for="password"><i class="fas fa-lock"></i> Password</label>
+            <div class="password-wrapper">
+              <input type="password" id="password" class="form-input" style="padding-right: 2.5rem;" required placeholder="Enter your password" autocomplete="current-password" />
+              <button type="button" class="password-toggle" onclick="togglePasswordVisibility('password', this)" aria-label="Toggle password visibility">
+                <svg id="eye-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+              </button>
+            </div>
             <div class="status-message" id="passwordStatus"></div>
           </div>
 
@@ -515,7 +551,7 @@
         </form>
 
         <div class="bottom-links">
-          <a href="#" id="forgotPasswordBtn" class="text-link"><i class="fas fa-question-circle"></i> Forgot security code?</a>
+          <a href="#" id="forgotPasswordBtn" class="text-link"><i class="fas fa-question-circle"></i> Forgot password?</a>
           <a href="/coordinator/signup/" class="text-link"><i class="fas fa-user-plus"></i> Register as coordinator</a>
         </div>
       </div>
@@ -556,7 +592,6 @@
     const passwordInput = document.getElementById('password');
     const loginBtn = document.getElementById('loginBtn');
     const alertContainer = document.getElementById('alertContainer');
-    const securityFill = document.getElementById('securityFill');
     const passwordStatus = document.getElementById('passwordStatus');
     const forgotPasswordBtn = document.getElementById('forgotPasswordBtn');
     const forgotPasswordModal = document.getElementById('forgotPasswordModal');
@@ -566,31 +601,40 @@
     const cancelRecoveryBtn = document.getElementById('cancelRecoveryBtn');
     const modalAlertContainer = document.getElementById('modalAlertContainer');
 
+    function togglePasswordVisibility(inputId, button) {
+      const input = document.getElementById(inputId);
+      const svg = button.querySelector('svg');
+      if (input.type === 'password') {
+        input.type = 'text';
+        // Eye off SVG
+        svg.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>';
+      } else {
+        input.type = 'password';
+        // Eye on SVG
+        svg.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>';
+      }
+    }
+
     function validateEmail(email) {
       return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     }
 
     function validatePassword(password) {
-      return /^\d{4}$/.test(password);
+      return password.length >= 4;
     }
 
     function updateSecurityIndicator(value) {
-      const percentage = Math.min(4, value.length) / 4 * 100;
-      securityFill.style.width = `${percentage}%`;
       if (!value) {
         passwordStatus.textContent = '';
         passwordStatus.className = 'status-message';
-        securityFill.style.background = '#e2e8f0';
         return;
       }
       if (validatePassword(value)) {
-        passwordStatus.textContent = '✓ Security code looks good';
+        passwordStatus.textContent = '✓ Password format valid';
         passwordStatus.className = 'status-message valid';
-        securityFill.style.background = 'var(--success)';
       } else {
-        passwordStatus.textContent = 'Security code must be 4 digits';
+        passwordStatus.textContent = 'Password must be at least 4 characters';
         passwordStatus.className = 'status-message invalid';
-        securityFill.style.background = 'var(--warning)';
       }
     }
 
@@ -619,9 +663,7 @@
     });
 
     passwordInput.addEventListener('input', (event) => {
-      const value = event.target.value.replace(/[^0-9]/g, '').slice(0, 4);
-      event.target.value = value;
-      updateSecurityIndicator(value);
+      updateSecurityIndicator(event.target.value);
     });
 
     loginForm.addEventListener('submit', async (event) => {
@@ -629,7 +671,7 @@
       const email = emailInput.value.trim();
       const password = passwordInput.value;
       if (!email || !password) {
-        showAlert('Please enter both email and security code.', 'error');
+        showAlert('Please enter both email and password.', 'error');
         return;
       }
       if (!validateEmail(email)) {
@@ -637,7 +679,7 @@
         return;
       }
       if (!validatePassword(password)) {
-        showAlert('Security code must be exactly 4 digits.', 'error');
+        showAlert('Password must be at least 4 characters.', 'error');
         return;
       }
       loginBtn.disabled = true;

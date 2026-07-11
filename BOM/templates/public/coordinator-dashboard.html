@@ -243,6 +243,129 @@
             color: var(--warning);
         }
 
+        /* Modals */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(4px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+
+        .modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            width: 90%;
+            max-width: 500px;
+            box-shadow: var(--shadow-xl);
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: var(--secondary);
+            font-size: 1.25rem;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-sm);
+            transition: all 0.2s;
+        }
+
+        .close-modal:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.85rem 1.1rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-size: 0.95rem;
+            color: var(--text-main);
+            background: #fff;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.12);
+        }
+
+        .password-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            color: var(--secondary);
+            cursor: pointer;
+            padding: 0;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .password-toggle:hover {
+            color: var(--text-main);
+        }
+
         /* Content Cards */
         .content-card {
             background: var(--bg-card);
@@ -2503,6 +2626,10 @@
                     <div class="name" id="coordinatorName">Loading...</div>
                     <div class="role" id="schoolName">Loading...</div>
                 </div>
+                <button class="btn btn-outline" style="margin-right: 12px;" onclick="openChangePasswordModal()">
+                    <i class="fas fa-key"></i>
+                    Change Password
+                </button>
                 <button class="logout-btn" onclick="logout()">
                     <i class="fas fa-sign-out-alt"></i>
                     Logout
@@ -3194,6 +3321,11 @@
                     updateLockState();
 
                     document.getElementById('loadingState').style.display = 'none';
+
+                    // Check for forced password reset
+                    if (data.forcePasswordReset || coordinatorData.forcePasswordReset) {
+                        openChangePasswordModal(true);
+                    }
                 } else {
                     const error = await response.json();
                     if (response.status === 401) {
@@ -4094,6 +4226,154 @@
             loadDashboard();
         });
 
+    </script>
+    <!-- Change Password Modal -->
+    <div id="changePasswordModal" class="modal">
+        <div class="modal-content" style="max-width: 400px;">
+            <div class="modal-header">
+                <h3>Update Your Password</h3>
+                <button class="close-modal" id="changePasswordCloseBtn" onclick="closeChangePasswordModal()" aria-label="Close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom: 1rem; color: var(--text-muted); font-size: 0.9rem;" id="changePasswordMessage">
+                    Please set a new password for your account.
+                </p>
+                <form id="changePasswordForm" onsubmit="handleChangePassword(event)">
+                    <div class="form-group">
+                        <label class="form-label" style="display:block; margin-bottom:0.5rem; font-weight:600;">New Password</label>
+                        <div class="password-wrapper">
+                            <input type="password" class="form-input" id="newPassword" style="padding-right: 2.5rem;" required minlength="6" placeholder="Enter new password (min 6 chars)">
+                            <button type="button" class="password-toggle" onclick="togglePasswordVisibility('newPassword', this)" aria-label="Toggle password visibility">
+                                <svg id="eye-icon-newpass" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-top: 1rem;">
+                        <label class="form-label" style="display:block; margin-bottom:0.5rem; font-weight:600;">Confirm Password</label>
+                        <div class="password-wrapper">
+                            <input type="password" class="form-input" id="confirmPassword" style="padding-right: 2.5rem;" required minlength="6" placeholder="Confirm your new password">
+                            <button type="button" class="password-toggle" onclick="togglePasswordVisibility('confirmPassword', this)" aria-label="Toggle password visibility">
+                                <svg id="eye-icon-confpass" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="modal-footer" style="padding: 1rem 0 0 0; margin-top: 1.5rem; border-top: 1px solid var(--border-color);">
+                        <button type="button" class="btn btn-outline" id="changePasswordCancelBtn" onclick="closeChangePasswordModal()">Cancel</button>
+                        <button type="submit" class="btn btn-primary" id="changePasswordSubmitBtn">Update Password</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let isForcePasswordReset = false;
+
+        function openChangePasswordModal(force = false) {
+            isForcePasswordReset = force;
+            const modal = document.getElementById('changePasswordModal');
+            const closeBtn = document.getElementById('changePasswordCloseBtn');
+            const cancelBtn = document.getElementById('changePasswordCancelBtn');
+            const msg = document.getElementById('changePasswordMessage');
+            
+            if (force) {
+                closeBtn.style.display = 'none';
+                cancelBtn.style.display = 'none';
+                msg.textContent = "You are currently using a temporary password. Please set a secure password before continuing.";
+                msg.style.color = "var(--warning)";
+                modal.style.backdropFilter = "blur(10px)";
+                modal.style.backgroundColor = "rgba(0,0,0,0.8)";
+            } else {
+                closeBtn.style.display = 'flex';
+                cancelBtn.style.display = 'block';
+                msg.textContent = "Please set a new password for your account.";
+                msg.style.color = "var(--text-muted)";
+                modal.style.backdropFilter = "blur(4px)";
+                modal.style.backgroundColor = "rgba(15, 23, 42, 0.4)";
+            }
+            
+            document.getElementById('newPassword').value = '';
+            document.getElementById('confirmPassword').value = '';
+            modal.classList.add('active');
+        }
+
+        function closeChangePasswordModal() {
+            if (isForcePasswordReset) return; // Prevent closing if forced
+            document.getElementById('changePasswordModal').classList.remove('active');
+        }
+
+        function togglePasswordVisibility(inputId, button) {
+            const input = document.getElementById(inputId);
+            const svg = button.querySelector('svg');
+            if (input.type === 'password') {
+                input.type = 'text';
+                svg.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>';
+            } else {
+                input.type = 'password';
+                svg.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>';
+            }
+        }
+
+        async function handleChangePassword(e) {
+            e.preventDefault();
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const submitBtn = document.getElementById('changePasswordSubmitBtn');
+
+            if (newPassword !== confirmPassword) {
+                alert("Passwords do not match");
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                alert("Password must be at least 6 characters");
+                return;
+            }
+
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
+            submitBtn.disabled = true;
+
+            try {
+                const response = await fetch(`${API}/coordinator/change-password`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${coordinatorToken}`
+                    },
+                    body: JSON.stringify({ newPassword, confirmPassword })
+                });
+
+                const data = await response.json();
+                if (response.ok && data.success) {
+                    alert("Password updated successfully!");
+                    isForcePasswordReset = false; // Reset the flag
+                    
+                    // Update localStorage so it doesn't pop up on reload
+                    let coordinatorData = JSON.parse(localStorage.getItem('coordinatorData') || '{}');
+                    coordinatorData.forcePasswordReset = false;
+                    localStorage.setItem('coordinatorData', JSON.stringify(coordinatorData));
+                    
+                    closeChangePasswordModal();
+                } else {
+                    alert(data.message || "Failed to update password");
+                }
+            } catch (err) {
+                console.error("Change password error:", err);
+                alert("An error occurred. Please try again.");
+            } finally {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        }
     </script>
 </body>
 

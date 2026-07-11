@@ -49,6 +49,7 @@ def _profile_dict(profile):
         "coordinatorName": profile.coordinator_name,
         "coordinatorEmail": profile.user.email,
         "coordinatorPhone": profile.coordinator_phone,
+        "forcePasswordReset": profile.force_password_reset,
     }
 
 
@@ -104,9 +105,13 @@ def api_signup(request):
         return JsonResponse({"success": False, "message": "Invalid method"}, status=405)
 
     data = _json_body(request)
-    required = ["schoolName", "schoolAddress", "coordinatorName", "coordinatorPhone", "coordinatorEmail"]
+    required = ["schoolName", "schoolAddress", "coordinatorName", "coordinatorPhone", "coordinatorEmail", "password"]
     if any(not data.get(field) for field in required):
         return JsonResponse({"success": False, "message": "All fields are required"}, status=400)
+
+    password = data.get("password", "")
+    if len(password) < 6:
+        return JsonResponse({"success": False, "message": "Password must be at least 6 characters"}, status=400)
 
     email = data["coordinatorEmail"].strip().lower()
     phone = re.sub(r"\D", "", data["coordinatorPhone"])
@@ -118,7 +123,7 @@ def api_signup(request):
     user = User.objects.create_user(
         username=email,
         email=email,
-        password=phone[-4:],
+        password=password,
         first_name=data["coordinatorName"].strip().split(" ")[0],
         last_name=" ".join(data["coordinatorName"].strip().split(" ")[1:]) or "",
         role=User.COORDINATOR,
@@ -132,11 +137,11 @@ def api_signup(request):
         coordinator_phone=phone,
     )
     RegistrationPayment.objects.create(coordinator=profile)
-    send_signup_credentials_email(request, user, phone[-4:])
+    send_signup_credentials_email(request, user, password)
     return JsonResponse(
         {
             "success": True,
-            "message": "Account created. You can now login with the last 4 digits of your phone number.",
+            "message": "Account created successfully.",
             "coordinator": _profile_dict(profile),
         }
     )
@@ -149,10 +154,10 @@ def api_login(request):
 
     data = _json_body(request)
     email = data.get("email", "").strip().lower()
-    password = re.sub(r"\D", "", data.get("password", ""))[-4:]
+    password = data.get("password", "")
     user = authenticate(request, username=email, password=password)
     if not user or user.role != User.COORDINATOR:
-        return JsonResponse({"success": False, "message": "Invalid email or security code"}, status=401)
+        return JsonResponse({"success": False, "message": "Invalid email or password"}, status=401)
     response = issue_login_response(request, user, "/coordinator/dashboard/")
     payload = json.loads(response.content.decode("utf-8"))
     payload["coordinator"] = _profile_dict(user.coordinator_profile)
@@ -162,13 +167,59 @@ def api_login(request):
 
 @csrf_exempt
 def api_forgot_password(request):
+    from django.utils.crypto import get_random_string
+    from Account.views import send_html_email
+
     data = _json_body(request)
     email = data.get("email", "").strip().lower()
     try:
         user = User.objects.get(email=email, role=User.COORDINATOR)
     except User.DoesNotExist:
         return JsonResponse({"success": False, "message": "Coordinator not found"}, status=404)
-    return JsonResponse({"success": True, "message": "Your security code is the last 4 digits of your registered phone number."})
+    
+    new_password = get_random_string(length=8)
+    user.set_password(new_password)
+    user.coordinator_profile.force_password_reset = True
+    user.coordinator_profile.save(update_fields=["force_password_reset"])
+    user.save(update_fields=["password"])
+    
+    send_html_email(
+        request,
+        "Your new Brain-O-Math password",
+        "account/email/password_reset_email.html",
+        {
+            "user": user,
+            "password": new_password,
+            "login_url": f"{'https' if request.is_secure() else 'http'}://{request.get_host()}/coordinator/login/",
+        },
+        [user.email],
+    )
+    
+    return JsonResponse({"success": True, "message": "A new password has been sent to your registered email address."})
+
+
+@jwt_required(roles=[User.COORDINATOR])
+@csrf_exempt
+def api_change_password(request):
+    data = _json_body(request)
+    new_password = data.get("newPassword", "")
+    confirm_password = data.get("confirmPassword", "")
+
+    if len(new_password) < 6:
+        return JsonResponse({"success": False, "message": "Password must be at least 6 characters long"}, status=400)
+    
+    if new_password != confirm_password:
+        return JsonResponse({"success": False, "message": "Passwords do not match"}, status=400)
+
+    user = request.user
+    user.set_password(new_password)
+    user.save(update_fields=["password"])
+
+    if hasattr(user, 'coordinator_profile'):
+        user.coordinator_profile.force_password_reset = False
+        user.coordinator_profile.save(update_fields=["force_password_reset"])
+
+    return JsonResponse({"success": True, "message": "Password updated successfully"})
 
 
 @jwt_required(roles=[User.COORDINATOR])

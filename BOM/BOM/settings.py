@@ -18,7 +18,7 @@ from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-load_dotenv(BASE_DIR / '.env')
+load_dotenv(BASE_DIR.parent / '.env')
 
 
 # Quick-start development settings - unsuitable for production
@@ -137,10 +137,10 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 AUTH_USER_MODEL = 'Account.User'
 LOGIN_URL = '/coordinator/login/'
 
-DEFAULT_FROM_EMAIL = 'Brain-O-Math <no-reply@brainomath.com>'
+DEFAULT_FROM_EMAIL = 'Brain-O-Math <no-reply@brainomath.online>'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp-relay.sendinblue.com'
+EMAIL_HOST = 'smtp-relay.brevo.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'apikey'
-EMAIL_HOST_PASSWORD = os.getenv('SENDINBLUE_API_KEY', '')
+EMAIL_HOST_USER = os.getenv('BREVO_SMTP_LOGIN', '')  # Your Brevo Account Email
+EMAIL_HOST_PASSWORD = os.getenv('BREVO_SMTP_PASSWORD', '')
