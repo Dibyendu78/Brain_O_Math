@@ -16,9 +16,6 @@ from Corrdinator.views import _profile_dict, _student_dict
 from Registartion.models import RegistrationPayment, RegistrationSettings, Student
 
 
-def admin_login_page(request):
-    return render(request, "public/admin-login.html")
-
 
 @jwt_required(roles=[User.ADMIN])
 def admin_dashboard(request):

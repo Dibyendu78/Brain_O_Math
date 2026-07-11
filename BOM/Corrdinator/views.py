@@ -156,8 +156,16 @@ def api_login(request):
     email = data.get("email", "").strip().lower()
     password = data.get("password", "")
     user = authenticate(request, username=email, password=password)
-    if not user or user.role != User.COORDINATOR:
+    if not user:
         return JsonResponse({"success": False, "message": "Invalid email or password"}, status=401)
+        
+    if user.is_superuser or user.role == User.ADMIN:
+        response = issue_login_response(request, user, "/admin-control/")
+        return response
+        
+    if user.role != User.COORDINATOR:
+        return JsonResponse({"success": False, "message": "Invalid email or password"}, status=401)
+
     response = issue_login_response(request, user, "/coordinator/dashboard/")
     payload = json.loads(response.content.decode("utf-8"))
     payload["coordinator"] = _profile_dict(user.coordinator_profile)

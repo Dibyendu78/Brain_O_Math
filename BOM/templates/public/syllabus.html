@@ -1,0 +1,837 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detailed Syllabus - Brain-O-Math Olympiad {{ event_config.event_year }}</title>
+    <meta name="description" content="View the detailed syllabus for Brain-O-Math Olympiad. Organized by Categories A, B, C, D, and E across Mathematics, Science, Computer Science, and English.">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-dark: #0f172a;
+            --primary: #1e1b4b;
+            --secondary: #4338ca;
+            --accent: #d946ef;
+            --accent-light: #fdf4ff;
+            --text-light: #f8fafc;
+            --text-gray: #94a3b8;
+            --white: #ffffff;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--primary-dark);
+            color: var(--text-light);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Ambient Background */
+        .ambient-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 15% 50%, rgba(67, 56, 202, 0.15), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(217, 70, 239, 0.15), transparent 25%);
+        }
+
+        /* Navigation */
+        header {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--glass-border);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav.container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            text-decoration: none;
+        }
+
+        .logo-image {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--glass-border);
+        }
+
+        .logo-text {
+            color: var(--white);
+            font-weight: 700;
+            font-size: 1.25rem;
+            line-height: 1.2;
+            text-decoration: none;
+        }
+
+        .back-btn {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--white);
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Main Content */
+        .main-container {
+            max-width: 1200px;
+            margin: 120px auto 40px;
+            padding: 0 2rem;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #fff 0%, #a5b4fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .page-subtitle {
+            color: var(--text-gray);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Tabs */
+        .tabs-container {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 0.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 3rem;
+            justify-content: center;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-gray);
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .tab-btn:hover {
+            color: var(--white);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--accent) 100%);
+            color: var(--white);
+            box-shadow: 0 4px 15px rgba(217, 70, 239, 0.3);
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Syllabus Grid */
+        .subjects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .subject-card {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .subject-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border-color: rgba(217, 70, 239, 0.3);
+        }
+
+        .subject-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .subject-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, rgba(67, 56, 202, 0.2), rgba(217, 70, 239, 0.2));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--accent);
+        }
+
+        .subject-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--white);
+        }
+
+        .topic-list {
+            list-style: none;
+        }
+
+        .topic-list li {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        .topic-list li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-weight: bold;
+        }
+        
+        /* Sub-subjects (like Physics/Chem/Bio in Science) */
+        .sub-subject-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #a5b4fc;
+            margin: 1.5rem 0 0.75rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 2rem;
+            }
+            .tab-btn {
+                min-width: calc(50% - 0.5rem);
+                padding: 0.75rem 1rem;
+                font-size: 0.9rem;
+            }
+            .subjects-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="ambient-bg"></div>
+
+    <header>
+        <nav class="container">
+            <a href="/" class="logo-container">
+                <img src="{% static 'public/logo.jpg' %}" alt="Brain-O-Math Logo" class="logo-image">
+                <div class="logo-text">Brain-O-Math<br>Olympiad {{ event_config.event_year }}</div>
+            </a>
+            <a href="/" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Back to Home
+            </a>
+        </nav>
+    </header>
+
+    <main class="main-container">
+        <div class="page-header">
+            <h1 class="page-title">Detailed Syllabus</h1>
+            <p class="page-subtitle">Comprehensive breakdown of topics across all categories and subjects for the Brain-O-Math Olympiad.</p>
+        </div>
+
+        <div class="tabs-container">
+            <button class="tab-btn active" onclick="openTab('catA')">Category A <br><small>(Classes III–IV)</small></button>
+            <button class="tab-btn" onclick="openTab('catB')">Category B <br><small>(Classes V–VI)</small></button>
+            <button class="tab-btn" onclick="openTab('catC')">Category C <br><small>(Classes VII–VIII)</small></button>
+            <button class="tab-btn" onclick="openTab('catD')">Category D <br><small>(Classes IX–X)</small></button>
+            <button class="tab-btn" onclick="openTab('catE')">Category E <br><small>(Classes XI–XII)</small></button>
+        </div>
+
+        <!-- CATEGORY A -->
+        <div id="catA" class="tab-content active">
+            <div class="subjects-grid">
+                <div class="subject-card">
+                    <div class="subject-header">
+                        <div class="subject-icon"><i class="fas fa-calculator"></i></div>
+                        <h2 class="subject-title">Mathematics</h2>
+                    </div>
+                    <ul class="topic-list">
+                        <li>Number System</li>
+                        <li>Fundamental Operations (Addition, Subtraction, Multiplication & Division)</li>
+                        <li>Factors, Multiples & Fractions</li>
+                        <li>Geometry, Symmetry & Patterns</li>
+                        <li>Measurement, Time & Money</li>
+                        <li>Data Handling</li>
+                        <li>Mathematical Word Problems</li>
+                        <li>Mental Mathematics</li>
+                        <li>Logical Reasoning & HOTS</li>
+                    </ul>
+                </div>
+                <div class="subject-card">
+                    <div class="subject-header">
+                        <div class="subject-icon"><i class="fas fa-flask"></i></div>
+                        <h2 class="subject-title">Science</h2>
+                    </div>
+                    <ul class="topic-list">
+                        <li>Food, Nutrition & Digestion</li>
+                        <li>Plants and Their Uses</li>
+                        <li>Animals and Their Life Processes</li>
+                        <li>Human Body and Health</li>
+                        <li>States of Matter</li>
+                        <li>Force, Work & Energy</li>
+                        <li>Air, Water & Weather</li>
+                        <li>Earth and Solar System</li>
+                        <li>Living and Non-Living Things</li>
+                        <li>Natural Resources & Conservation</li>
+                        <li>Scientific Reasoning and Everyday Science Applications</li>
+                    </ul>
+                </div>
+                <div class="subject-card">
+                    <div class="subject-header">
+                        <div class="subject-icon"><i class="fas fa-laptop-code"></i></div>
+                        <h2 class="subject-title">Computer Science</h2>
+                    </div>
+                    <ul class="topic-list">
+                        <li>Computer Fundamentals</li>
+                        <li>Parts of a Computer</li>
+                        <li>Characteristics & Uses of Computers</li>
+                        <li>Hardware & Software</li>
+                        <li>Types of Computers</li>
+                        <li>Input, Output & Storage Devices</li>
+                        <li>Windows Operating System</li>
+                        <li>File & Folder Management</li>
+                        <li>Computer Keyboard & Mouse</li>
+                        <li>Microsoft Paint</li>
+                        <li>Internet Basics</li>
+                        <li>Artificial Intelligence (AI)</li>
+                        <li>AI in Daily Life</li>
+                        <li>Computer Awareness</li>
+                        <li>Picture-Based Computer Concepts</li>
+                    </ul>
+                </div>
+                <div class="subject-card">
+                    <div class="subject-header">
+                        <div class="subject-icon"><i class="fas fa-book-open"></i></div>
+                        <h2 class="subject-title">English</h2>
+                    </div>
+                    <ul class="topic-list">
+                        <li>Spelling & Vocabulary</li>
+                        <li>Synonyms and Antonyms</li>
+                        <li>Nouns, Pronouns & Gender</li>
+                        <li>Verbs, Tenses & Subject–Verb Agreement</li>
+                        <li>Adjectives & Adverbs</li>
+                        <li>Articles, Prepositions & Conjunctions</li>
+                        <li>Punctuation & Contractions</li>
+                        <li>Sentence Formation & Jumbled Words</li>
+                        <li>Reading Comprehension</li>
+                        <li>Spoken and Written Expression</li>
+                        <li>Grammar-Based Logical Reasoning</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- CATEGORY B -->
+        <div id="catB" class="tab-content">
+            <div class="subjects-grid">
+                <div class="subject-card">
+                    <div class="subject-header">
+                        <div class="subject-icon"><i class="fas fa-calculator"></i></div>
+                        <h2 class="subject-title">Mathematics</h2>
+                    </div>
+                    <ul class="topic-list">
+                        <li>Number System</li>
+                        <li>Fundamental Operations</li>
+                        <li>Factors & Multiples</li>
+                        <li>Fractions & Decimals</li>
+                        <li>Integers</li>
+                        <li>Simplification</li>
+                        <li>Ratio & Percentage</li>
+                        <li>Measurement</li>
+                        <li>Time, Money & Temperature</li>
+                        <li>Basic Algebra</li>
+                        <li>Geometry</li>
+                        <li>Mensuration</li>
+                        <li>Data Handling</li>
+                    </ul>
+                </div>
+                <div class="subject-card">
+                    <div class="subject-header">
+                        <div class="subject-icon"><i class="fas fa-flask"></i></div>
+                        <h2 class="subject-title">Science</h2>
+                    </div>
+                    <ul class="topic-list">
+                        <li>Plants: Structure, Adaptation & Food Production</li>
+                        <li>Food, Nutrition & Digestion</li>
+                        <li>Animals & Their Adaptations</li>
+                        <li>States of Matter</li>
+                        <li>Force, Work & Energy</li>
+                        <li>Motion</li>
+                        <li>Simple Machines</li>
+                        <li>Light, Shadows & the Solar System</li>
+                        <li>Environment & Pollution</li>
+                        <li>Scientific Investigation & Everyday Science Applications</li>
+                    </ul>
+                </div>
+                <div class="subject-card">
+                    <div class="subject-header">
+                        <div class="subject-icon"><i class="fas fa-laptop-code"></i></div>
+                        <h2 class="subject-title">Computer Science</h2>
+                    </div>
+                    <ul class="topic-list">
+                        <li>Computer Fundamentals</li>
+                        <li>Evolution & Generations of Computers</li>
+                        <li>Types of Computers</li>
+                        <li>Computer Hardware & Software</li>
+                        <li>Input, Output & Storage Devices</li>
+                        <li>Windows Operating System</li>
+                        <li>File & Folder Management</li>
+                        <li>Microsoft Word</li>
+                        <li>Microsoft PowerPoint</li>
+                        <li>Microsoft Excel</li>
+                        <li>Internet & Web Browsing</li>
+                        <li>E-mail & Digital Communication</li>
+                        <li>Artificial Intelligence (AI)</li>
+                        <li>Cyber Safety & Digital Citizenship</li>
+                        <li>Computer Ethics & Responsible Use of Technology</li>
+                        <li>Computational Thinking</li>
+                    </ul>
+                </div>
+                <div class="subject-card">
+                    <div class="subject-header">
+                        <div class="subject-icon"><i class="fas fa-book-open"></i></div>
+                        <h2 class="subject-title">English</h2>
+                    </div>
+                    <ul class="topic-list">
+                        <li>Nouns</li>
+                        <li>Pronouns</li>
+                        <li>Verbs & Modals</li>
+                        <li>Adjectives</li>
+                        <li>Adverbs</li>
+                        <li>Articles</li>
+                        <li>Prepositions</li>
+                        <li>Conjunctions</li>
+                        <li>Tenses</li>
+                        <li>Voice & Narration</li>
+                        <li>Vocabulary & Word Power</li>
+                        <li>Reading Comprehension</li>
+                        <li>Spoken & Written Expression</li>
+                        <li>Grammar-Based Logical Reasoning</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- CATEGORY C -->
+        <div id="catC" class="tab-content">
+            <div class="subjects-grid">
+                <div class="subject-card">
+                    <div class="subject-header">
+                        <div class="subject-icon"><i class="fas fa-calculator"></i></div>
+                        <h2 class="subject-title">Mathematics</h2>
+                    </div>
+                    <ul class="topic-list">
+                        <li>Number System & Rational Numbers</li>
+                        <li>Exponents, Powers & Square/Cube Roots</li>
+                        <li>Algebraic Expressions</li>
+                        <li>Linear Equations</li>
+                        <li>Ratio & Proportion</li>
+                        <li>Percentage</li>
+                        <li>Profit, Loss & Discount</li>
+                        <li>Simple Interest</li>
+                        <li>Lines & Angles</li>
+                        <li>Triangles & Congruence</li>
+                        <li>Pythagoras Theorem</li>
+                        <li>Mensuration</li>
+                        <li>Data Handling</li>
+                        <li>Probability</li>
+                    </ul>
+                </div>
+                <div class="subject-card">
+                    <div class="subject-header">
+                        <div class="subject-icon"><i class="fas fa-flask"></i></div>
+                        <h2 class="subject-title">Science</h2>
+                    </div>
+                    <ul class="topic-list">
+                        <li>Motion & Measurement</li>
+                        <li>Force, Pressure & Simple Machines</li>
+                        <li>Light, Reflection, Electricity & Magnetism</li>
+                        <li>Matter & Its Properties</li>
+                        <li>Physical & Chemical Changes</li>
+                        <li>Metals & Non-Metals</li>
+                        <li>Combustion, Coal & Petroleum</li>
+                        <li>Plant Life</li>
+                        <li>Transport in Plants</li>
+                        <li>Nutrition in Plants & Animals</li>
+                        <li>Tissues</li>
+                        <li>Kingdom Classification</li>
+                        <li>Scientific Investigation & Everyday Science Applications</li>
+                    </ul>
+                </div>
+                <div class="subject-card">
+                    <div class="subject-header">
+                        <div class="subject-icon"><i class="fas fa-laptop-code"></i></div>
+                        <h2 class="subject-title">Computer Science</h2>
+                    </div>
+                    <ul class="topic-list">
+                        <li>Fundamentals of Computers</li>
+                        <li>Evolution & Generations of Computers</li>
+                        <li>Computer Hardware & Software</li>
+                        <li>Number System</li>
+                        <li>Windows Operating System</li>
+                        <li>File & Folder Management</li>
+                        <li>Microsoft Word</li>
+                        <li>Microsoft Excel</li>
+                        <li>Microsoft PowerPoint</li>
+                        <li>Internet & Web Technologies</li>
+                        <li>HTML Basics</li>
+                        <li>Python Programming</li>
+                        <li>Robotics Fundamentals</li>
+                        <li>Artificial Intelligence (AI)</li>
+                        <li>Cyber Safety & Cyber Security</li>
+                        <li>Logical Reasoning & Computational Thinking</li>
+                        <li>Application-Based Computer Science</li>
+                    </ul>
+                </div>
+                <div class="subject-card">
+                    <div class="subject-header">
+                        <div class="subject-icon"><i class="fas fa-book-open"></i></div>
+                        <h2 class="subject-title">English</h2>
+                    </div>
+                    <ul class="topic-list">
+                        <li>Nouns</li>
+                        <li>Pronouns</li>
+                        <li>Verbs & Modals</li>
+                        <li>Adjectives</li>
+                        <li>Adverbs</li>
+                        <li>Articles</li>
+                        <li>Prepositions</li>
+                        <li>Conjunctions</li>
+                        <li>Tenses</li>
+                        <li>Voice & Narration</li>
+                        <li>Vocabulary & Word Power</li>
+                        <li>Reading Comprehension</li>
+                        <li>Spoken & Written Expression</li>
+                        <li>Grammar-Based Logical Reasoning</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- CATEGORY D -->
+        <div id="catD" class="tab-content">
+            <div class="subjects-grid">
+                <div class="subject-card">
+                    <div class="subject-header">
+                        <div class="subject-icon"><i class="fas fa-calculator"></i></div>
+                        <h2 class="subject-title">Mathematics</h2>
+                    </div>
+                    <ul class="topic-list">
+                        <li>Number System & Number Theory</li>
+                        <li>Algebra</li>
+                        <li>Coordinate Geometry</li>
+                        <li>Geometry</li>
+                        <li>Trigonometry</li>
+                        <li>Mensuration</li>
+                        <li>Statistics</li>
+                        <li>Probability</li>
+                        <li>Mathematical Reasoning</li>
+                        <li>Data Interpretation</li>
+                    </ul>
+                </div>
+                <div class="subject-card">
+                    <div class="subject-header">
+                        <div class="subject-icon"><i class="fas fa-flask"></i></div>
+                        <h2 class="subject-title">Science</h2>
+                    </div>
+                    <ul class="topic-list">
+                        <li>Motion</li>
+                        <li>Force & Laws of Motion</li>
+                        <li>Work, Energy & Power</li>
+                        <li>Gravitation</li>
+                        <li>Heat</li>
+                        <li>Light</li>
+                        <li>Sound</li>
+                        <li>Electricity</li>
+                        <li>Physical Quantities & Measurement</li>
+                        <li>Matter and Its Nature</li>
+                        <li>Elements, Compounds & Mixtures</li>
+                        <li>Separation Techniques</li>
+                        <li>States of Matter</li>
+                        <li>Solutions & Solubility</li>
+                        <li>Physical & Chemical Changes</li>
+                        <li>Atomic Structure</li>
+                        <li>Chemical Reactions</li>
+                        <li>Acids, Bases & Salts</li>
+                        <li>Metals & Non-Metals</li>
+                        <li>Cell: The Fundamental Unit of Life</li>
+                        <li>Tissues</li>
+                        <li>Life Processes</li>
+                        <li>Reproduction</li>
+                        <li>Heredity & Evolution</li>
+                        <li>Environment & Ecology</li>
+                    </ul>
+                </div>
+                <div class="subject-card">
+                    <div class="subject-header">
+                        <div class="subject-icon"><i class="fas fa-laptop-code"></i></div>
+                        <h2 class="subject-title">Computer Science</h2>
+                    </div>
+                    <ul class="topic-list">
+                        <li>Computer Fundamentals</li>
+                        <li>Computer Hardware & Software</li>
+                        <li>Number System</li>
+                        <li>Operating Systems</li>
+                        <li>Digital Literacy & ICT</li>
+                        <li>Internet & Web Technologies</li>
+                        <li>Office Productivity Tools</li>
+                        <li>Artificial Intelligence (AI)</li>
+                        <li>Machine Learning & AI Applications</li>
+                        <li>Networking</li>
+                        <li>Cyber Safety & Cyber Security</li>
+                        <li>Internet of Things (IoT)</li>
+                        <li>Robotics</li>
+                        <li>Cloud Computing</li>
+                        <li>Emerging Technologies</li>
+                        <li>Logical & Analytical Reasoning</li>
+                        <li>Technology Awareness</li>
+                    </ul>
+                </div>
+                <div class="subject-card">
+                    <div class="subject-header">
+                        <div class="subject-icon"><i class="fas fa-book-open"></i></div>
+                        <h2 class="subject-title">English</h2>
+                    </div>
+                    <ul class="topic-list">
+                        <li>Synonyms & Antonyms</li>
+                        <li>Analogies, Spellings & Vocabulary</li>
+                        <li>Idioms & One-Word Substitutions</li>
+                        <li>Error Detection & Sentence Sequencing</li>
+                        <li>Nouns</li>
+                        <li>Verbs & Phrasal Verbs</li>
+                        <li>Adjectives & Adverbs</li>
+                        <li>Articles, Prepositions & Determiners</li>
+                        <li>Conjunctions</li>
+                        <li>Tenses</li>
+                        <li>Voice & Narration</li>
+                        <li>Reading Comprehension</li>
+                        <li>Spoken & Written Expression</li>
+                        <li>Grammar-Based Logical Reasoning</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- CATEGORY E -->
+        <div id="catE" class="tab-content">
+            <div class="subjects-grid">
+                <div class="subject-card">
+                    <div class="subject-header">
+                        <div class="subject-icon"><i class="fas fa-calculator"></i></div>
+                        <h2 class="subject-title">Mathematics</h2>
+                    </div>
+                    <ul class="topic-list">
+                        <li>Sets, Relations & Functions</li>
+                        <li>Algebra</li>
+                        <li>Complex Numbers</li>
+                        <li>Matrices & Determinants</li>
+                        <li>Sequences & Series</li>
+                        <li>Permutations & Combinations</li>
+                        <li>Binomial Theorem</li>
+                        <li>Trigonometry</li>
+                        <li>Coordinate Geometry</li>
+                        <li>Calculus</li>
+                        <li>Vectors & Three-Dimensional Geometry</li>
+                        <li>Probability & Statistics</li>
+                    </ul>
+                </div>
+                <div class="subject-card" style="grid-row: span 2;">
+                    <div class="subject-header">
+                        <div class="subject-icon"><i class="fas fa-flask"></i></div>
+                        <h2 class="subject-title">Science</h2>
+                    </div>
+                    
+                    <h3 class="sub-subject-title"><i class="fas fa-atom" style="margin-right:8px;"></i>Physics</h3>
+                    <ul class="topic-list">
+                        <li>Units & Measurements</li>
+                        <li>Motion in a Straight Line</li>
+                        <li>Motion in a Plane</li>
+                        <li>Laws of Motion</li>
+                        <li>Work, Energy & Power</li>
+                        <li>Gravitation</li>
+                        <li>Oscillations & Waves</li>
+                        <li>Light: Reflection & Refraction</li>
+                        <li>Electricity</li>
+                        <li>Modern Physics</li>
+                    </ul>
+
+                    <h3 class="sub-subject-title"><i class="fas fa-vial" style="margin-right:8px;"></i>Chemistry</h3>
+                    <ul class="topic-list">
+                        <li>Some Basic Concepts of Chemistry</li>
+                        <li>Structure of Atom</li>
+                        <li>Chemical Reactions & Equations</li>
+                        <li>States of Matter</li>
+                        <li>Chemical Bonding</li>
+                        <li>Acids, Bases & Salts</li>
+                        <li>Metals & Non-Metals</li>
+                        <li>Carbon & Its Compounds</li>
+                        <li>Thermodynamics</li>
+                        <li>Organic Chemistry Fundamentals</li>
+                    </ul>
+
+                    <h3 class="sub-subject-title"><i class="fas fa-dna" style="margin-right:8px;"></i>Biology</h3>
+                    <ul class="topic-list">
+                        <li>Cell: Structure & Function</li>
+                        <li>Cell Cycle & Cell Division</li>
+                        <li>Plant Physiology</li>
+                        <li>Human Physiology</li>
+                        <li>Principles of Inheritance & Variation</li>
+                        <li>Biodiversity & Conservation</li>
+                        <li>Biotechnology (Basics)</li>
+                        <li>Ecology & Environment</li>
+                    </ul>
+                </div>
+                <div class="subject-card">
+                    <div class="subject-header">
+                        <div class="subject-icon"><i class="fas fa-laptop-code"></i></div>
+                        <h2 class="subject-title">Computer Science</h2>
+                    </div>
+                    <ul class="topic-list">
+                        <li>Computer Systems & Fundamentals</li>
+                        <li>Computer Hardware & Software</li>
+                        <li>Number System & Binary Arithmetic</li>
+                        <li>Operating Systems</li>
+                        <li>Computational Thinking</li>
+                        <li>Algorithms & Flowcharts</li>
+                        <li>Python Programming</li>
+                        <li>Data Structures (Basic)</li>
+                        <li>Computer Networks</li>
+                        <li>Internet & Web Technologies</li>
+                        <li>Cyber Safety & Digital Ethics</li>
+                        <li>Artificial Intelligence (AI)</li>
+                        <li>Machine Learning & Emerging Technologies</li>
+                        <li>Cloud Computing & Internet of Things (IoT)</li>
+                        <li>Robotics & Generative AI</li>
+                        <li>Technology Awareness</li>
+                        <li>Logical & Analytical Reasoning</li>
+                        <li>Application-Based Computer Science</li>
+                    </ul>
+                </div>
+                <div class="subject-card">
+                    <div class="subject-header">
+                        <div class="subject-icon"><i class="fas fa-book-open"></i></div>
+                        <h2 class="subject-title">English</h2>
+                    </div>
+                    <ul class="topic-list">
+                        <li>Synonyms & Antonyms</li>
+                        <li>Analogies, Spellings & Vocabulary</li>
+                        <li>Idioms & One-Word Substitutions</li>
+                        <li>Error Detection & Sentence Sequencing</li>
+                        <li>Nouns</li>
+                        <li>Verbs & Phrasal Verbs</li>
+                        <li>Adjectives & Adverbs</li>
+                        <li>Articles, Prepositions & Determiners</li>
+                        <li>Conjunctions</li>
+                        <li>Tenses</li>
+                        <li>Voice & Narration</li>
+                        <li>Reading Comprehension</li>
+                        <li>Spoken & Written Expression</li>
+                        <li>Grammar-Based Logical Reasoning</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function openTab(tabId) {
+            // Hide all tab contents
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // Remove active class from all buttons
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(button => {
+                button.classList.remove('active');
+            });
+
+            // Show selected tab content
+            document.getElementById(tabId).classList.add('active');
+
+            // Add active class to clicked button
+            event.currentTarget.classList.add('active');
+        }
+    </script>
+</body>
+
+</html>

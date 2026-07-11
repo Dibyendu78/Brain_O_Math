@@ -30,14 +30,18 @@ def home(request):
 
     return render(request, "public/index.html")
 
+def syllabus_view(request):
+    from django.shortcuts import render
+
+    return render(request, "public/syllabus.html")
+
 urlpatterns = [
     path("", home, name="home"),
+    path("syllabus/", syllabus_view, name="syllabus"),
     path("django-admin/", django_admin.site.urls),
     path("account/", include("Account.urls")),
     path("coordinator/", include("Corrdinator.urls")),
     path("admin-control/", admin_views.admin_dashboard, name="admin_control"),
-    path("admin-login/", admin_views.admin_login_page, name="admin_login_page"),
-    path("admin-login.html", admin_views.admin_login_page),
     path("admin.html", admin_views.admin_dashboard),
     path("signup.html", coordinator_views.coordinator_signup_page),
     path("coordinator-login.html", coordinator_views.coordinator_login_page),

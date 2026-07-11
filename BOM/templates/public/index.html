@@ -172,7 +172,7 @@
         .nav-links {
             display: flex;
             list-style: none;
-            gap: 30px;
+            gap: 20px;
             align-items: center;
         }
 
@@ -180,10 +180,11 @@
             text-decoration: none;
             color: #374151;
             font-weight: 500;
-            padding: 10px 16px;
+            padding: 10px 14px;
             border-radius: 8px;
             transition: all 0.3s ease;
             position: relative;
+            white-space: nowrap;
         }
 
         .nav-links a:hover {
@@ -244,6 +245,8 @@
             padding: 10px 20px !important;
             border-radius: 25px !important;
             font-weight: 600 !important;
+            white-space: nowrap !important;
+            display: inline-block !important;
         }
 
         .admin-login:hover {
@@ -494,6 +497,27 @@
             color: #64748b;
             margin-bottom: 0;
             font-size: 1rem;
+        }
+
+        /* Updates & Sidebars */
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 0.95rem;
+            text-align: center;
+        }
+        .schedule-table th, .schedule-table td {
+            border: 1px solid #e5e7eb;
+            padding: 12px;
+        }
+        .schedule-table th {
+            background-color: #fcd34d;
+            color: #1f2937;
+            font-weight: 700;
+        }
+        .schedule-table tr:nth-child(even) {
+            background-color: #f9fafb;
         }
 
         /* Updates Section */
@@ -1394,9 +1418,9 @@
                 <li><a href="#home">Home</a></li>
                 <li><a href="#about">About</a></li>
                 <li><a href="#details">Exam Details</a></li>
+                <li><a href="/syllabus/">Detailed Syllabus</a></li>
                 <li><a href="#awards">Awards</a></li>
                 <li><a href="#contact">Contact</a></li>
-                <li><a href="/admin-login/" class="admin-login">Admin Login</a></li>
             </ul>
             <div class="hamburger" id="hamburger">
                 <span></span>
@@ -1428,6 +1452,7 @@
                         <a href="/coordinator/login/" class="cta-button">Login</a>
                         <a href="{{ event_config.handbook_url }}"
                             class="cta-button secondary">Download Handbook</a>
+                        <a href="/syllabus/" class="cta-button secondary" style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2);">View Detailed Syllabus</a>
                     </div>
                 </section>
 
@@ -1442,8 +1467,7 @@
                             </a>, the Brain-O-Math Olympiad {{ event_config.event_year }} is an interschool competitive exam in Mathematics and
                             Science that evaluates students' logical reasoning, critical thinking, and problem-solving
                             skills. The exam provides a platform for young learners to showcase their academic talent,
-                            build confidence, and prepare for higher-level challenges while promoting healthy
-                            competition among schools.
+                            build confidence, and prepare for higher-level challenges.
                         </p>
 
                         <div class="about-highlights">
@@ -1521,20 +1545,54 @@
                             </p>
                         </div>
 
-                        <div class="update-card fade-in-up">
-                            <h3>⏰ EXAM SCHEDULE</h3>
-                            <p><strong>Classes 3-12:</strong><br>
-                                10:00-11:00 AM: Mathematics<br>
-                                11:00-11:30 AM: Break<br>
-                                11:30 AM-12:30 PM: Science
-                            </p>
+                        <div class="update-card fade-in-up" style="overflow-x: auto;">
+                            <h3><i class="fas fa-clock text-accent"></i> EXAM SCHEDULE</h3>
+                            <table class="schedule-table">
+                                <thead>
+                                    <tr>
+                                        <th>DATE</th>
+                                        <th>TIME SLOT</th>
+                                        <th>CLASSES 3–10</th>
+                                        <th>CLASSES 11–12</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td rowspan="3" style="vertical-align: middle;"><strong>7th August, 2026<br>Friday</strong></td>
+                                        <td>09:30 AM - 10:30 AM</td>
+                                        <td>English Olympiad</td>
+                                        <td>English Olympiad</td>
+                                    </tr>
+                                    <tr>
+                                        <td>10:30 AM - 11:00 AM</td>
+                                        <td><strong>Break</strong></td>
+                                        <td><strong>Break</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td>11:00 AM - 12:00 PM</td>
+                                        <td>Computer Science Olympiad</td>
+                                        <td>Computer Science Olympiad</td>
+                                    </tr>
+                                    <tr>
+                                        <td rowspan="3" style="vertical-align: middle;"><strong>8th August, 2026<br>Saturday</strong></td>
+                                        <td>09:30 AM - 10:30 AM</td>
+                                        <td>Mathematics Olympiad</td>
+                                        <td>Mathematics Olympiad</td>
+                                    </tr>
+                                    <tr>
+                                        <td>10:30 AM - 11:00 AM</td>
+                                        <td><strong>Break</strong></td>
+                                        <td><strong>Break</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td>11:00 AM - 12:00 PM</td>
+                                        <td>Science Olympiad</td>
+                                        <td>Science Olympiad<br><span style="font-size: 0.85em;">(Physics & Chemistry + Choice of Biology or Mathematics)</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
 
-                        <div class="update-card fade-in-up">
-                            <h3><i class="fas fa-bullseye text-accent"></i> RESULTS & AWARDS</h3>
-                            <p>Results will be declared on 8th September and shared via Email/WhatsApp to
-                                coordinating teachers. Awards and certificates will be sent to respective schools by
-                                25th September 2026.</p>
                         </div>
                 </section>
             </main>
@@ -1633,6 +1691,17 @@
                         <div class="exam-detail">
                             <strong>Payment method:</strong> UTR-based registration through the coordinator dashboard
                         </div>
+                    </div>
+                </div>
+
+                <!-- Results & Awards Widget -->
+                <div class="sidebar-widget fade-in-up">
+                    <div class="widget-header"><i class="fas fa-trophy text-accent"></i> Results & Awards</div>
+                    <div class="widget-content">
+                        <p style="color: #475569; font-size: 0.95rem; line-height: 1.6;">
+                            Results will be declared on <strong>8th September</strong> and shared via Email/WhatsApp to coordinating teachers.<br><br>
+                            Awards and certificates will be sent to respective schools by <strong>25th September 2026</strong>.
+                        </p>
                     </div>
                 </div>
 

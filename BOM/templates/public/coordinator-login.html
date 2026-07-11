@@ -692,11 +692,19 @@
         });
         const data = await response.json();
         if (response.ok && data.success) {
-          localStorage.setItem('coordinatorToken', data.token);
-          localStorage.setItem('coordinatorData', JSON.stringify(data.coordinator || {}));
+          const redirectUrl = data.redirect_url || '/coordinator/dashboard/';
+          
+          if (redirectUrl === '/admin-control/') {
+            localStorage.setItem('bomAdminToken', data.token);
+          } else {
+            localStorage.setItem('coordinatorToken', data.token);
+            localStorage.setItem('coordinatorData', JSON.stringify(data.coordinator || {}));
+          }
+          
           showAlert('Login successful! Redirecting...', 'success');
           loginBtn.innerHTML = '<i class="fas fa-check-circle"></i> Welcome back';
-          setTimeout(() => { window.location.href = '/coordinator/dashboard/'; }, 1400);
+          
+          setTimeout(() => { window.location.href = redirectUrl; }, 1400);
         } else {
           showAlert(data.message || 'Invalid credentials. Please try again.', 'error');
           loginBtn.disabled = false;
