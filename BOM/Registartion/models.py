@@ -26,7 +26,7 @@ class RegistrationSettings(models.Model):
     award_ceremony_date = models.DateField(default=date(2026, 10, 6))
     registration_fee_per_subject = models.PositiveIntegerField(default=100)
     award_description = models.CharField(max_length=255, default="Silver Medal for the highest scorer in any one subject.")
-    handbook_url = models.URLField(default="https://drive.google.com/file/d/1rfNxAcdV03DBSFH_xu6YW2myWc9twhRL/view?usp=drivesdk")
+    handbook_url = models.URLField(default="https://drive.google.com/file/d/15I5Cd6Hp384KRoHtcxUBXFJIl7fVvr51/view?usp=drive_link")
     organizer_name = models.CharField(max_length=255, default="Doon Heritage School, Siliguri")
     organizer_link = models.URLField(default="https://www.doonheritageschool.co.in")
     contact_whatsapp_url = models.URLField(default="https://wa.me/917384687034?text=Hi%20I%27d%20like%20to%20know%20more%20about%20Brain-O-Math.")
@@ -56,7 +56,7 @@ class RegistrationSettings(models.Model):
                 "award_ceremony_date": date(2026, 10, 6),
                 "registration_fee_per_subject": 100,
                 "award_description": "Silver Medal for the highest scorer in any one subject.",
-                "handbook_url": "https://drive.google.com/file/d/1rfNxAcdV03DBSFH_xu6YW2myWc9twhRL/view?usp=drivesdk",
+                "handbook_url": "https://drive.google.com/file/d/15I5Cd6Hp384KRoHtcxUBXFJIl7fVvr51/view?usp=drive_link",
                 "organizer_name": "Doon Heritage School, Siliguri",
                 "organizer_link": "https://www.doonheritageschool.co.in",
                 "contact_whatsapp_url": "https://wa.me/917384687034?text=Hi%20I%27d%20like%20to%20know%20more%20about%20Brain-O-Math.",
