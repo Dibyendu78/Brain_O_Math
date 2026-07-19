@@ -2624,8 +2624,31 @@
                 box-sizing: border-box !important;
                 margin: 0 !important;
             }
+
+            /* Perfect header alignment for mobile */
+            .header-container {
+                flex-direction: column;
+                gap: 1.25rem;
+                text-align: center;
+            }
+            .header-brand {
+                flex-direction: column;
+                align-items: center;
+                gap: 0.5rem;
+            }
+            .header-brand h1 {
+                font-size: 1.1rem;
+                text-align: center;
+            }
+            .header-right {
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
+            }
+            .user-info {
+                text-align: center;
+            }
         }
-        -->
     </style>
 </head>
 

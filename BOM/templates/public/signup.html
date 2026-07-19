@@ -17,486 +17,473 @@
   <style>
     :root {
       color-scheme: light;
-      --bg: #f8fafc;
-      --surface: #ffffff;
-      --surface-strong: #eff6ff;
+      --bg-light: #f8fafc;
+      --surface-glass: rgba(255, 255, 255, 0.85);
       --text: #0f172a;
-      --muted: #475569;
+      --text-muted: #475569;
       --accent: #2563eb;
-      --accent-dark: #1d4ed8;
+      --accent-glow: rgba(37, 99, 235, 0.15);
+      --accent-hover: #1d4ed8;
       --success: #16a34a;
       --error: #dc2626;
-      --border: #e2e8f0;
-      --radius: 20px;
+      --border-glass: rgba(226, 232, 240, 0.8);
+      --radius: 24px;
       --radius-sm: 12px;
-      --shadow: 0 20px 40px rgba(15, 23, 42, 0.06);
       --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     html, body {
-      min-height: 100%;
+      min-height: 100vh;
       font-family: 'Inter', sans-serif;
-      background: radial-gradient(circle at 10% 20%, rgba(37, 99, 235, 0.06), transparent 45%),
-                  radial-gradient(circle at 90% 80%, rgba(79, 70, 229, 0.05), transparent 45%),
-                  #f8fafc;
+      background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%);
       color: var(--text);
       overflow-x: hidden;
-      width: 100%;
     }
 
-    body {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem;
-      position: relative;
-    }
-
+    /* Abstract light background */
     body::before {
       content: '';
       position: absolute;
       inset: 0;
-      background-image: linear-gradient(rgba(148, 163, 184, 0.04) 1px, transparent 1px),
-                        linear-gradient(90deg, rgba(148, 163, 184, 0.04) 1px, transparent 1px);
-      background-size: 24px 24px;
+      background: 
+        radial-gradient(circle at top right, rgba(37, 99, 235, 0.1), transparent 40%),
+        radial-gradient(circle at bottom left, rgba(79, 70, 229, 0.08), transparent 40%);
       pointer-events: none;
       z-index: 1;
     }
 
-    .page-shell {
-      width: 100%;
-      max-width: 920px;
-      display: grid;
-      grid-template-columns: 1.1fr 1fr;
-      gap: 2.5rem;
+    /* Logo Header */
+    .brand-header {
+      position: absolute;
+      top: 2rem;
+      left: 3rem;
+      z-index: 10;
+      display: flex;
       align-items: center;
+      gap: 1rem;
+      text-decoration: none;
+      animation: fadeIn 1s ease;
+    }
+
+    .brand-logo {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      border: 2px solid white;
+    }
+
+    .brand-text {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 800;
+      font-size: 1.3rem;
+      color: var(--text);
+      line-height: 1.2;
+    }
+    .brand-text span {
+      font-weight: 500;
+      font-size: 0.85rem;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .page-wrapper {
       position: relative;
       z-index: 2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 6rem 2rem 2rem;
+    }
+
+    .page-shell {
+      width: 100%;
+      max-width: 1000px;
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 3rem;
+      align-items: stretch;
+      background: var(--surface-glass);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      border-radius: var(--radius);
+      box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.1), 0 0 30px rgba(37, 99, 235, 0.08);
+      overflow: hidden;
+      animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
     .info-panel {
-      background: rgba(255, 255, 255, 0.75);
-      border: 1px solid rgba(226, 232, 240, 0.8);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-radius: var(--radius);
       padding: 3rem;
-      box-shadow: var(--shadow);
+      background: rgba(255, 255, 255, 0.6);
+      border-right: 1px solid var(--border-glass);
       display: flex;
       flex-direction: column;
-      gap: 1.5rem;
+      justify-content: center;
+      gap: 2rem;
     }
 
     .info-panel h1 {
       font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: clamp(2rem, 2.5vw, 2.6rem);
+      font-size: 2.2rem;
       font-weight: 800;
-      letter-spacing: -0.03em;
+      line-height: 1.2;
       color: var(--text);
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.75rem;
     }
 
     .info-panel p {
-      line-height: 1.75;
-      color: var(--muted);
-      font-size: 0.98rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+      font-size: 0.95rem;
     }
 
-    .info-panel .feature-list {
+    .feature-list {
       list-style: none;
-      padding: 0;
       display: grid;
-      gap: 1.25rem;
+      gap: 1.5rem;
     }
 
     .feature-item {
       display: flex;
       align-items: center;
-      gap: 0.85rem;
-      color: var(--muted);
-      font-size: 0.92rem;
+      gap: 1rem;
+      color: var(--text-muted);
+      font-size: 0.95rem;
     }
 
     .feature-item i {
-      width: 2.2rem;
-      height: 2.2rem;
-      display: grid;
-      place-items: center;
-      border-radius: var(--radius-sm);
-      background: var(--surface-strong);
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      background: rgba(37, 99, 235, 0.1);
       color: var(--accent);
-      font-size: 1rem;
+      border: 1px solid rgba(37, 99, 235, 0.2);
+      font-size: 1.1rem;
     }
 
-    .form-card {
-      background: var(--surface);
-      border-radius: var(--radius);
-      box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.08);
-      overflow: hidden;
-      border: 1px solid var(--border);
+    .form-panel {
+      padding: 3rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
 
     .form-header {
-      padding: 2.2rem;
-      background: var(--surface-strong);
-      border-bottom: 1px solid var(--border);
+      margin-bottom: 2rem;
     }
 
     .form-header h2 {
       font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 1.8rem;
+      font-size: 1.5rem;
       font-weight: 800;
-      letter-spacing: -0.02em;
+      color: var(--text);
       margin-bottom: 0.5rem;
     }
-
     .form-header p {
-      color: var(--muted);
-      line-height: 1.6;
-      font-size: 0.92rem;
+      color: var(--text-muted);
+      font-size: 0.9rem;
     }
 
-    .form-body {
-      padding: 2.2rem;
-    }
-
-    .alert {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      padding: 1rem 1.25rem;
-      border-radius: var(--radius-sm);
-      margin-bottom: 1.5rem;
-      font-size: 0.92rem;
-      font-weight: 500;
-      border: 1px solid transparent;
-    }
-
-    .alert-success {
-      background: #f0fdf4;
-      color: #166534;
-      border-color: #bbf7d0;
-    }
-
-    .alert-error {
-      background: #fef2f2;
-      color: #b91c1c;
-      border-color: #fecaca;
+    .grid-fields {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      margin-bottom: 1.25rem;
     }
 
     .form-group {
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.25rem;
+      position: relative;
     }
 
     .form-label {
-      display: flex;
-      gap: 0.65rem;
-      align-items: center;
-      margin-bottom: 0.6rem;
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 0.85rem;
       font-weight: 600;
-      font-size: 0.88rem;
       color: var(--text);
-    }
-
-    .form-label i {
-      color: var(--accent);
-      min-width: 1.2rem;
-      text-align: center;
-      font-size: 1.05rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     .form-input {
       width: 100%;
-      padding: 0.85rem 1.1rem;
-      border: 1px solid var(--border);
+      padding: 0.85rem 1rem 0.85rem 2.8rem;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid var(--border-glass);
       border-radius: var(--radius-sm);
-      font-size: 0.95rem;
       color: var(--text);
-      background: #fff;
+      font-size: 0.95rem;
       transition: var(--transition);
     }
-
-    .form-input::placeholder {
+    
+    .input-icon {
+      position: absolute;
+      left: 1rem;
+      top: 2.3rem;
       color: #94a3b8;
+      font-size: 0.9rem;
+      transition: var(--transition);
     }
 
     .form-input:focus {
       outline: none;
       border-color: var(--accent);
-      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+      background: #ffffff;
+    }
+    .form-input:focus + .input-icon {
+      color: var(--accent);
     }
 
-    .password-wrapper {
-      position: relative;
-      display: flex;
-      align-items: center;
-      width: 100%;
-    }
+    .form-input::placeholder { color: #94a3b8; }
 
+    .password-wrapper { position: relative; }
     .password-toggle {
       position: absolute;
       right: 1rem;
       top: 50%;
       transform: translateY(-50%);
-      background: transparent;
+      background: none;
       border: none;
       color: var(--muted);
       cursor: pointer;
-      padding: 0;
-      font-size: 1.1rem;
-      transition: color 0.3s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 10;
+      font-size: 1rem;
     }
-
-    .password-toggle:hover {
-      color: var(--text);
-    }
+    .password-toggle:hover { color: var(--text); }
 
     .validation-message {
-      margin-top: 0.45rem;
-      font-size: 0.85rem;
-      line-height: 1.5;
+      margin-top: 0.4rem;
+      font-size: 0.8rem;
       color: var(--error);
       display: none;
-      font-weight: 500;
     }
+    .validation-message.show { display: block; }
+    .validation-message.valid { color: var(--success); }
 
-    .validation-message.show {
-      display: block;
-    }
-
-    .validation-message.valid {
-      color: var(--success);
-    }
-
-    .form-actions {
+    .alert {
       display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      margin-top: 2rem;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem;
+      border-radius: var(--radius-sm);
+      margin-bottom: 1.5rem;
+      font-size: 0.9rem;
+      border: 1px solid transparent;
     }
+    .alert-success { background: #f0fdf4; color: #166534; border-color: #bbf7d0; }
+    .alert-error { background: #fef2f2; color: #b91c1c; border-color: #fecaca; }
 
     .signup-button {
+      width: 100%;
+      padding: 1rem;
       border: none;
       border-radius: var(--radius-sm);
-      padding: 0.95rem 1.2rem;
+      background: linear-gradient(135deg, var(--accent), var(--accent-hover));
       color: white;
-      background: linear-gradient(135deg, var(--accent), #4f46e5);
-      font-size: 0.98rem;
+      font-size: 1rem;
       font-weight: 700;
       cursor: pointer;
-      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+      box-shadow: 0 4px 15px rgba(37, 99, 235, 0.2);
       transition: var(--transition);
-      display: inline-flex;
+      display: flex;
       align-items: center;
       justify-content: center;
-      gap: 0.75rem;
+      gap: 0.5rem;
+      margin-top: 1rem;
     }
-
     .signup-button:hover:not(:disabled) {
       transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(37, 99, 235, 0.3);
+      box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3);
     }
-
     .signup-button:disabled {
-      background: #cbd5e1;
+      background: #334155;
       color: #94a3b8;
+      box-shadow: none;
       cursor: not-allowed;
       transform: none;
-      box-shadow: none;
-    }
-
-    .text-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.9rem;
-      color: var(--accent);
-      text-decoration: none;
-      font-weight: 600;
-      justify-content: center;
-      padding: 0.85rem 1.2rem;
-      border-radius: var(--radius-sm);
-      background: rgba(37, 99, 235, 0.05);
-      border: 1px solid rgba(37, 99, 235, 0.1);
-      transition: var(--transition);
-    }
-
-    .text-link:hover {
-      background: rgba(37, 99, 235, 0.1);
-      border-color: rgba(37, 99, 235, 0.2);
-      transform: translateY(-1px);
-    }
-
-    .small-note {
-      color: var(--muted);
-      font-size: 0.88rem;
-      line-height: 1.6;
     }
 
     .form-footer {
-      padding: 1.5rem 2.2rem;
-      background: var(--surface-strong);
-      border-top: 1px solid var(--border);
-      text-align: center;
-    }
-
-    .form-footer a {
-      color: var(--muted);
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 0.9rem;
-      transition: var(--transition);
-      display: inline-flex;
+      margin-top: 2rem;
+      display: flex;
+      justify-content: space-between;
       align-items: center;
-      gap: 6px;
+      border-top: 1px solid var(--border-glass);
+      padding-top: 1.5rem;
     }
 
-    .form-footer a:hover {
-      color: var(--accent-dark);
+    .text-link {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
+    .text-link:hover { color: var(--accent-hover); text-decoration: underline; }
+    .text-link.highlight { color: var(--accent); }
+    .text-link.highlight:hover { color: var(--accent-hover); }
 
     .loading-spinner {
-      width: 18px;
-      height: 18px;
-      border: 2px solid rgba(255, 255, 255, 0.4);
-      border-top: 2px solid #fff;
-      border-radius: 50%;
-      animation: spin 0.9s linear infinite;
+      width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.4); border-top: 2px solid #fff; border-radius: 50%; animation: spin 0.9s linear infinite;
     }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
     @media (max-width: 900px) {
-      .page-shell {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-      }
-      body {
-        padding: 1.5rem;
-      }
+      .page-shell { grid-template-columns: 1fr; gap: 0; }
+      .info-panel { border-right: none; border-bottom: 1px solid var(--border-glass); padding: 2.5rem; }
+      .brand-header { top: 1.5rem; left: 1.5rem; }
+      .page-wrapper { padding-top: 5rem; }
     }
-
     @media (max-width: 640px) {
-      body { padding: 1rem; }
-      .info-panel, .form-card { padding: 1.8rem; }
-      .form-header { padding: 1.8rem 1.5rem; }
-      .form-body { padding: 1.8rem 1.5rem; }
-      .info-panel { gap: 1.2rem; }
+      .grid-fields { grid-template-columns: 1fr; gap: 0; }
+      .form-panel { padding: 2rem; }
+      .info-panel h1 { font-size: 1.8rem; }
+      .form-footer { flex-direction: column; gap: 1rem; }
     }
   </style>
 </head>
 <body>
-  <div class="page-shell">
-    <section class="info-panel">
-      <div>
-        <h1>Register as a Coordinator</h1>
-        <p>Complete the form to create your Brain-O-Math coordinator account. Once registered, you can manage student registration, track payments, and access the coordinator dashboard.</p>
-      </div>
-      <ul class="feature-list">
-        <li class="feature-item"><i class="fas fa-user-check"></i> Quick coordinator registration</li>
-        <li class="feature-item"><i class="fas fa-lock"></i> Create your own secure password</li>
-        <li class="feature-item"><i class="fas fa-shield-alt"></i> Secure account access</li>
-        <li class="feature-item"><i class="fas fa-chalkboard-teacher"></i> Manage students and payments</li>
-      </ul>
-      <p class="small-note">After registration, you will use the password you created to log in.</p>
-    </section>
+  <a href="/" class="brand-header">
+    <img src="{% static 'public/logo.jpg' %}" alt="Brain-O-Math" class="brand-logo">
+    <div class="brand-text">Brain-O-Math<br><span>Olympiad Portal</span></div>
+  </a>
 
-    <article class="form-card">
-      <div class="form-header">
-        <h2>Create Coordinator Account</h2>
-        <p>Fill in the details below and click Create Account. All fields are required.</p>
-      </div>
+  <div class="page-wrapper">
+    <div class="page-shell">
+      
+      <section class="info-panel">
+        <div>
+          <h1>Coordinator<br>Registration</h1>
+          <p>Join the Brain-O-Math ecosystem. Register your school and manage students effortlessly from your dedicated coordinator dashboard.</p>
+        </div>
+        <ul class="feature-list">
+          <li class="feature-item"><i class="fas fa-bolt"></i> <div><strong>Quick Setup</strong><br><span style="font-size:0.85rem">Instant account activation</span></div></li>
+          <li class="feature-item"><i class="fas fa-shield-alt"></i> <div><strong>Secure Access</strong><br><span style="font-size:0.85rem">Bank-grade encryption</span></div></li>
+          <li class="feature-item"><i class="fas fa-users"></i> <div><strong>Student Management</strong><br><span style="font-size:0.85rem">Bulk register & track payments</span></div></li>
+        </ul>
+      </section>
 
-      <div class="form-body">
+      <article class="form-panel">
+        <div class="form-header">
+          <h2>Create Account</h2>
+          <p>Please provide your official school and coordinator details.</p>
+        </div>
+
         <div id="alertContainer"></div>
+
         <form id="signupForm">
-          <div class="form-group">
-            <label class="form-label" for="schoolName"><i class="fas fa-school"></i> School Name</label>
-            <input type="text" id="schoolName" class="form-input" required placeholder="Enter your school name" minlength="3" autocomplete="organization" />
-            <div class="validation-message" id="schoolNameMsg"></div>
+          <div class="grid-fields">
+            <div class="form-group">
+              <label class="form-label" for="schoolName">School Name</label>
+              <i class="fas fa-school input-icon"></i>
+              <input type="text" id="schoolName" class="form-input" required placeholder="Full school name" minlength="3" autocomplete="organization" />
+              <div class="validation-message" id="schoolNameMsg"></div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="coordinatorName">Coordinator Name</label>
+              <i class="fas fa-user input-icon"></i>
+              <input type="text" id="coordinatorName" class="form-input" required placeholder="Your full name" minlength="3" autocomplete="name" />
+              <div class="validation-message" id="coordinatorNameMsg"></div>
+            </div>
           </div>
 
           <div class="form-group">
-            <label class="form-label" for="schoolAddress"><i class="fas fa-map-marker-alt"></i> School Address</label>
-            <input type="text" id="schoolAddress" class="form-input" required placeholder="Enter complete school address" minlength="10" autocomplete="street-address" />
+            <label class="form-label" for="schoolAddress">School Address</label>
+            <i class="fas fa-map-marker-alt input-icon"></i>
+            <input type="text" id="schoolAddress" class="form-input" required placeholder="Complete address of the school" minlength="10" autocomplete="street-address" />
             <div class="validation-message" id="schoolAddressMsg"></div>
           </div>
 
-          <div class="form-group">
-            <label class="form-label" for="coordinatorName"><i class="fas fa-user"></i> Coordinator Name</label>
-            <input type="text" id="coordinatorName" class="form-input" required placeholder="Enter your full name" minlength="3" autocomplete="name" />
-            <div class="validation-message" id="coordinatorNameMsg"></div>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="coordinatorPhone"><i class="fas fa-phone"></i> Phone Number</label>
-            <input type="tel" id="coordinatorPhone" class="form-input" required placeholder="10-digit mobile number" pattern="[0-9]{10}" maxlength="10" autocomplete="tel" />
-            <div class="validation-message" id="coordinatorPhoneMsg"></div>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="coordinatorEmail"><i class="fas fa-envelope"></i> Email Address</label>
-            <input type="email" id="coordinatorEmail" class="form-input" required placeholder="Enter your email address" autocomplete="email" />
-            <div class="validation-message" id="coordinatorEmailMsg"></div>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="password"><i class="fas fa-lock"></i> Password</label>
-            <div class="password-wrapper">
-              <input type="password" id="password" class="form-input" style="padding-right: 2.5rem;" required placeholder="Create a password (min 6 chars)" minlength="6" autocomplete="new-password" />
-              <button type="button" class="password-toggle" onclick="togglePasswordVisibility('password', this)" aria-label="Toggle password visibility">
-                <svg id="eye-icon-pass" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                  <circle cx="12" cy="12" r="3"></circle>
-                </svg>
-              </button>
+          <div class="grid-fields">
+            <div class="form-group">
+              <label class="form-label" for="coordinatorPhone">Phone Number</label>
+              <i class="fas fa-phone input-icon"></i>
+              <input type="tel" id="coordinatorPhone" class="form-input" required placeholder="10-digit number" pattern="[0-9]{10}" maxlength="10" autocomplete="tel" />
+              <div class="validation-message" id="coordinatorPhoneMsg"></div>
             </div>
-            <div class="validation-message" id="passwordMsg"></div>
-          </div>
 
-          <div class="form-group">
-            <label class="form-label" for="confirmPassword"><i class="fas fa-lock"></i> Confirm Password</label>
-            <div class="password-wrapper">
-              <input type="password" id="confirmPassword" class="form-input" style="padding-right: 2.5rem;" required placeholder="Confirm your password" autocomplete="new-password" />
-              <button type="button" class="password-toggle" onclick="togglePasswordVisibility('confirmPassword', this)" aria-label="Toggle password visibility">
-                <svg id="eye-icon-confirm" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                  <circle cx="12" cy="12" r="3"></circle>
-                </svg>
-              </button>
+            <div class="form-group">
+              <label class="form-label" for="coordinatorEmail">Email Address</label>
+              <i class="fas fa-envelope input-icon"></i>
+              <input type="email" id="coordinatorEmail" class="form-input" required placeholder="name@school.edu" autocomplete="email" />
+              <div class="validation-message" id="coordinatorEmailMsg"></div>
             </div>
-            <div class="validation-message" id="confirmPasswordMsg"></div>
           </div>
 
-          <div class="form-group">
-            <label class="form-label" for="captchaAnswer" id="captchaLabel"><i class="fas fa-calculator"></i> Math Check</label>
-            <input type="number" id="captchaAnswer" class="form-input" required placeholder="Enter the sum" />
+          <div class="grid-fields">
+            <div class="form-group">
+              <label class="form-label" for="password">Password</label>
+              <div class="password-wrapper">
+                <i class="fas fa-lock input-icon"></i>
+                <input type="password" id="password" class="form-input" style="padding-right: 2.5rem;" required placeholder="Min 6 characters" minlength="6" autocomplete="new-password" />
+                <button type="button" class="password-toggle" onclick="togglePasswordVisibility('password', this)" aria-label="Toggle password visibility">
+                  <svg id="eye-icon-pass" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                </button>
+              </div>
+              <div class="validation-message" id="passwordMsg"></div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="confirmPassword">Confirm Password</label>
+              <div class="password-wrapper">
+                <i class="fas fa-check-double input-icon"></i>
+                <input type="password" id="confirmPassword" class="form-input" style="padding-right: 2.5rem;" required placeholder="Re-enter password" autocomplete="new-password" />
+                <button type="button" class="password-toggle" onclick="togglePasswordVisibility('confirmPassword', this)" aria-label="Toggle password visibility">
+                  <svg id="eye-icon-confirm" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                </button>
+              </div>
+              <div class="validation-message" id="confirmPasswordMsg"></div>
+            </div>
+          </div>
+
+          <div class="form-group" style="width: 50%;">
+            <label class="form-label" for="captchaAnswer" id="captchaLabel">Math Check</label>
+            <i class="fas fa-calculator input-icon"></i>
+            <input type="number" id="captchaAnswer" class="form-input" required placeholder="Sum?" />
             <div class="validation-message" id="captchaAnswerMsg"></div>
           </div>
 
-          <div class="form-actions">
-            <button type="submit" class="signup-button" id="signupBtn"><i class="fas fa-user-plus"></i> Create Account</button>
-            <a href="/coordinator/login/" class="text-link"><i class="fas fa-sign-in-alt"></i> Already have an account? Login</a>
-          </div>
-        </form>
-      </div>
+          <button type="submit" class="signup-button" id="signupBtn">
+            Create Account <i class="fas fa-arrow-right"></i>
+          </button>
 
-      <div class="form-footer">
-        <a href="/">← Back to Home</a>
-      </div>
-    </article>
+          <div class="form-footer">
+            <a href="/" class="text-link"><i class="fas fa-arrow-left"></i> Home</a>
+            <span style="font-size: 0.9rem; color: var(--text-muted);">Already registered? <a href="/coordinator/login/" class="text-link highlight" style="display:inline-flex;">Login here</a></span>
+          </div>
+
+        </form>
+      </article>
+    </div>
   </div>
 
   <script>
