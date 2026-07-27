@@ -261,8 +261,9 @@ class AdmitCardGenerator {
     doc.moveDown(0.6);
     doc.rect(leftX - 5, doc.y - 5, contentW + 10, 80).fillColor('#dcfce7').fill();
     
+    const chosenVenue = student.venue || (coordinator && coordinator.venue) || 'Doon Heritage School, Siliguri';
     doc.fontSize(this.labelSize).font('Helvetica-Bold').fillColor('#15803d').text('Venue', leftX);
-    doc.fontSize(this.valueSize).font('Helvetica').fillColor('#000000').text('Doon Heritage School, Siliguri', leftX, doc.y + 2, { width: leftColW });
+    doc.fontSize(this.valueSize).font('Helvetica').fillColor('#000000').text(chosenVenue, leftX, doc.y + 2, { width: leftColW });
     doc.moveDown(0.4);
     doc.fontSize(this.valueSize).font('Helvetica').text('Kolabari Rd, Champasari, Siliguri,', leftX);
     doc.moveDown(0.4);

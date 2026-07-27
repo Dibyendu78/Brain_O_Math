@@ -88,6 +88,7 @@ urlpatterns = [
     path("api/admin/admit-cards/release-school/<int:school_id>", admin_views.api_release_admit_card),
     path("api/admin/export", admin_views.api_export),
     path("api/admin/export-students", admin_views.api_export),
+    path("api/admin/export-docx", admin_views.api_export_docx),
     path("api/admin/schools", admin_views.api_schools),
     path("api/admin/send-message-to-coordinators", admin_views.api_send_message_to_coordinators),
     path("api/admin/results/release-report-cards", admin_views.api_publish_results),

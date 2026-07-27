@@ -113,7 +113,7 @@ async function generateFromTemplate(student = {}, school = {}) {
   // Venue block at a fixed lower position (non-overlapping)
   const venueX = leftX;
   const venueStartY = height - 530;  // well below other fields
-  drawValue('Doon Heritage School, Siliguri', venueX, venueStartY, { size: 10, bold: false });
+  drawValue(student.venue || school.venue || 'Doon Heritage School, Siliguri', venueX, venueStartY, { size: 10, bold: false });
   drawValue('Kolabari Rd, Champasari, Siliguri,', venueX, venueStartY - 14, { size: 10, bold: false });
   drawValue('Darjeeling, West Bengal - 734003', venueX, venueStartY - 28, { size: 10, bold: false });
 

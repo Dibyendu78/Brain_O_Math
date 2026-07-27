@@ -1,5 +1,7 @@
 import csv
+import io
 import json
+import docx
 
 from django.contrib.auth import authenticate
 from django.core.mail import send_mail
@@ -40,6 +42,7 @@ def _payment_dict(payment):
         "status": payment.status,
         "paymentStatus": payment.status,
         "utr": payment.utr,
+        "venue": payment.venue or "Doon Heritage School, Siliguri",
         "totalAmount": payment.total_amount,
         "school": _profile_dict(profile),
         "students": [_student_dict(student) for student in students],
@@ -84,9 +87,12 @@ def api_stats(request):
 @jwt_required(roles=[User.ADMIN])
 def api_registrations(request):
     status = request.GET.get("status")
+    venue = request.GET.get("venue")
     payments = RegistrationPayment.objects.select_related("coordinator", "coordinator__user").order_by("-updated_at")
     if status:
         payments = payments.filter(status=status)
+    if venue:
+        payments = payments.filter(venue=venue)
     return JsonResponse({"success": True, "data": [_payment_dict(payment) for payment in payments], "pagination": {"total": payments.count(), "page": 1}})
 
 
@@ -110,8 +116,11 @@ def api_registration_status_update(request, registration_id):
 def api_students(request):
     qs = Student.objects.select_related("coordinator", "coordinator__user").order_by("student_class", "name")
     cls = request.GET.get("class")
+    venue = request.GET.get("venue")
     if cls:
         qs = qs.filter(student_class=cls)
+    if venue:
+        qs = qs.filter(venue=venue)
     data = []
     for student in qs:
         item = _student_dict(student)
@@ -251,7 +260,7 @@ def api_export(request):
     response = HttpResponse(content_type="text/csv")
     response["Content-Disposition"] = 'attachment; filename="brain-o-math-export.csv"'
     writer = csv.writer(response)
-    writer.writerow(["Registration ID", "School", "Coordinator", "Email", "Students", "Amount", "Status", "UTR"])
+    writer.writerow(["Registration ID", "School", "Coordinator", "Email", "Students", "Venue", "Amount", "Status", "UTR"])
     for payment in RegistrationPayment.objects.select_related("coordinator", "coordinator__user"):
         writer.writerow([
             payment.registration_id,
@@ -259,10 +268,88 @@ def api_export(request):
             payment.coordinator.coordinator_name,
             payment.coordinator.user.email,
             payment.coordinator.students.count(),
+            payment.venue or "Doon Heritage School, Siliguri",
             payment.total_amount,
             payment.status,
             payment.utr,
         ])
+    return response
+
+
+@jwt_required(roles=[User.ADMIN])
+def api_export_docx(request):
+    doc = docx.Document()
+    doc.add_heading('Brain-O-Math Olympiad 2026 - Registration & Venue Report', 0)
+
+    venue_filter = request.GET.get("venue")
+    payments = RegistrationPayment.objects.select_related("coordinator", "coordinator__user").order_by("-updated_at")
+    if venue_filter:
+        payments = payments.filter(venue=venue_filter)
+
+    doc.add_heading('Registration Summaries', level=1)
+
+    table = doc.add_table(rows=1, cols=8)
+    table.style = 'Table Grid'
+    hdr_cells = table.rows[0].cells
+    hdr_cells[0].text = 'Reg ID'
+    hdr_cells[1].text = 'School Name'
+    hdr_cells[2].text = 'Coordinator'
+    hdr_cells[3].text = 'Venue'
+    hdr_cells[4].text = 'Students'
+    hdr_cells[5].text = 'Amount (₹)'
+    hdr_cells[6].text = 'Status'
+    hdr_cells[7].text = 'UTR'
+
+    for payment in payments:
+        row_cells = table.add_row().cells
+        row_cells[0].text = str(payment.registration_id)
+        row_cells[1].text = str(payment.coordinator.school_name)
+        row_cells[2].text = str(payment.coordinator.coordinator_name)
+        row_cells[3].text = str(payment.venue or "Doon Heritage School, Siliguri")
+        row_cells[4].text = str(payment.coordinator.students.count())
+        row_cells[5].text = str(payment.total_amount)
+        row_cells[6].text = str(payment.status)
+        row_cells[7].text = str(payment.utr or "N/A")
+
+    doc.add_paragraph('')
+    doc.add_heading('Candidate Details', level=1)
+
+    students = Student.objects.select_related("coordinator").order_by("student_class", "name")
+    if venue_filter:
+        students = students.filter(venue=venue_filter)
+
+    st_table = doc.add_table(rows=1, cols=8)
+    st_table.style = 'Table Grid'
+    st_hdr = st_table.rows[0].cells
+    st_hdr[0].text = 'Student ID'
+    st_hdr[1].text = 'Name'
+    st_hdr[2].text = 'Class'
+    st_hdr[3].text = 'Category'
+    st_hdr[4].text = 'Subjects'
+    st_hdr[5].text = 'Chosen Venue'
+    st_hdr[6].text = 'School'
+    st_hdr[7].text = 'Roll No'
+
+    for st in students:
+        row = st_table.add_row().cells
+        row[0].text = str(st.student_id)
+        row[1].text = str(st.name)
+        row[2].text = str(st.student_class)
+        row[3].text = str(st.category)
+        row[4].text = str(st.subjects)
+        row[5].text = str(st.venue or "Doon Heritage School, Siliguri")
+        row[6].text = str(st.coordinator.school_name)
+        row[7].text = str(st.roll_number or "N/A")
+
+    buffer = io.BytesIO()
+    doc.save(buffer)
+    buffer.seek(0)
+
+    response = HttpResponse(
+        buffer.getvalue(),
+        content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    )
+    response['Content-Disposition'] = 'attachment; filename="brain-o-math-registrations-venue-report.docx"'
     return response
 
 

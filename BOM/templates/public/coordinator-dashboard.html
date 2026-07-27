@@ -2954,6 +2954,29 @@
                 </div>
             </div>
 
+            <!-- Venue Selection (Before Payment Option) -->
+            <div id="venueSelectionBox" style="margin-top: 1.5rem; margin-bottom: 1.5rem; background: #f0fdf4; padding: 1.25rem; border-radius: 10px; border: 1.5px solid #bbf7d0; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+                <label style="font-weight: bold; color: #166534; font-size: 1.1rem; display: block; margin-bottom: 0.5rem;">
+                    <i class="fas fa-map-marker-alt" style="color: #166534; margin-right: 6px;"></i> Select Examination Venue <span style="color: #dc2626;">*</span>
+                </label>
+                <small style="display: block; color: #15803d; margin-bottom: 1rem; font-size: 0.95rem;">
+                    Please choose one of the available examination venues for this registration before payment:
+                </small>
+                <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                    <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer; font-weight: 600; background: white; padding: 0.85rem 1rem; border-radius: 8px; border: 1.5px solid #cbd5e1; transition: all 0.2s ease;">
+                        <input type="radio" name="registrationVenue" value="Doon Heritage School, Siliguri" onchange="onVenueSelected()" style="width: 20px; height: 20px; accent-color: #166534; cursor: pointer;">
+                        <span style="font-size: 1rem; color: #1e293b;">Doon Heritage School, Siliguri</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer; font-weight: 600; background: white; padding: 0.85rem 1rem; border-radius: 8px; border: 1.5px solid #cbd5e1; transition: all 0.2s ease;">
+                        <input type="radio" name="registrationVenue" value="Don Bosco School, Mayanaguri" onchange="onVenueSelected()" style="width: 20px; height: 20px; accent-color: #166534; cursor: pointer;">
+                        <span style="font-size: 1rem; color: #1e293b;">Don Bosco School, Mayanaguri</span>
+                    </label>
+                </div>
+                <div id="venuePromptMsg" style="margin-top: 0.85rem; color: #dc2626; font-size: 0.9rem; font-weight: 500;">
+                    <i class="fas fa-exclamation-circle"></i> Please select an examination venue option above to proceed to payment.
+                </div>
+            </div>
+
             <!-- Proceed to Pay Button -->
             <button id="proceedToPayBtn" class="upi-button" onclick="showPaymentForm()" style="margin-top: 1rem; display: none;">
                 <i class="fas fa-credit-card"></i> Proceed to Pay
@@ -2978,6 +3001,7 @@
                     Pay ₹<span id="upiAmount">0</span> via UPI
                 </button>
 
+                <!-- Scan QR Panel -->
                 <div class="qr-panel">
                     <h4 class="callout-title">OR</h4>
                     <h4 class="callout-title">Scan This QR Code for Payment</h4>
@@ -3632,13 +3656,16 @@
         // Payment section
         // ===============================
         function updatePaymentSection() {
+            const venueBox = document.getElementById('venueSelectionBox');
             const paymentForm = document.getElementById('paymentForm');
             const paymentCompleted = document.getElementById('paymentCompleted');
             const proceedBtn = document.getElementById('proceedToPayBtn');
+            const promptMsg = document.getElementById('venuePromptMsg');
 
             if (!registrationData?.students?.length) {
                 document.getElementById('feeBreakdown').innerHTML =
                     '<p style="text-align: center; opacity: 0.7;">No students added yet.</p>';
+                if (venueBox) venueBox.style.display = 'none';
                 if (paymentForm) paymentForm.style.display = 'none';
                 if (proceedBtn) proceedBtn.style.display = 'none';
                 if (paymentCompleted) paymentCompleted.classList.add('hidden');
@@ -3646,6 +3673,7 @@
             }
 
             if (isPaymentSubmitted) {
+                if (venueBox) venueBox.style.display = 'none';
                 if (paymentForm) paymentForm.style.display = 'none';
                 if (proceedBtn) proceedBtn.style.display = 'none';
                 if (paymentCompleted) paymentCompleted.classList.remove('hidden');
@@ -3653,18 +3681,69 @@
                     document.getElementById('registrationId').textContent = registrationData.registrationId;
                 }
             } else {
-                if (paymentForm && !paymentForm.dataset.opened) {
-                    paymentForm.style.display = 'none';
-                    if (proceedBtn) proceedBtn.style.display = 'block';
-                } else if (paymentForm) {
-                    paymentForm.style.display = 'block';
-                    if (proceedBtn) proceedBtn.style.display = 'none';
+                if (venueBox) venueBox.style.display = 'block';
+
+                // Pre-select existing venue if present in registration data
+                if (registrationData.venue) {
+                    const matchingRadio = document.querySelector(`input[name="registrationVenue"][value="${registrationData.venue}"]`);
+                    if (matchingRadio && !document.querySelector('input[name="registrationVenue"]:checked')) {
+                        matchingRadio.checked = true;
+                    }
+                }
+
+                const selectedVenueRadio = document.querySelector('input[name="registrationVenue"]:checked');
+                const hasSelectedVenue = Boolean(selectedVenueRadio);
+
+                if (hasSelectedVenue) {
+                    if (promptMsg) promptMsg.style.display = 'none';
+                    if (proceedBtn) {
+                        proceedBtn.disabled = false;
+                        proceedBtn.style.opacity = '1';
+                        proceedBtn.style.cursor = 'pointer';
+                    }
+                    if (paymentForm && paymentForm.dataset.opened === 'true') {
+                        paymentForm.style.display = 'block';
+                        if (proceedBtn) proceedBtn.style.display = 'none';
+                    } else if (proceedBtn) {
+                        proceedBtn.style.display = 'block';
+                    }
+                } else {
+                    if (promptMsg) promptMsg.style.display = 'block';
+                    if (paymentForm) paymentForm.style.display = 'none';
+                    if (proceedBtn) {
+                        proceedBtn.style.display = 'block';
+                        proceedBtn.disabled = true;
+                        proceedBtn.style.opacity = '0.5';
+                        proceedBtn.style.cursor = 'not-allowed';
+                    }
                 }
                 if (paymentCompleted) paymentCompleted.classList.add('hidden');
             }
         }
 
+        function onVenueSelected() {
+            const selected = document.querySelector('input[name="registrationVenue"]:checked');
+            const promptMsg = document.getElementById('venuePromptMsg');
+            const proceedBtn = document.getElementById('proceedToPayBtn');
+            if (selected) {
+                if (promptMsg) promptMsg.style.display = 'none';
+                if (proceedBtn) {
+                    proceedBtn.disabled = false;
+                    proceedBtn.style.opacity = '1';
+                    proceedBtn.style.cursor = 'pointer';
+                }
+                showPaymentForm();
+            }
+        }
+
         function showPaymentForm() {
+            const selected = document.querySelector('input[name="registrationVenue"]:checked');
+            if (!selected) {
+                alert('Please select an examination venue option first before proceeding to payment.');
+                const box = document.getElementById('venueSelectionBox');
+                if (box) box.scrollIntoView({ behavior: 'smooth' });
+                return;
+            }
             const paymentForm = document.getElementById('paymentForm');
             const proceedBtn = document.getElementById('proceedToPayBtn');
             if (paymentForm) {
@@ -4206,13 +4285,14 @@
             };
 
             try {
+                const selectedVenue = document.querySelector('input[name="registrationVenue"]:checked')?.value || 'Doon Heritage School, Siliguri';
                 const res = await fetch(`${API}/coordinator/payment`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${coordinatorToken}`
                     },
-                    body: JSON.stringify({ utr: registrationData.utr })
+                    body: JSON.stringify({ utr: registrationData.utr, venue: selectedVenue })
                 });
 
                 const data = await res.json();

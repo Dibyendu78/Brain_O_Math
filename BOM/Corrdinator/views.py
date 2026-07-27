@@ -61,6 +61,7 @@ def _student_dict(student, index=None):
         "class": str(student.student_class),
         "category": student.category,
         "subjects": student.subjects,
+        "venue": student.venue or "Doon Heritage School, Siliguri",
         "fee": student.fee,
         "parentName": student.parent_name,
         "parentContact": student.parent_contact,
@@ -92,6 +93,7 @@ def _registration_payload(profile):
         "registrationId": payment.registration_id,
         "status": payment.status,
         "paymentStatus": payment.status,
+        "venue": payment.venue or "Doon Heritage School, Siliguri",
         "utr": payment.utr,
         "totalAmount": total,
         "school": _profile_dict(profile),
@@ -292,6 +294,8 @@ def _save_student(profile, data, student=None):
     student.category = data.get("category") or class_to_category(student.student_class)
     student.parent_name = data.get("parentName", "").strip()
     student.parent_contact = data.get("parentContact", "").strip()
+    payment, _ = RegistrationPayment.objects.get_or_create(coordinator=profile)
+    student.venue = data.get("venue") or payment.venue or "Doon Heritage School, Siliguri"
     student.save()
     return student
 
@@ -305,15 +309,21 @@ def api_payment(request):
     utr = str(data.get("utr", "")).strip()
     if not utr.isdigit() or len(utr) != 12:
         return JsonResponse({"success": False, "message": "UTR must be 12 digits"}, status=400)
+    venue = str(data.get("venue", "")).strip()
+    valid_venues = ["Doon Heritage School, Siliguri", "Don Bosco School, Mayanaguri"]
+    if venue not in valid_venues:
+        return JsonResponse({"success": False, "message": "Please select a valid venue option (Doon Heritage School, Siliguri or Don Bosco School, Mayanaguri)"}, status=400)
     profile = request.user.coordinator_profile
     payment, _ = RegistrationPayment.objects.get_or_create(coordinator=profile)
     payment.utr = utr
+    payment.venue = venue
     payment.status = "submitted"
     payment.total_amount = sum(student.fee for student in profile.students.all())
     payment.submitted_at = timezone.now()
     payment.save()
+    profile.students.update(venue=venue)
     send_payment_confirmation_email(request, profile, payment)
-    return JsonResponse({"success": True, "data": {"utr": payment.utr, "registrationId": payment.registration_id}})
+    return JsonResponse({"success": True, "data": {"utr": payment.utr, "registrationId": payment.registration_id, "venue": payment.venue}})
 
 
 @jwt_required(roles=[User.COORDINATOR])

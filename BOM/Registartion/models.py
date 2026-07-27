@@ -65,6 +65,12 @@ class RegistrationSettings(models.Model):
         return obj
 
 
+VENUE_CHOICES = [
+    ("Doon Heritage School, Siliguri", "Doon Heritage School, Siliguri"),
+    ("Don Bosco School, Mayanaguri", "Don Bosco School, Mayanaguri"),
+]
+
+
 class Student(models.Model):
     SUBJECT_CHOICES = [
         ("english", "English"),
@@ -79,6 +85,7 @@ class Student(models.Model):
     student_class = models.PositiveSmallIntegerField()
     category = models.CharField(max_length=1)
     subjects = models.CharField(max_length=50, help_text="Comma-separated subject codes (english,math,science,cs)")
+    venue = models.CharField(max_length=255, choices=VENUE_CHOICES, default="Doon Heritage School, Siliguri")
     fee = models.PositiveIntegerField(default=100)
     parent_name = models.CharField(max_length=255, blank=True)
     parent_contact = models.CharField(max_length=10, blank=True)
@@ -116,6 +123,7 @@ class RegistrationPayment(models.Model):
 
     coordinator = models.OneToOneField(CoordinatorProfile, on_delete=models.CASCADE, related_name="payment")
     registration_id = models.CharField(max_length=30, unique=True, blank=True)
+    venue = models.CharField(max_length=255, choices=VENUE_CHOICES, default="Doon Heritage School, Siliguri")
     utr = models.CharField(max_length=12, blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="pending")
     total_amount = models.PositiveIntegerField(default=0)

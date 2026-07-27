@@ -1484,6 +1484,7 @@ select:focus {
                 <th><i class="fas fa-hashtag"></i> ID</th>
                 <th><i class="fas fa-school"></i> School</th>
                 <th><i class="fas fa-user"></i> Coordinator Name</th>
+                <th><i class="fas fa-map-marker-alt"></i> Venue</th>
                 <th><i class="fas fa-users"></i> Students</th>
                 <th><i class="fas fa-rupee-sign"></i> Amount</th>
                 <th><i class="fas fa-receipt"></i> UTR Number</th>
@@ -1549,6 +1550,7 @@ select:focus {
                 <th><i class="fas fa-user"></i> Name</th>
                 <th><i class="fas fa-graduation-cap"></i> Class</th>
                 <th><i class="fas fa-book"></i> Subjects</th>
+                <th><i class="fas fa-map-marker-alt"></i> Venue</th>
                 <th><i class="fas fa-school"></i> School</th>
                 <th><i class="fas fa-user-tie"></i> Coordinator</th>
                 <th><i class="fas fa-envelope"></i> Email</th>
@@ -1903,13 +1905,16 @@ select:focus {
 
         <!-- Export Section -->
         <div class="card" style="background: #f9fafb; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
-          <h3 style="margin-top: 0; color: #1f2937;"><i class="fas fa-download"></i> Export Admit Data</h3>
+          <h3 style="margin-top: 0; color: #1f2937;"><i class="fas fa-download"></i> Export Registration & Candidate Data</h3>
           <div class="controls" style="gap: 10px; flex-wrap: wrap;">
             <button id="exportCSVBtn" class="btn" style="background: #059669; color: white;">
               <i class="fas fa-file-csv"></i> Export to CSV
             </button>
             <button id="exportExcelBtn" class="btn" style="background: #0891b2; color: white;">
               <i class="fas fa-file-excel"></i> Export to Excel
+            </button>
+            <button id="exportDocxBtn" class="btn" style="background: #4f46e5; color: white;">
+              <i class="fas fa-file-word"></i> Export to Docx
             </button>
           </div>
         </div>
@@ -1924,6 +1929,7 @@ select:focus {
                 <th><i class="fas fa-layer-group"></i> Category</th>
                 <th><i class="fas fa-id-card"></i> Roll Number</th>
                 <th><i class="fas fa-book"></i> Subjects</th>
+                <th><i class="fas fa-map-marker-alt"></i> Venue</th>
                 <th><i class="fas fa-credit-card"></i> Payment</th>
                 <th><i class="fas fa-school"></i> School</th>
                 <th><i class="fas fa-flag"></i> Status</th>
@@ -2032,6 +2038,7 @@ async function loadRegs() {
         <td><strong>${r.registrationId}</strong></td>
         <td>${r.school?.schoolName || 'N/A'}</td>
         <td>${r.school?.coordinatorName || 'N/A'}</td>
+        <td><span style="font-weight: 600; color: #15803d;">${r.venue || 'Doon Heritage School, Siliguri'}</span></td>
         <td><span style="font-weight: 600;">${r.students?.length || 0}</span></td>
         <td><strong>₹${r.totalAmount}</strong></td>
         <td><span class="utr-number">${r.utr || 'N/A'}</span></td>
@@ -2278,6 +2285,7 @@ async function loadStudents() {
         <td>${s.name}</td>
         <td>${s.class}</td>
         <td>${formatSubjects(s.subjects)}</td>
+        <td><span style="font-weight: 600; color: #15803d;">${s.venue || 'Doon Heritage School, Siliguri'}</span></td>
         <td>${s.schoolName || 'N/A'}</td>
         <td>${s.coordinatorName || 'N/A'}</td>
         <td>${s.coordinatorEmail || 'N/A'}</td>
@@ -2677,6 +2685,7 @@ async function loadAdmitCards() {
         <td><strong style="font-size: 1.1rem; color: #667eea;">Category ${category}</strong></td>
         <td><span style="font-family: monospace; font-weight: bold; color: #3b82f6;">${s.rollNumber || 'Not Assigned'}</span></td>
         <td><span style="background: #f0f4ff; padding: 4px 8px; border-radius: 4px; font-size: 0.9rem;">${subjectsText}</span></td>
+        <td><span style="font-weight: 600; color: #15803d; font-size: 0.85rem;">${s.venue || 'Doon Heritage School, Siliguri'}</span></td>
         <td><span class="status-badge ${paymentBadgeClass}">${paymentDisplayText}</span></td>
         <td>${s.school?.schoolName || 'N/A'}</td>
         <td><span class="status-badge ${statusClass}">${statusText}</span></td>
@@ -3077,8 +3086,8 @@ async function exportToCSV() {
       return;
     }
 
-    // CSV header now includes Category and Subjects
-    let csv = 'Student ID,Name,Class,Category,Subjects,Roll Number,School,Status,Released Date\n';
+    // CSV header now includes Category, Subjects, Venue
+    let csv = 'Student ID,Name,Class,Category,Subjects,Venue,Roll Number,School,Status,Released Date\n';
     allStudents.forEach(s => {
       const status = s.admitCardReleased ? 'Released' : 'Pending';
       const date = s.admitCardReleasedAt ? new Date(s.admitCardReleasedAt).toLocaleDateString('en-IN') : 'N/A';
@@ -3086,7 +3095,8 @@ async function exportToCSV() {
       const category = (typeof getCategoryFromClass === 'function') ? getCategoryFromClass(s.class) : (s.category || 'N/A');
       // Map subjects to readable labels (same as table)
       const subjectsText = formatSubjects(s.subjects);
-      csv += `"${s.studentId || (s._id || '').toString().substring(0, 8)}","${s.name || ''}","${s.class || ''}","${category}","${subjectsText}","${s.rollNumber || 'N/A'}","${s.school?.schoolName || 'N/A'}","${status}","${date}"\n`;
+      const venue = s.venue || 'Doon Heritage School, Siliguri';
+      csv += `"${s.studentId || (s._id || '').toString().substring(0, 8)}","${s.name || ''}","${s.class || ''}","${category}","${subjectsText}","${venue}","${s.rollNumber || 'N/A'}","${s.school?.schoolName || 'N/A'}","${status}","${date}"\n`;
     });
     
     const blob = new Blob([csv], { type: 'text/csv' });
@@ -3109,12 +3119,33 @@ function exportToExcel() {
   exportToCSV(); // Same as CSV, will open in Excel
 }
 
+// Export to Docx
+async function exportToDocx() {
+  try {
+    const res = await fetch(`${API}/admin/export-docx`, { headers: headers() });
+    if (!res.ok) throw new Error('Docx export failed');
+    const blob = await res.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `brain-o-math-export-${new Date().getTime()}.docx`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  } catch (e) {
+    console.error('Docx export error:', e);
+    alert('Failed to export Docx document');
+  }
+}
+
 // Attach event listeners for export buttons
 if (qs('#exportCSVBtn')) {
   qs('#exportCSVBtn').onclick = exportToCSV;
 }
 if (qs('#exportExcelBtn')) {
   qs('#exportExcelBtn').onclick = exportToExcel;
+}
+if (qs('#exportDocxBtn')) {
+  qs('#exportDocxBtn').onclick = exportToDocx;
 }
 
 // ===============================
