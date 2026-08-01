@@ -114,17 +114,28 @@ def api_registration_status_update(request, registration_id):
 
 @jwt_required(roles=[User.ADMIN])
 def api_students(request):
-    qs = Student.objects.select_related("coordinator", "coordinator__user").order_by("student_class", "name")
+    qs = Student.objects.select_related("coordinator", "coordinator__user", "coordinator__payment").order_by("student_class", "name")
     cls = request.GET.get("class")
     venue = request.GET.get("venue")
+    subject = request.GET.get("subject")
+    status = request.GET.get("status")
+
     if cls:
         qs = qs.filter(student_class=cls)
     if venue:
         qs = qs.filter(venue=venue)
+    if subject:
+        qs = qs.filter(subjects__icontains=subject)
+    if status:
+        qs = qs.filter(coordinator__payment__status=status)
+
     data = []
     for student in qs:
         item = _student_dict(student)
         item["school"] = _profile_dict(student.coordinator)
+        if hasattr(student.coordinator, "payment"):
+            item["paymentStatus"] = student.coordinator.payment.status
+            item["status"] = student.coordinator.payment.status
         data.append(item)
     return JsonResponse({"success": True, "data": data, "pagination": {"total": qs.count(), "page": 1}})
 
@@ -236,6 +247,50 @@ def api_unpublish_results(request):
     return JsonResponse({"success": True, "message": "Results hidden successfully.", "data": {"resultsPublished": settings.results_published}})
 
 
+@jwt_required(roles=[User.ADMIN])
+def api_result_stats(request):
+    from django.db.models import Q
+    total = Student.objects.count()
+    with_marks = Student.objects.filter(
+        Q(english_marks__isnull=False) |
+        Q(math_marks__isnull=False) |
+        Q(science_marks__isnull=False) |
+        Q(cs_marks__isnull=False)
+    ).count()
+    pending = total - with_marks
+    percentage = round((with_marks / total * 100), 1) if total > 0 else 0
+    return JsonResponse({
+        "success": True,
+        "data": {
+            "summary": {
+                "totalStudents": total,
+                "withMarks": with_marks,
+                "pending": pending,
+                "percentage": percentage,
+            }
+        }
+    })
+
+
+@jwt_required(roles=[User.ADMIN])
+def api_admit_card_stats(request):
+    total = Student.objects.count()
+    released = Student.objects.filter(admit_card_released=True).count()
+    pending = total - released
+    percentage = round((released / total * 100), 1) if total > 0 else 0
+    return JsonResponse({
+        "success": True,
+        "data": {
+            "summary": {
+                "totalStudents": total,
+                "released": released,
+                "pending": pending,
+                "percentage": percentage,
+            }
+        }
+    })
+
+
 @csrf_exempt
 @jwt_required(roles=[User.ADMIN])
 def api_release_admit_card(request, student_id=None, school_id=None):
@@ -246,13 +301,15 @@ def api_release_admit_card(request, student_id=None, school_id=None):
     else:
         qs = Student.objects.all()
     released = 0
+    single_roll = ""
     for student in qs:
         if not student.roll_number:
             student.roll_number = f"BOM-{student.student_class}-{student.id:04d}"
         student.admit_card_released = "revoke" not in request.path
         student.save(update_fields=["roll_number", "admit_card_released", "updated_at"])
         released += 1
-    return JsonResponse({"success": True, "data": {"released": released}})
+        single_roll = student.roll_number
+    return JsonResponse({"success": True, "data": {"released": released, "rollNumber": single_roll}})
 
 
 @jwt_required(roles=[User.ADMIN])
@@ -272,6 +329,54 @@ def api_export(request):
             payment.total_amount,
             payment.status,
             payment.utr,
+        ])
+    return response
+
+
+@jwt_required(roles=[User.ADMIN])
+def api_export_students(request):
+    qs = Student.objects.select_related("coordinator", "coordinator__user", "coordinator__payment").order_by("student_class", "name")
+    cls = request.GET.get("class")
+    venue = request.GET.get("venue")
+    subject = request.GET.get("subject")
+    status = request.GET.get("status")
+
+    if cls:
+        qs = qs.filter(student_class=cls)
+    if venue:
+        qs = qs.filter(venue=venue)
+    if subject:
+        qs = qs.filter(subjects__icontains=subject)
+    if status:
+        qs = qs.filter(coordinator__payment__status=status)
+
+    response = HttpResponse(content_type="text/csv")
+    response["Content-Disposition"] = 'attachment; filename="students-export.csv"'
+    writer = csv.writer(response)
+    writer.writerow([
+        "Student ID", "Roll Number", "Name", "Class", "Category", "Subjects", 
+        "Venue", "Fee", "Parent Name", "Parent Contact", "School Name", 
+        "Coordinator Name", "Coordinator Email", "Payment Status", "Admit Card Released"
+    ])
+
+    for s in qs:
+        payment_status = s.coordinator.payment.status if hasattr(s.coordinator, "payment") else "pending"
+        writer.writerow([
+            s.student_id,
+            s.roll_number or "N/A",
+            s.name,
+            s.student_class,
+            s.category,
+            s.subjects,
+            s.venue or "Doon Heritage School, Siliguri",
+            s.fee,
+            s.parent_name or "N/A",
+            s.parent_contact or "N/A",
+            s.coordinator.school_name,
+            s.coordinator.coordinator_name,
+            s.coordinator.user.email,
+            payment_status,
+            "Yes" if s.admit_card_released else "No",
         ])
     return response
 

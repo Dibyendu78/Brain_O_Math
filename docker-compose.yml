@@ -8,6 +8,7 @@ services:
       - '8000:8000'
     volumes:
       - .:/app:cached
+      - /app/node_modules
     working_dir: /app/BOM
     env_file:
       - .env

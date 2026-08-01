@@ -12,8 +12,8 @@ class RegistrationSettings(models.Model):
     message = models.CharField(max_length=255, blank=True, default="")
     event_year = models.PositiveIntegerField(default=2026)
     announcement_message = models.CharField(max_length=255, blank=True, default="Registration is now open for Brain-O-Math Olympiad 2026.")
-    last_date_to_apply = models.DateField(default=date(2026, 8, 2))
-    admit_card_release_date = models.DateField(default=date(2026, 8, 4))
+    last_date_to_apply = models.DateField(default=date(2026, 8, 4))
+    admit_card_release_date = models.DateField(default=date(2026, 8, 5))
     english_exam_date = models.DateField(default=date(2026, 8, 8))
     english_exam_time = models.CharField(max_length=50, default="1:00 PM – 2:00 PM")
     computer_science_exam_date = models.DateField(default=date(2026, 8, 8))
@@ -42,8 +42,8 @@ class RegistrationSettings(models.Model):
             defaults={
                 "is_open": True,
                 "event_year": 2026,
-                "last_date_to_apply": date(2026, 8, 2),
-                "admit_card_release_date": date(2026, 8, 4),
+                "last_date_to_apply": date(2026, 8, 4),
+                "admit_card_release_date": date(2026, 8, 5),
                 "english_exam_date": date(2026, 8, 8),
                 "english_exam_time": "1:00 PM – 2:00 PM",
                 "computer_science_exam_date": date(2026, 8, 8),

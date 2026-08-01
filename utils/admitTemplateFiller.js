@@ -88,7 +88,7 @@ async function generateFromTemplate(student = {}, school = {}) {
 
   // Name of Student (label above, value below on template)
   curY -= 40;
-  curY = drawWrappedValue(student.name || 'N/A', leftX, curY, 330, { size: 11, bold: false });
+  curY = drawWrappedValue((student.name || 'N/A').toUpperCase(), leftX, curY, 330, { size: 11, bold: false });
 
   // Institution name (label above, value below)
   curY -= 20;

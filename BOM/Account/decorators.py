@@ -18,9 +18,9 @@ def _redirect_for_html(request):
     if request.method != "GET" or request.path.startswith("/api/"):
         return None
     if request.path.startswith("/admin-control") or request.path.startswith("/admin-"):
-        return redirect("/admin-login/")
+        return redirect("/coordinator-login.html")
     if request.path.startswith("/coordinator/"):
-        return redirect("/coordinator-login/")
+        return redirect("/coordinator-login.html")
     return None
 
 

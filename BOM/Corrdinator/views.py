@@ -345,6 +345,11 @@ def download_certificate(request, student_id):
     return _download_student_pdf(request, student_id, "certificate", "certificate")
 
 
+@jwt_required(roles=[User.COORDINATOR, User.ADMIN])
+def download_admit_card(request, student_id):
+    return _download_student_pdf(request, student_id, "admit-card", "admit-card")
+
+
 @jwt_required(roles=[User.COORDINATOR])
 def download_bulk_placeholder(request):
     return JsonResponse(
@@ -365,8 +370,11 @@ def _download_student_pdf(request, student_id, kind, label):
     except Student.DoesNotExist:
         return JsonResponse({"success": False, "message": "Student not found"}, status=404)
 
+    if kind == "admit-card" and request.user.role != User.ADMIN and not student.admit_card_released:
+        return JsonResponse({"success": False, "message": "Admit card is not released yet."}, status=403)
+
     try:
-        pdf = generate_student_pdf(student, kind)
+        pdf = generate_student_pdf(student, kind, request=request)
     except PdfGenerationError as exc:
         return JsonResponse(
             {

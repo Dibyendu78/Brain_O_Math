@@ -43,7 +43,13 @@
   box-sizing: border-box;
 }
 
-html, body {
+html {
+  overflow-x: hidden;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   background: var(--bg-main);
   color: var(--text-main);
@@ -51,6 +57,7 @@ html, body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  overflow-y: auto;
   width: 100%;
 }
 
@@ -1347,8 +1354,6 @@ select:focus {
     padding: 0.75rem 1rem;
   }
 }
--->
--->
 </style>
 </head>
 <body>
@@ -1536,6 +1541,29 @@ select:focus {
               <option value="12">Class 12</option>
             </select>
           </div>
+          <div class="filter-group">
+            <label for="studentSubjectFilter">
+              <i class="fas fa-book"></i> Filter by Subject:
+            </label>
+            <select id="studentSubjectFilter">
+              <option value="">All Subjects</option>
+              <option value="english">English</option>
+              <option value="math">Mathematics</option>
+              <option value="science">Science</option>
+              <option value="cs">Computer Science</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label for="studentVenueFilter">
+              <i class="fas fa-map-marker-alt"></i> Filter by Venue:
+            </label>
+            <select id="studentVenueFilter">
+              <option value="">All Venues</option>
+              <option value="Doon Heritage School, Siliguri">Doon Heritage School, Siliguri</option>
+              <option value="Don Bosco School, Mayanaguri">Don Bosco School, Mayanaguri</option>
+            </select>
+          </div>
           
           <button id="exportStudentsBtn" class="btn">
             <i class="fas fa-download"></i> Export Students CSV
@@ -1703,9 +1731,21 @@ select:focus {
             </label>
             <select id="editStudentSubjectFilter">
               <option value="">All Subjects</option>
-              <option value="math">Math</option>
+              <option value="english">English</option>
+              <option value="math">Mathematics</option>
               <option value="science">Science</option>
-              <option value="all">Both</option>
+              <option value="cs">Computer Science</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label for="editStudentVenueFilter">
+              <i class="fas fa-map-marker-alt"></i> Filter by Venue:
+            </label>
+            <select id="editStudentVenueFilter">
+              <option value="">All Venues</option>
+              <option value="Doon Heritage School, Siliguri">Doon Heritage School, Siliguri</option>
+              <option value="Don Bosco School, Mayanaguri">Don Bosco School, Mayanaguri</option>
             </select>
           </div>
 
@@ -1758,7 +1798,7 @@ select:focus {
               <p style="margin: 0 0 20px 0; font-size: 0.9rem; opacity: 0.95;">
                 Release both Report Cards & Certificates to all students
               </p>
-              <button id="releaseAllBtn" class="btn" style="background: #10b981; color: white; width: 100%; cursor: pointer; border: none; padding: 12px; border-radius: 4px; font-size: 1rem; font-weight: 600;">
+              <button id="releaseReportCardsAllBtn" class="btn" style="background: #10b981; color: white; width: 100%; cursor: pointer; border: none; padding: 12px; border-radius: 4px; font-size: 1rem; font-weight: 600;">
                 <i class="fas fa-unlock"></i> Release
               </button>
             </div>
@@ -1827,7 +1867,7 @@ select:focus {
               <p style="margin: 0 0 10px 0; color: #666; font-size: 0.9rem;">
                 Generate roll numbers and release admit cards for all pending students across all schools
               </p>
-              <button id="releaseAllBtn" class="btn" style="background: #10b981; color: white; width: 100%; cursor: pointer;">
+              <button id="releaseAllAdmitCardsBtn" class="btn" style="background: #10b981; color: white; width: 100%; cursor: pointer;">
                 <i class="fas fa-check-circle"></i> Release All
               </button>
             </div>
@@ -1901,6 +1941,30 @@ select:focus {
               <option value="pending">Pending</option>
             </select>
           </div>
+
+          <div class="filter-group">
+            <label for="admitSubjectFilter">
+              <i class="fas fa-book"></i> Filter by Subject:
+            </label>
+            <select id="admitSubjectFilter">
+              <option value="">All Subjects</option>
+              <option value="english">English</option>
+              <option value="math">Mathematics</option>
+              <option value="science">Science</option>
+              <option value="cs">Computer Science</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label for="admitVenueFilter">
+              <i class="fas fa-map-marker-alt"></i> Filter by Venue:
+            </label>
+            <select id="admitVenueFilter">
+              <option value="">All Venues</option>
+              <option value="Doon Heritage School, Siliguri">Doon Heritage School, Siliguri</option>
+              <option value="Don Bosco School, Mayanaguri">Don Bosco School, Mayanaguri</option>
+            </select>
+          </div>
         </div>
 
         <!-- Export Section -->
@@ -1951,7 +2015,7 @@ const API = '/api';
 //const API = '/api';
 let token = localStorage.getItem('bomAdminToken');
 if (!token) {
-  window.location.href = '/admin-login/';
+  window.location.href = '/coordinator-login.html';
 }
 
 const headers = () => ({ 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token });
@@ -1995,11 +2059,11 @@ async function loadStats() {
       alert('Failed to load statistics');
       return;
     }
-    qs('#statsLoading').style.display = 'none';
-    qs('#statsContent').style.display = 'block';
-    qs('#totalRegs').textContent = j.data.totalRegistrations || 0;
-    qs('#totalStudents').textContent = j.data.totalStudents || 0;
-    qs('#totalRevenue').textContent = '₹' + (j.data.totalRevenue || 0);
+    if (qs('#statsLoading')) qs('#statsLoading').style.display = 'none';
+    if (qs('#statsContent')) qs('#statsContent').style.display = 'block';
+    if (qs('#totalRegs')) qs('#totalRegs').textContent = j.data.totalRegistrations || 0;
+    if (qs('#totalStudents')) qs('#totalStudents').textContent = j.data.totalStudents || 0;
+    if (qs('#totalRevenue')) qs('#totalRevenue').textContent = '₹' + (j.data.totalRevenue || 0);
   } catch (e) {
     console.error('Stats error:', e);
   }
@@ -2009,7 +2073,7 @@ let page = 1, status = '';
 
 async function loadRegs() {
   const tbody = qs('#regTable tbody');
-  tbody.innerHTML = '<tr><td colspan="8" class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</td></tr>';
+  if (tbody) tbody.innerHTML = '<tr><td colspan="8" class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</td></tr>';
 
   try {
     let url = `${API}/admin/registrations?page=${page}`;
@@ -2250,16 +2314,18 @@ async function pendingUTR(registrationId) {
 }
 
 // Student Management Functions
-let studentPage = 1, studentStatus = '', studentClass = '';
+let studentPage = 1, studentStatus = '', studentClass = '', studentSubject = '', studentVenue = '';
 
 async function loadStudents() {
   const tbody = qs('#studentTable tbody');
-  tbody.innerHTML = '<tr><td colspan="10" class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</td></tr>';
+  if (tbody) tbody.innerHTML = '<tr><td colspan="10" class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</td></tr>';
 
   try {
     let url = `${API}/admin/students?page=${studentPage}`;
     if (studentStatus) url += `&status=${studentStatus}`;
     if (studentClass) url += `&class=${studentClass}`;
+    if (studentSubject) url += `&subject=${studentSubject}`;
+    if (studentVenue) url += `&venue=${encodeURIComponent(studentVenue)}`;
 
     const res = await fetch(url, { headers: headers() });
     const j = await res.json();
@@ -2449,6 +2515,22 @@ qs('#classFilter').onchange = e => {
   loadStudents();
 };
 
+if (qs('#studentSubjectFilter')) {
+  qs('#studentSubjectFilter').onchange = e => {
+    studentSubject = e.target.value;
+    studentPage = 1;
+    loadStudents();
+  };
+}
+
+if (qs('#studentVenueFilter')) {
+  qs('#studentVenueFilter').onchange = e => {
+    studentVenue = e.target.value;
+    studentPage = 1;
+    loadStudents();
+  };
+}
+
 qs('#exportBtn').onclick = async () => {
   try {
     const res = await fetch(API + '/admin/export', {
@@ -2476,7 +2558,13 @@ qs('#exportBtn').onclick = async () => {
 
 qs('#exportStudentsBtn').onclick = async () => {
   try {
-    const res = await fetch(API + '/admin/export-students', {
+    let exportUrl = `${API}/admin/export-students?1=1`;
+    if (studentStatus) exportUrl += `&status=${studentStatus}`;
+    if (studentClass) exportUrl += `&class=${studentClass}`;
+    if (studentSubject) exportUrl += `&subject=${studentSubject}`;
+    if (studentVenue) exportUrl += `&venue=${encodeURIComponent(studentVenue)}`;
+
+    const res = await fetch(exportUrl, {
       headers: { 'Authorization': 'Bearer ' + token }
     });
 
@@ -2486,23 +2574,25 @@ qs('#exportStudentsBtn').onclick = async () => {
     }
 
     const blob = await res.blob();
-    const url = window.URL.createObjectURL(blob);
+    const downloadUrl = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url;
+    a.href = downloadUrl;
     a.download = 'students.csv';
     document.body.appendChild(a);
     a.click();
     a.remove();
-    window.URL.revokeObjectURL(url);
+    window.URL.revokeObjectURL(downloadUrl);
   } catch (e) {
     alert('Export failed');
   }
 };
 
-qs('#logoutBtn').onclick = () => {
-  localStorage.removeItem('bomAdminToken');
-  window.location.href = '/';
-};
+if (qs('#logoutBtn')) {
+  qs('#logoutBtn').onclick = () => {
+    localStorage.removeItem('bomAdminToken');
+    window.location.href = '/';
+  };
+}
 
 // Registration Control Functions
 let registrationStatus = 'open';
@@ -2521,20 +2611,27 @@ async function loadRegistrationStatus() {
 }
 
 function updateRegistrationUI() {
-  const statusText = qs('#registrationStatusText');
-  const stopBtn = qs('#stopRegistrationBtn');
-  const startBtn = qs('#startRegistrationBtn');
+  if (qs('#regStatusBadge')) {
+    qs('#regStatusBadge').textContent = registrationStatus.toUpperCase();
+    qs('#regStatusBadge').className = 'status-badge ' + (registrationStatus === 'open' ? 'status-verified' : 'status-rejected');
+  }
   
-  if (registrationStatus === 'closed') {
-    statusText.textContent = 'CLOSED';
-    statusText.style.color = '#ef4444';
-    stopBtn.style.display = 'none';
-    startBtn.style.display = 'inline-flex';
-  } else {
-    statusText.textContent = 'OPEN';
-    statusText.style.color = '#10b981';
-    stopBtn.style.display = 'inline-flex';
-    startBtn.style.display = 'none';
+  if (qs('#registrationStatusText')) {
+    const statusText = qs('#registrationStatusText');
+    if (registrationStatus === 'closed') {
+      statusText.textContent = 'CLOSED';
+      statusText.style.color = '#ef4444';
+    } else {
+      statusText.textContent = 'OPEN';
+      statusText.style.color = '#10b981';
+    }
+  }
+
+  if (qs('#stopRegistrationBtn')) {
+    qs('#stopRegistrationBtn').style.display = registrationStatus === 'open' ? 'inline-flex' : 'none';
+  }
+  if (qs('#startRegistrationBtn')) {
+    qs('#startRegistrationBtn').style.display = registrationStatus === 'closed' ? 'inline-flex' : 'none';
   }
 }
 
@@ -2600,6 +2697,8 @@ qs('#startRegistrationBtn').onclick = startRegistration;
 let admitCardPage = 1;
 let admitCardClassFilter = '';
 let admitCardStatusFilter = '';
+let admitCardSubjectFilter = '';
+let admitCardVenueFilter = '';
 
 // Helper function to get category from class
 function getCategoryFromClass(cls) {
@@ -2618,11 +2717,11 @@ async function loadAdmitCardStats() {
     const j = await res.json();
     
     if (j.success) {
-      const stats = j.data.summary;
-      qs('#totalStudentsAdmit').textContent = stats.totalStudents;
-      qs('#releasedAdmitCards').textContent = stats.released;
-      qs('#pendingAdmitCards').textContent = stats.pending;
-      qs('#releasePercentage').textContent = stats.percentage + '%';
+      const stats = j.data.summary || j.data;
+      if (qs('#totalStudentsAdmit')) qs('#totalStudentsAdmit').textContent = stats.totalStudents || 0;
+      if (qs('#releasedAdmitCards')) qs('#releasedAdmitCards').textContent = stats.released || 0;
+      if (qs('#pendingAdmitCards')) qs('#pendingAdmitCards').textContent = stats.pending || 0;
+      if (qs('#releasePercentage')) qs('#releasePercentage').textContent = (stats.percentage !== undefined ? stats.percentage : 0) + '%';
     }
   } catch (e) {
     console.error('Failed to load admit card stats:', e);
@@ -2631,11 +2730,13 @@ async function loadAdmitCardStats() {
 
 async function loadAdmitCards() {
   const tbody = qs('#admitCardTable tbody');
-  tbody.innerHTML = '<tr><td colspan="10" class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</td></tr>';
+  if (tbody) tbody.innerHTML = '<tr><td colspan="10" class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</td></tr>';
 
   try {
     let url = `${API}/admin/students?page=${admitCardPage}`;
     if (admitCardClassFilter) url += `&class=${admitCardClassFilter}`;
+    if (admitCardSubjectFilter) url += `&subject=${admitCardSubjectFilter}`;
+    if (admitCardVenueFilter) url += `&venue=${encodeURIComponent(admitCardVenueFilter)}`;
     
     const res = await fetch(url, { headers: headers() });
     const j = await res.json();
@@ -2691,11 +2792,11 @@ async function loadAdmitCards() {
         <td><span class="status-badge ${statusClass}">${statusText}</span></td>
         <td class="actions">
           ${!s.admitCardReleased ? `
-            <button class="action-btn release-btn" onclick="releaseStudentAdmitCard('${s._id}')" title="Release Admit Card">
+            <button class="action-btn release-btn" onclick="releaseStudentAdmitCard('${s._id || s.id}')" title="Release Admit Card">
               <i class="fas fa-check-circle"></i> Release
             </button>
           ` : `
-            <button class="action-btn revoke-btn" onclick="revokeStudentAdmitCard('${s._id}')" title="Revoke Admit Card">
+            <button class="action-btn revoke-btn" onclick="revokeStudentAdmitCard('${s._id || s.id}')" title="Revoke Admit Card">
               <i class="fas fa-ban"></i> Revoke
             </button>
           `}
@@ -2866,7 +2967,7 @@ async function revokeStudentAdmitCard(studentId) {
 async function releaseAllAdmitCards() {
   if (!confirm('Release admit cards for ALL students? This action cannot be undone.')) return;
 
-  const btn = qs('#releaseAllBtn');
+  const btn = qs('#releaseAllAdmitCardsBtn');
   btn.disabled = true;
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
 
@@ -3009,8 +3110,8 @@ async function loadSchoolsForRelease() {
 
     const schools = new Map();
     j.data.forEach(student => {
-      if (student.school && student.school._id) {
-        const key = student.school._id;
+      if (student.school && (student.school.id || student.school._id)) {
+        const key = student.school.id || student.school._id;
         if (!schools.has(key)) {
           schools.set(key, student.school.schoolName || 'Unknown School');
         }
@@ -3018,6 +3119,7 @@ async function loadSchoolsForRelease() {
     });
 
     const select = qs('#schoolSelectForRelease');
+    select.innerHTML = '<option value="">Select a school...</option>';
     schools.forEach((name, id) => {
       const option = document.createElement('option');
       option.value = id;
@@ -3030,8 +3132,8 @@ async function loadSchoolsForRelease() {
 }
 
 // Event listeners for admit card management
-if (qs('#releaseAllBtn')) {
-  qs('#releaseAllBtn').onclick = releaseAllAdmitCards;
+if (qs('#releaseAllAdmitCardsBtn')) {
+  qs('#releaseAllAdmitCardsBtn').onclick = releaseAllAdmitCards;
 }
 
 if (qs('#releaseSchoolBtn')) {
@@ -3057,6 +3159,22 @@ if (qs('#admitClassFilter')) {
 if (qs('#admitStatusFilter')) {
   qs('#admitStatusFilter').onchange = () => {
     admitCardStatusFilter = qs('#admitStatusFilter').value;
+    admitCardPage = 1;
+    loadAdmitCards();
+  };
+}
+
+if (qs('#admitSubjectFilter')) {
+  qs('#admitSubjectFilter').onchange = () => {
+    admitCardSubjectFilter = qs('#admitSubjectFilter').value;
+    admitCardPage = 1;
+    loadAdmitCards();
+  };
+}
+
+if (qs('#admitVenueFilter')) {
+  qs('#admitVenueFilter').onchange = () => {
+    admitCardVenueFilter = qs('#admitVenueFilter').value;
     admitCardPage = 1;
     loadAdmitCards();
   };
@@ -3161,12 +3279,12 @@ async function loadResultEntryStats() {
     const res = await fetch(API + '/admin/results/stats', { headers: headers() });
     const j = await res.json();
     
-    if (j.success) {
-      const stats = j.data.summary;
-      qs('#totalResultStudents').textContent = stats.totalStudents;
-      qs('#marksEnteredCount').textContent = stats.withMarks;
-      qs('#marksPendingCount').textContent = stats.pending;
-      qs('#marksPercentage').textContent = stats.percentage + '%';
+    if (j.success && j.data) {
+      const stats = j.data.summary || j.data;
+      if (qs('#totalResultStudents')) qs('#totalResultStudents').textContent = stats.totalStudents || 0;
+      if (qs('#marksEnteredCount')) qs('#marksEnteredCount').textContent = stats.withMarks !== undefined ? stats.withMarks : (stats.with_marks || 0);
+      if (qs('#marksPendingCount')) qs('#marksPendingCount').textContent = stats.pending || 0;
+      if (qs('#marksPercentage')) qs('#marksPercentage').textContent = (stats.percentage !== undefined ? stats.percentage : 0) + '%';
     }
   } catch (e) {
     console.error('Failed to load result entry stats:', e);
@@ -3175,7 +3293,7 @@ async function loadResultEntryStats() {
 
 async function loadResultsForEntry() {
   const tbody = qs('#resultTable tbody');
-  tbody.innerHTML = '<tr><td colspan="11" class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</td></tr>';
+  if (tbody) tbody.innerHTML = '<tr><td colspan="11" class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</td></tr>';
 
   try {
     let url = `${API}/admin/results/students?page=${resultPage}`;
@@ -3564,6 +3682,7 @@ if (qs('#saveAllMarksBtn')) {
 let editStudentPage = 1;
 let editStudentClassFilter = '';
 let editStudentSubjectFilter = '';
+let editStudentVenueFilter = '';
 
 async function loadEditStudentStats() {
   try {
@@ -3582,12 +3701,13 @@ async function loadEditStudentStats() {
 
 async function loadStudentsForEditing() {
   const tbody = qs('#editStudentTable tbody');
-  tbody.innerHTML = '<tr><td colspan="6" class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</td></tr>';
+  if (tbody) tbody.innerHTML = '<tr><td colspan="6" class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</td></tr>';
 
   try {
     let url = `${API}/admin/edit/students?page=${editStudentPage}`;
     if (editStudentClassFilter) url += `&class=${editStudentClassFilter}`;
     if (editStudentSubjectFilter) url += `&subject=${editStudentSubjectFilter}`;
+    if (editStudentVenueFilter) url += `&venue=${encodeURIComponent(editStudentVenueFilter)}`;
     
     const res = await fetch(url, { headers: headers() });
     const j = await res.json();
@@ -3856,6 +3976,14 @@ if (qs('#editStudentSubjectFilter')) {
   };
 }
 
+if (qs('#editStudentVenueFilter')) {
+  qs('#editStudentVenueFilter').onchange = () => {
+    editStudentVenueFilter = qs('#editStudentVenueFilter').value;
+    editStudentPage = 1;
+    loadStudentsForEditing();
+  };
+}
+
 if (qs('#refreshEditStatsBtn')) {
   qs('#refreshEditStatsBtn').onclick = loadEditStudentStats;
 }
@@ -4022,8 +4150,8 @@ async function stopAll() {
 }
 
 // Attach event listeners
-if (qs('#releaseAllBtn')) {
-  qs('#releaseAllBtn').onclick = releaseAll;
+if (qs('#releaseReportCardsAllBtn')) {
+  qs('#releaseReportCardsAllBtn').onclick = releaseAll;
 }
 if (qs('#stopAllBtn')) {
   qs('#stopAllBtn').onclick = stopAll;

@@ -26,6 +26,12 @@ def student_payload(student):
         "coordinatorName": student.coordinator.coordinator_name,
         "coordinatorEmail": student.coordinator.user.email,
         "registrationId": getattr(getattr(student.coordinator, "payment", None), "registration_id", ""),
+        "coordinator": {
+            "schoolName": student.coordinator.school_name,
+            "coordinatorName": student.coordinator.coordinator_name,
+            "coordinatorEmail": student.coordinator.user.email,
+            "coordinatorPhone": student.coordinator.coordinator_phone,
+        },
         "marks": {
             "english": student.english_marks,
             "math": student.math_marks,
@@ -35,17 +41,21 @@ def student_payload(student):
     }
 
 
-def generate_student_pdf(student, kind):
-    if kind not in {"report-card", "certificate"}:
+def generate_student_pdf(student, kind, request=None):
+    if kind not in {"report-card", "certificate", "admit-card"}:
         raise ValueError("Unsupported PDF type")
     if not PDF_BRIDGE.exists():
         raise PdfGenerationError(f"PDF bridge not found: {PDF_BRIDGE}")
+
+    payload = student_payload(student)
+    if request:
+        payload["verifyBaseUrl"] = request.build_absolute_uri("/")
 
     with tempfile.TemporaryDirectory() as tmpdir:
         tmpdir = Path(tmpdir)
         input_path = tmpdir / "student.json"
         output_path = tmpdir / "output.pdf"
-        input_path.write_text(json.dumps(student_payload(student)), encoding="utf-8")
+        input_path.write_text(json.dumps(payload), encoding="utf-8")
 
         result = subprocess.run(
             ["node", str(PDF_BRIDGE), kind, str(input_path), str(output_path)],

@@ -1,20 +1,29 @@
-FROM python:3.14-slim
+FROM python:3.12-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
-ENV POETRY_VIRTUALENVS_CREATE=false
 
 WORKDIR /app
 
+# Install system dependencies & Node.js for PDF generation
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     libffi-dev \
+    nodejs \
+    npm \
     && rm -rf /var/lib/apt/lists/*
 
+# Install Node dependencies
+COPY package.json package-lock.json* /app/
+RUN npm install --omit=dev
+
+# Install Python dependencies
 COPY requirements.txt /app/
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Copy application source code
 COPY . /app
+
 WORKDIR /app/BOM
 
 EXPOSE 8000
