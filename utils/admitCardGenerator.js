@@ -11,8 +11,15 @@ class AdmitCardGenerator {
     this.pageHeight = options.pageHeight || 842;
     this.margin = options.margin || 40;
 
-    // Logo path - stored in backend folder
-    this.logoPath = path.resolve(__dirname, '../logo.png');
+    // Logo path - stored in backend folder (supports png or jpg)
+    const logoPng = path.resolve(__dirname, '../logo.png');
+    const logoJpg = path.resolve(__dirname, '../logo.jpg');
+    this.logoPath = fs.existsSync(logoPng) ? logoPng : (fs.existsSync(logoJpg) ? logoJpg : logoPng);
+    // Also check static folder
+    const staticLogo = path.resolve(__dirname, '../BOM/static/public/logo.jpg');
+    if (!fs.existsSync(this.logoPath) && fs.existsSync(staticLogo)) {
+      this.logoPath = staticLogo;
+    }
 
     this.titleSize = options.titleSize || 22;
     this.subtitleSize = options.subtitleSize || 12;
@@ -112,41 +119,8 @@ class AdmitCardGenerator {
     const leftColW = contentW * 0.45;
     const rightX = this.margin + leftColW + 30;
 
-    // Colorful Header Background
-    doc.rect(0, 0, this.pageWidth, 90).fillColor('#1e3a8a').fill();
-
-    // Logo (optional, top-left) - CIRCULAR with white background
-    const logoPath = this._findLogo();
-    if (logoPath) {
-      try {
-        const logoX = leftX + 35;
-        const logoY = 50;
-        const logoRadius = 35;
-        
-        // Draw circular white background for logo
-        this._drawCircle(doc, logoX, logoY, logoRadius, '#ffffff');
-        
-        // Save graphics state for circular clipping
-        doc.save();
-        
-        // Create circular clipping path
-        doc.circle(logoX, logoY, logoRadius - 2).clip();
-        
-        // Draw logo from local file
-        doc.image(logoPath, logoX - logoRadius + 2, logoY - logoRadius + 2, { 
-          width: (logoRadius * 2) - 4,
-          height: (logoRadius * 2) - 4
-        });
-        
-        // Restore graphics state
-        doc.restore();
-        
-        // Draw circular border
-        doc.circle(logoX, logoY, logoRadius).strokeColor('#3b82f6').lineWidth(2).stroke();
-      } catch (e) { 
-        console.log('Logo drawing error:', e.message);
-      }
-    }
+    // Colorful Header Background - taller to fit logo
+    doc.rect(0, 0, this.pageWidth, 100).fillColor('#1e3a8a').fill();
 
     // Format IST timestamp for download tracking
     const istTimeStr = new Intl.DateTimeFormat('en-IN', {
@@ -160,15 +134,44 @@ class AdmitCardGenerator {
       hour12: true
     }).format(new Date());
 
-    // Header: Title, Subtitle, Main Title (with colorful text)
-    doc.font('Helvetica-Bold').fontSize(this.titleSize).fillColor('#ffffff');
-    doc.text('BRAIN O MATH OLYMPIAD 2026', leftX, 20, { width: contentW, align: 'center' });
+    // Header: Circular Logo on the LEFT + Title text on right side
+    const logoPath = this._findLogo();
+    const logoRadius = 40;
+    const logoX = this.margin + logoRadius + 5;
+    const logoY = 50; // Center of logo in header
 
-    doc.font('Helvetica').fontSize(this.subtitleSize).fillColor('#e0e7ff');
-    doc.text('DOON HERITAGE SCHOOL, SILIGURI', leftX, doc.y + 2, { width: contentW, align: 'center' });
+    if (logoPath) {
+      try {
+        // Draw circular white background for logo
+        this._drawCircle(doc, logoX, logoY, logoRadius, '#ffffff');
+
+        // Save graphics state for circular clipping
+        doc.save();
+        doc.circle(logoX, logoY, logoRadius - 2).clip();
+
+        // Draw the Brain-O-Math logo
+        doc.image(logoPath, logoX - logoRadius + 2, logoY - logoRadius + 2, {
+          width: (logoRadius * 2) - 4,
+          height: (logoRadius * 2) - 4
+        });
+        doc.restore();
+
+        // Circular gold border around logo
+        doc.circle(logoX, logoY, logoRadius).strokeColor('#fbbf24').lineWidth(2.5).stroke();
+      } catch (e) {
+        console.log('Logo drawing error:', e.message);
+      }
+    }
+
+    // Title text - positioned to the right of the logo
+    const titleX = logoX + logoRadius + 15;
+    const titleWidth = contentW - (titleX - this.margin);
+
+    doc.font('Helvetica-Bold').fontSize(this.titleSize).fillColor('#ffffff');
+    doc.text('BRAIN O MATH OLYMPIAD 2026', titleX, 18, { width: titleWidth, align: 'left' });
 
     doc.font('Helvetica-Bold').fontSize(this.mainTitleSize).fillColor('#fbbf24');
-    doc.text('ADMIT CARD', leftX, doc.y + 4, { width: contentW, align: 'center' });
+    doc.text('ADMIT CARD', titleX, doc.y + 6, { width: titleWidth, align: 'left' });
 
     doc.moveDown(1.5);
     const contentStartY = doc.y;
