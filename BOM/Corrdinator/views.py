@@ -11,7 +11,7 @@ from Account.decorators import jwt_required
 from Account.models import User
 from Account.views import issue_login_response, send_signup_credentials_email, send_payment_confirmation_email
 from Corrdinator.models import CoordinatorProfile
-from EventMgnt.pdf_utils import PdfGenerationError, generate_student_pdf
+from EventMgnt.pdf_utils import PdfGenerationError, clean_roll_number, generate_student_pdf
 from Registartion.models import RegistrationPayment, RegistrationSettings, Student, class_to_category
 
 
@@ -385,7 +385,7 @@ def _download_student_pdf(request, student_id, kind, label):
             status=500,
         )
 
-    filename = f"{label}-{student.roll_number or student.student_id}.pdf"
+    filename = f"{label}-{clean_roll_number(student.roll_number) or student.student_id}.pdf"
     response = HttpResponse(pdf, content_type="application/pdf")
     response["Content-Disposition"] = f'attachment; filename="{filename}"'
     return response

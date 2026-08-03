@@ -14,11 +14,17 @@ class PdfGenerationError(RuntimeError):
     pass
 
 
+def clean_roll_number(value):
+    """Keep legacy BOM-prefixed roll numbers out of generated documents."""
+    value = str(value or "")
+    return value[3:] if value.startswith("BOM") else value
+
+
 def student_payload(student):
     return {
         "name": student.name,
         "studentId": student.student_id,
-        "rollNumber": student.roll_number,
+        "rollNumber": clean_roll_number(student.roll_number),
         "class": str(student.student_class),
         "category": student.category,
         "subjects": student.subjects,

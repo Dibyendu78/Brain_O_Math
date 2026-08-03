@@ -153,9 +153,9 @@ def class_to_category(value):
 
 
 def generate_roll_number(student_class, student_id):
-    """Return the 10-character admit-card roll number.
+    """Return the admit-card roll number with the fixed ``260`` prefix.
 
-    The class is always two digits (04, 09, 10, 11, 12), followed by the
-    event year (26) and the student's three-digit database ID.
+    The existing class, event-year, and three-digit student-ID logic is
+    preserved after the prefix.
     """
-    return f"BOM{int(student_class):02d}26{int(student_id):03d}"
+    return f"260{int(student_class):02d}26{int(student_id):03d}"

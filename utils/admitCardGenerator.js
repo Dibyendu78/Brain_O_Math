@@ -210,7 +210,8 @@ class AdmitCardGenerator {
     doc.moveDown(1.0);
 
     // Inline fields (left column) with colored labels
-    this._drawInlineField(doc, 'Roll Number:', String(student.rollNumber || student._id || 'N/A'), leftX, '#1e40af');
+    const rollNumber = String(student.rollNumber || student._id || 'N/A').replace(/^BOM/, '');
+    this._drawInlineField(doc, 'Roll Number:', rollNumber, leftX, '#1e40af');
     this._drawInlineField(doc, 'Class:', String(student.class || 'N/A'), leftX, '#1e40af');
     this._drawInlineField(doc, 'Category:', this.getCategoryName(student.category), leftX, '#1e40af');
     this._drawInlineField(doc, 'Registration Number:', String(student.registrationId || 'N/A'), leftX, '#1e40af');
