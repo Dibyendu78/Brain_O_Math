@@ -15,7 +15,7 @@ from Account.models import User
 from Account.views import issue_login_response, send_results_published_email
 from Corrdinator.models import CoordinatorProfile
 from Corrdinator.views import _profile_dict, _student_dict
-from Registartion.models import RegistrationPayment, RegistrationSettings, Student
+from Registartion.models import RegistrationPayment, RegistrationSettings, Student, generate_roll_number
 
 
 
@@ -303,8 +303,9 @@ def api_release_admit_card(request, student_id=None, school_id=None):
     released = 0
     single_roll = ""
     for student in qs:
-        if not student.roll_number:
-            student.roll_number = f"BOM-{student.student_class}-{student.id:04d}"
+        # Always normalize the roll number when releasing, including records
+        # that were generated with the old BOM-4-0009 format.
+        student.roll_number = generate_roll_number(student.student_class, student.id)
         student.admit_card_released = "revoke" not in request.path
         student.save(update_fields=["roll_number", "admit_card_released", "updated_at"])
         released += 1

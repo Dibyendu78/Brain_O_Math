@@ -22,6 +22,7 @@ def student_payload(student):
         "class": str(student.student_class),
         "category": student.category,
         "subjects": student.subjects,
+        "venue": student.venue,
         "schoolName": student.coordinator.school_name,
         "coordinatorName": student.coordinator.coordinator_name,
         "coordinatorEmail": student.coordinator.user.email,
@@ -31,6 +32,7 @@ def student_payload(student):
             "coordinatorName": student.coordinator.coordinator_name,
             "coordinatorEmail": student.coordinator.user.email,
             "coordinatorPhone": student.coordinator.coordinator_phone,
+            "venue": student.venue,
         },
         "marks": {
             "english": student.english_marks,

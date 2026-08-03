@@ -26,7 +26,7 @@ class AdmitCardGenerator {
     this.mainTitleSize = options.mainTitleSize || 22;
     this.labelSize = options.labelSize || 11;
     this.valueSize = options.valueSize || 11;
-    this.instructionSize = options.instructionSize || 9;
+    this.instructionSize = options.instructionSize || 8.2;
     this.footerSize = options.footerSize || 8;
   }
 
@@ -108,6 +108,20 @@ class AdmitCardGenerator {
     return String(sub);
   }
 
+  getVenueDetails(venue) {
+    const name = String(venue || 'Doon Heritage School, Siliguri').trim();
+    const details = {
+      'Doon Heritage School, Siliguri': [
+        'Kolabari Rd, Champasari, Siliguri,',
+        'Darjeeling, West Bengal - 734003'
+      ],
+      'Don Bosco School, Mayanaguri': [
+        'Mayanaguri, Jalpaiguri, West Bengal'
+      ]
+    };
+    return { name, address: details[name] || [] };
+  }
+
   getCategoryName(cat) {
     const map = { 'A': 'A', 'B': 'B', 'C': 'C', 'D': 'D', 'E': 'E' };
     return map[cat] || (cat || 'N/A');
@@ -171,7 +185,9 @@ class AdmitCardGenerator {
     doc.text('BRAIN O MATH OLYMPIAD 2026', titleX, 18, { width: titleWidth, align: 'left' });
 
     doc.font('Helvetica-Bold').fontSize(this.mainTitleSize).fillColor('#fbbf24');
-    doc.text('ADMIT CARD', titleX, doc.y + 6, { width: titleWidth, align: 'left' });
+    // Center the admit-card label across the complete page content area,
+    // rather than limiting it to the space beside the logo.
+    doc.text('ADMIT CARD', leftX, doc.y + 6, { width: contentW, align: 'center' });
 
     doc.moveDown(1.5);
     const contentStartY = doc.y;
@@ -181,7 +197,9 @@ class AdmitCardGenerator {
     doc.moveDown(0.3);
 
     // LEFT COLUMN: Student Info (with subtle background)
-    doc.rect(leftX - 5, doc.y - 5, leftColW + 10, 220).fillColor('#f0f9ff').fill();
+    // Keep the complete student-information section inside its blue panel,
+    // including the downloaded timestamp.
+    doc.rect(leftX - 5, doc.y - 5, leftColW + 10, 260).fillColor('#f0f9ff').fill();
 
     doc.fontSize(this.labelSize).font('Helvetica-Bold').fillColor('#1e40af').text('Name of Student', leftX);
     doc.fontSize(this.valueSize).font('Helvetica').fillColor('#000000').text((student.name || 'N/A').toUpperCase(), leftX, doc.y + 2, { width: leftColW });
@@ -323,35 +341,39 @@ class AdmitCardGenerator {
     doc.moveDown(0.6);
     doc.rect(leftX - 5, doc.y - 5, contentW + 10, 75).fillColor('#dcfce7').fill();
 
-    const chosenVenue = student.venue || (coordinator && coordinator.venue) || 'Doon Heritage School, Siliguri';
+    const venue = this.getVenueDetails(student.venue || (coordinator && coordinator.venue));
     doc.fontSize(this.labelSize).font('Helvetica-Bold').fillColor('#15803d').text('Venue', leftX);
-    doc.fontSize(this.valueSize).font('Helvetica').fillColor('#000000').text(chosenVenue, leftX, doc.y + 2, { width: leftColW });
-    doc.moveDown(0.4);
-    doc.fontSize(this.valueSize).font('Helvetica').text('Kolabari Rd, Champasari, Siliguri,', leftX);
-    doc.moveDown(0.4);
-    doc.fontSize(this.valueSize).font('Helvetica').text('Darjeeling, West Bengal - 734003', leftX);
+    doc.fontSize(this.valueSize).font('Helvetica').fillColor('#000000').text(venue.name, leftX, doc.y + 2, { width: contentW - 20 });
+    venue.address.forEach((line) => {
+      doc.moveDown(0.4);
+      doc.fontSize(this.valueSize).font('Helvetica').fillColor('#000000').text(line, leftX);
+    });
 
     // INSTRUCTIONS
     doc.moveDown(1.2);
-    doc.rect(leftX - 5, doc.y - 5, contentW + 10, 10).fillColor('#dbeafe').fill();
-    doc.fontSize(this.labelSize).font('Helvetica-Bold').fillColor('#0c4a6e').text('Instructions for Candidates', leftX, doc.y);
+    // Give the section title enough vertical padding so the background fully
+    // covers the text instead of appearing as a thin strip behind its top.
+    doc.rect(leftX - 5, doc.y - 6, contentW + 10, 19).fillColor('#dbeafe').fill();
+    doc.fontSize(this.labelSize).font('Helvetica-Bold').fillColor('#0c4a6e').text('GENERAL INSTRUCTIONS', leftX, doc.y);
     doc.moveDown(0.6);
 
     const instructions = [
-      '1. Students must carry the printed Admit Card to the examination hall. No entry will be allowed without it.',
-      '2. Reporting & Gate Closing Times:',
-      '   • Morning Shift (English / Math): Reporting 8:45 AM – 9:15 AM (Exam: 9:30 AM – 10:30 AM)',
-      '   • Afternoon Shift (CS / Science): Reporting 10:45 AM – 10:55 AM (Exam: 11:00 AM – 12:00 PM)',
-      '3. Reach the venue 15 minutes before the reporting time for each examination.',
-      '4. Each student must carry blue or black ball-point pen for the examination.',
-      '5. Electronic devices like calculators, smartwatches, and mobile phones are strictly prohibited.',
-      '6. Follow the invigilator\'s instructions strictly and maintain silence in the exam hall.'
+      '1. Students must carry a printed copy of the Admit Card along with their School Identity Card or any other valid identity card to the examination hall. No entry will be allowed without these documents.',
+      '2. Students are advised to reach the examination venue at least 15 minutes before the reporting time for each examination.',
+      '3. Students must appear only for the subject(s) mentioned on their Admit Card.',
+      '4. Each student must carry a blue or black ballpoint pen and a pencil for the examination.',
+      '5. The examination will be conducted using an OMR answer sheet. Students must fill in their details and mark their answers carefully as instructed by the invigilator. Do not fold, tear, or damage the OMR sheet.',
+      '6. Electronic devices such as calculators, smartwatches, and mobile phones are strictly prohibited inside the examination venue.',
+      '7. Students must strictly follow the instructions of the invigilators and maintain silence and discipline inside the examination hall.',
+      '8. Any form of unfair means, misconduct, or violation of the examination rules may result in disqualification.',
+      '9. Parents/guardians are requested not to enter the examination hall.',
+      '10. IMPORTANT: If you have an examination on the second day, please preserve and carry this Admit Card for the next day\'s examination. Keep the Admit Card safely until the results are declared.'
     ];
 
     doc.fontSize(this.instructionSize).font('Helvetica').fillColor('#000000');
     instructions.forEach((inst) => {
-      doc.text(inst, leftX, doc.y, { width: contentW - 20, align: 'left' });
-      doc.moveDown(0.3);
+      doc.text(inst, leftX, doc.y, { width: contentW - 20, align: 'left', lineGap: 1 });
+      doc.moveDown(0.22);
     });
 
     // SIGNATURE LINES (positioned closer to footer)
@@ -367,8 +389,7 @@ class AdmitCardGenerator {
     // FOOTER with colorful background
     doc.rect(0, this.pageHeight - this.margin - 35, this.pageWidth, 35).fillColor('#1e3a8a').fill();
     doc.fontSize(this.footerSize).font('Helvetica-Bold').fillColor('#fbbf24').text('BRAIN O MATH OLYMPIAD 2026', leftX, this.pageHeight - this.margin - 30, { width: contentW, align: 'center' });
-    doc.fontSize(this.footerSize).font('Helvetica').fillColor('#e0e7ff').text('DOON HERITAGE SCHOOL, SILIGURI', leftX, this.pageHeight - this.margin - 18, { width: contentW, align: 'center' });
-    doc.fontSize(this.footerSize).font('Helvetica').fillColor('#e0e7ff').text('DOON HERITAGE SCHOOL, SILIGURI', leftX, this.pageHeight - this.margin - 18, { width: contentW, align: 'center' });
+    doc.fontSize(this.footerSize).font('Helvetica').fillColor('#e0e7ff').text('BRAIN-O-MATH OLYMPIAD', leftX, this.pageHeight - this.margin - 18, { width: contentW, align: 'center' });
   }
 
   _drawRoundedRectangle(doc, x, y, width, height, radius, fillColor = null) {

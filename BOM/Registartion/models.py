@@ -150,3 +150,12 @@ def class_to_category(value):
     if 9 <= cls <= 10:
         return "D"
     return "E"
+
+
+def generate_roll_number(student_class, student_id):
+    """Return the 10-character admit-card roll number.
+
+    The class is always two digits (04, 09, 10, 11, 12), followed by the
+    event year (26) and the student's three-digit database ID.
+    """
+    return f"BOM{int(student_class):02d}26{int(student_id):03d}"
