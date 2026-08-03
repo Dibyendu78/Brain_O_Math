@@ -1,5 +1,8 @@
 import json
 import re
+import subprocess
+import tempfile
+from pathlib import Path
 
 from django.contrib.auth import authenticate
 from django.http import HttpResponse, JsonResponse
@@ -352,13 +355,87 @@ def download_admit_card(request, student_id):
 
 @jwt_required(roles=[User.COORDINATOR])
 def download_bulk_placeholder(request):
-    return JsonResponse(
-        {
-            "success": False,
-            "message": "Bulk PDF ZIP generation is not configured yet. Download one student at a time.",
-        },
-        status=501,
-    )
+    profile = request.user.coordinator_profile
+    students = profile.students.select_related("coordinator", "coordinator__user").order_by("student_class", "name")
+    settings = RegistrationSettings.current()
+
+    if request.path.endswith("/download-all"):
+        kind = "admit-card"
+        filename_prefix = "admit-cards"
+        if not students.filter(admit_card_released=True).exists():
+            return JsonResponse(
+                {"success": False, "message": "No released admit cards found for your students."},
+                status=404,
+            )
+    elif request.path.endswith("/download-report-cards"):
+        kind = "report-card"
+        filename_prefix = "report-cards"
+        if not settings.results_published:
+            return JsonResponse(
+                {"success": False, "message": "Results are not published yet."},
+                status=403,
+            )
+    elif request.path.endswith("/download-certificates"):
+        kind = "certificate"
+        filename_prefix = "certificates"
+        if not settings.results_published:
+            return JsonResponse(
+                {"success": False, "message": "Results are not published yet."},
+                status=403,
+            )
+    else:
+        return JsonResponse({"success": False, "message": "Unsupported bulk download request."}, status=400)
+
+    pdf_items = []
+    skipped = 0
+    for student in students:
+        if kind == "admit-card" and not student.admit_card_released:
+            skipped += 1
+            continue
+        try:
+            pdf_bytes = generate_student_pdf(student, kind, request=request)
+        except PdfGenerationError:
+            skipped += 1
+            continue
+        pdf_items.append(pdf_bytes)
+
+    if not pdf_items:
+        return JsonResponse(
+            {"success": False, "message": "No PDFs could be generated for the selected students."},
+            status=404,
+        )
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        tmpdir = Path(tmpdir)
+        input_paths = []
+        for idx, pdf_bytes in enumerate(pdf_items, start=1):
+            input_path = tmpdir / f"{idx:04d}.pdf"
+            input_path.write_bytes(pdf_bytes)
+            input_paths.append(str(input_path))
+
+        output_path = tmpdir / f"{filename_prefix}.pdf"
+        result = subprocess.run(
+            ["pdfunite", *input_paths, str(output_path)],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if result.returncode != 0 or not output_path.exists():
+            message = (result.stderr or result.stdout or "pdfunite failed").strip()
+            return JsonResponse(
+                {
+                    "success": False,
+                    "message": "Bulk PDF merge failed. Ensure pdfunite is installed on the server.",
+                    "detail": message,
+                },
+                status=500,
+            )
+
+        response = HttpResponse(output_path.read_bytes(), content_type="application/pdf")
+        response["Content-Disposition"] = f'attachment; filename="{filename_prefix}.pdf"'
+        if skipped:
+            response["X-Skipped-Students"] = str(skipped)
+        return response
 
 
 def _download_student_pdf(request, student_id, kind, label):

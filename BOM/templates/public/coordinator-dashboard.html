@@ -3603,9 +3603,15 @@
                 if (response.ok) {
                     const blob = await response.blob();
                     const url = window.URL.createObjectURL(blob);
+                    const disp = response.headers.get('content-disposition');
+                    let filename = `admit-cards-all-${Date.now()}.pdf`;
+                    if (disp) {
+                        const match = /filename\*=UTF-8''(.+)$/.exec(disp) || /filename="?([^";]+)"?/.exec(disp);
+                        if (match) filename = decodeURIComponent(match[1]);
+                    }
                     const a = document.createElement('a');
                     a.href = url;
-                    a.download = `admit-cards-all-${new Date().getTime()}.pdf`;
+                    a.download = filename;
                     document.body.appendChild(a);
                     a.click();
                     window.URL.revokeObjectURL(url);
