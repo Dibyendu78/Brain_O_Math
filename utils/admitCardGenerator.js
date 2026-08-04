@@ -262,8 +262,8 @@ class AdmitCardGenerator {
         currY += 12;
       }
       if (hasCS) {
-        doc.fontSize(8).font('Helvetica-Bold').fillColor('#1e40af').text('Comp. Sci:', rightX, currY);
-        doc.fontSize(8).font('Helvetica').fillColor('#000000').text('Report: 10:45-10:55 AM | Exam: 11:00-12:00 PM', rightX + 52, currY);
+        doc.fontSize(8).font('Helvetica-Bold').fillColor('#1e40af').text('Computer Science:', rightX, currY);
+        doc.fontSize(8).font('Helvetica').fillColor('#000000').text('Report: 10:15-10:45 AM | Exam: 11:00-12:00 PM', rightX + 52, currY);
         currY += 12;
       }
       currY += 4;
@@ -280,7 +280,7 @@ class AdmitCardGenerator {
       }
       if (hasScience) {
         doc.fontSize(8).font('Helvetica-Bold').fillColor('#1e40af').text('Science:', rightX, currY);
-        doc.fontSize(8).font('Helvetica').fillColor('#000000').text('Report: 10:45-10:55 AM | Exam: 11:00-12:00 PM', rightX + 45, currY);
+        doc.fontSize(8).font('Helvetica').fillColor('#000000').text('Report: 10:15-10:45 AM | Exam: 11:00-12:00 PM', rightX + 45, currY);
         currY += 12;
       }
     }
