@@ -92,10 +92,13 @@ def _registration_payload(profile):
     if payment.total_amount != total:
         payment.total_amount = total
         payment.save(update_fields=["total_amount", "updated_at"])
+    settings = RegistrationSettings.current()
     return {
         "registrationId": payment.registration_id,
         "status": payment.status,
         "paymentStatus": payment.status,
+        "isRegistrationOpen": settings.is_open,
+        "registrationStatus": "open" if settings.is_open else "closed",
         "venue": payment.venue or "Doon Heritage School, Siliguri",
         "utr": payment.utr,
         "totalAmount": total,
@@ -108,6 +111,9 @@ def _registration_payload(profile):
 def api_signup(request):
     if request.method != "POST":
         return JsonResponse({"success": False, "message": "Invalid method"}, status=405)
+
+    if not RegistrationSettings.current().is_open:
+        return JsonResponse({"success": False, "message": "Registration is currently closed."}, status=403)
 
     data = _json_body(request)
     required = ["schoolName", "schoolAddress", "coordinatorName", "coordinatorPhone", "coordinatorEmail", "password"]
@@ -247,6 +253,10 @@ def api_students(request, index=None):
     students = list(profile.students.order_by("created_at", "id"))
     payment, _ = RegistrationPayment.objects.get_or_create(coordinator=profile)
 
+    if request.method in {"POST", "PUT", "DELETE"}:
+        if not RegistrationSettings.current().is_open:
+            return JsonResponse({"success": False, "message": "Registration is currently closed by administration"}, status=403)
+
     if request.method == "POST":
         if payment.status in {"submitted", "verified"}:
             return JsonResponse({"success": False, "message": "Registration is locked after UTR submission"}, status=403)
@@ -279,6 +289,8 @@ def api_students(request, index=None):
 @csrf_exempt
 @jwt_required(roles=[User.COORDINATOR])
 def api_student_by_id(request, student_id):
+    if not RegistrationSettings.current().is_open:
+        return JsonResponse({"success": False, "message": "Registration is currently closed by administration"}, status=403)
     try:
         student = request.user.coordinator_profile.students.get(id=student_id)
     except Student.DoesNotExist:
@@ -308,6 +320,8 @@ def _save_student(profile, data, student=None):
 def api_payment(request):
     if request.method != "POST":
         return JsonResponse({"success": False, "message": "Invalid method"}, status=405)
+    if not RegistrationSettings.current().is_open:
+        return JsonResponse({"success": False, "message": "Registration is currently closed by administration"}, status=403)
     data = _json_body(request)
     utr = str(data.get("utr", "")).strip()
     if not utr.isdigit() or len(utr) != 12:

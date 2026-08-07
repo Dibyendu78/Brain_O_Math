@@ -505,7 +505,31 @@
         const captchaLabel = document.getElementById('captchaLabel');
         if(captchaLabel) captchaLabel.innerHTML = `<i class="fas fa-calculator"></i> What is ${num1} + ${num2}?`;
     }
-    document.addEventListener("DOMContentLoaded", generateCaptcha);
+
+    async function checkRegistrationStatus() {
+      try {
+        const res = await fetch(API + '/public/registration-status');
+        const data = await res.json();
+        if (data.success && !data.data.isOpen) {
+          showAlert('Registration is currently closed. New coordinator signups are not being accepted at this time.', 'error');
+          fields.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.disabled = true;
+          });
+          if (signupBtn) {
+            signupBtn.disabled = true;
+            signupBtn.innerHTML = '<i class="fas fa-lock"></i> Registration Closed';
+          }
+        }
+      } catch (e) {
+        console.error('Failed to check registration status', e);
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        generateCaptcha();
+        checkRegistrationStatus();
+    });
 
     function togglePasswordVisibility(inputId, button) {
       const input = document.getElementById(inputId);

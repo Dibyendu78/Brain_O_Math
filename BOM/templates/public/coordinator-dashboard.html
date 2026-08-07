@@ -3193,15 +3193,21 @@
         }
 
         function updateLockState() {
-            const isLocked = isPaymentSubmitted;
+            const isClosedByAdmin = registrationData?.isRegistrationOpen === false || registrationData?.registrationStatus === 'closed';
+            const isLocked = isPaymentSubmitted || isClosedByAdmin;
             const addBtn = document.getElementById('addStudentBtn');
 
-            if (isLocked) {
-                addBtn.disabled = true;
-                addBtn.innerHTML = '<i class="fas fa-lock"></i> Registration Locked';
-            } else {
-                addBtn.disabled = false;
-                addBtn.innerHTML = '<i class="fas fa-plus"></i> Add Student';
+            if (addBtn) {
+                if (isClosedByAdmin) {
+                    addBtn.disabled = true;
+                    addBtn.innerHTML = '<i class="fas fa-lock"></i> Registration Closed';
+                } else if (isPaymentSubmitted) {
+                    addBtn.disabled = true;
+                    addBtn.innerHTML = '<i class="fas fa-lock"></i> Registration Locked';
+                } else {
+                    addBtn.disabled = false;
+                    addBtn.innerHTML = '<i class="fas fa-plus"></i> Add Student';
+                }
             }
 
             // Update download all button visibility

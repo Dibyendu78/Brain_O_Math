@@ -2133,9 +2133,7 @@
         console.log('Brain-O-Math Olympiad {{ event_config.event_year }} - Website Loaded Successfully! <i class="fas fa-bullseye text-accent"></i>');
 
         // Check registration status and handle Register Now links
-        //const API = 'https://brain-o-math.onrender.com/api';
-        const API = 'http://localhost:5000/api'
-        //const API = location.origin.includes('localhost') ? 'https://brain-o-math-olympiad.onrender.com/api' : '/api';
+        const API = '/api';
 
         async function checkRegistrationStatus() {
             try {
@@ -2156,25 +2154,24 @@
                     };
 
                     // Style the links to show they're disabled
-                    if (registerBtn1) {
-                        registerBtn1.style.opacity = '0.6';
-                        registerBtn1.style.cursor = 'not-allowed';
-                        registerBtn1.title = 'Registration is currently closed';
-                        registerBtn1.href = '#';
-                        registerBtn1.addEventListener('click', handleRegisterClick);
-                    }
+                    [registerBtn1, registerBtn2].forEach(btn => {
+                        if (btn) {
+                            btn.style.opacity = '0.6';
+                            btn.style.cursor = 'not-allowed';
+                            btn.title = 'Registration is currently closed';
+                            btn.href = '#';
+                            btn.addEventListener('click', handleRegisterClick);
+                        }
+                    });
 
-                    if (registerBtn2) {
-                        registerBtn2.style.opacity = '0.6';
-                        registerBtn2.style.cursor = 'not-allowed';
-                        registerBtn2.title = 'Registration is currently closed';
-                        registerBtn2.href = '#';
-                        registerBtn2.addEventListener('click', handleRegisterClick);
+                    // Update marquee announcement if registration is closed
+                    const marquee = document.querySelector('.header-top marquee');
+                    if (marquee) {
+                        marquee.innerHTML = '<span style="color: #fbbf24; font-weight: bold;"><i class="fas fa-exclamation-circle"></i> REGISTRATION IS CURRENTLY CLOSED</span> — Thank you for your interest in Brain-O-Math Olympiad.';
                     }
                 }
             } catch (error) {
                 console.error('Failed to check registration status:', error);
-                // If check fails, allow registration (default behavior)
             }
         }
 
