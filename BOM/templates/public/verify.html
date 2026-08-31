@@ -554,16 +554,30 @@
     if (dataFromUrl) {
       try {
         const obj = decodeBase64UrlJson(dataFromUrl);
-        renderFromSnapshot(obj);
-        checkLiveResults(obj);
+        if (obj) {
+          renderFromSnapshot(obj);
+          checkLiveResults(obj);
+        } else {
+          throw new Error('Empty data');
+        }
       } catch (e) {
         console.error('Failed to decode QR data:', e);
-        infobox.innerHTML = '<p class="empty-state"><i class="fas fa-exclamation-triangle" style="color:#ef4444;"></i><br>Invalid QR data or corrupted link</p>';
+        const fallbackRoll = (location.href.match(/26\d{8}/) || location.href.match(/BOM[A-Z0-9]+/i) || [])[0];
+        if (fallbackRoll) {
+          checkLiveResults({ rollNumber: fallbackRoll });
+        } else {
+          infobox.innerHTML = '<p class="empty-state"><i class="fas fa-exclamation-triangle" style="color:#ef4444;font-size:1.5rem;margin-bottom:8px;display:block;"></i>Invalid QR data or corrupted link. Please scan again.</p>';
+        }
       }
     } else if (rollFromUrl) {
       checkLiveResults({ rollNumber: rollFromUrl });
     } else {
-      infobox.innerHTML = '<p class="empty-state"><i class="fas fa-qrcode" style="color:var(--primary);font-size:1.5rem;margin-bottom:8px;display:block;"></i>No QR data received. Please scan the Admit Card or Score Card QR code.</p>';
+      const fallbackRoll = (location.href.match(/26\d{8}/) || location.href.match(/BOM[A-Z0-9]+/i) || [])[0];
+      if (fallbackRoll) {
+        checkLiveResults({ rollNumber: fallbackRoll });
+      } else {
+        infobox.innerHTML = '<p class="empty-state"><i class="fas fa-qrcode" style="color:var(--primary);font-size:1.5rem;margin-bottom:8px;display:block;"></i>No QR data received. Please scan the Admit Card or Score Card QR code.</p>';
+      }
     }
 
     const subjectMap = {
@@ -722,21 +736,50 @@
     }
 
     function decodeBase64UrlJson(s) {
-      s = s.replace(/-/g, '+').replace(/_/g, '/');
-      while (s.length % 4) s += '=';
-      const bin = atob(s);
+      if (!s) return null;
+      s = String(s).trim();
+
+      // Case 1: Plain JSON object string
+      if (s.startsWith('{') && s.endsWith('}')) {
+        try {
+          return JSON.parse(s);
+        } catch (e) {}
+      }
+
+      // Case 2: Plain roll number or student ID
+      if (/^\d{8,12}$/.test(s) || /^BOM[A-Z0-9]+$/i.test(s)) {
+        return { rollNumber: s, studentId: s };
+      }
+
+      // Case 3: Base64 / Base64URL string
+      // URLSearchParams converts '+' to ' ' -> replace ' ' with '+'
+      let clean = s.replace(/ /g, '+').replace(/-/g, '+').replace(/_/g, '/');
+      while (clean.length % 4 !== 0) {
+        clean += '=';
+      }
+
       try {
+        const bin = atob(clean);
         const bytes = new Uint8Array(bin.length);
         for (let i = 0; i < bin.length; i++) {
           bytes[i] = bin.charCodeAt(i);
         }
         return JSON.parse(new TextDecoder('utf-8').decode(bytes));
-      } catch (e) {
+      } catch (e1) {
         try {
-          const decoded = decodeURIComponent(escape(bin));
-          return JSON.parse(decoded);
-        } catch (err) {
-          throw new Error('Failed to parse embedded JSON');
+          const bin = atob(clean);
+          return JSON.parse(decodeURIComponent(escape(bin)));
+        } catch (e2) {
+          try {
+            return JSON.parse(atob(clean));
+          } catch (e3) {
+            // Case 4: Fallback search for embedded roll number or student ID inside raw string
+            const rollMatch = clean.match(/26\d{8}/) || clean.match(/BOM[A-Z0-9]+/i);
+            if (rollMatch) {
+              return { rollNumber: rollMatch[0] };
+            }
+            throw new Error('Failed to parse embedded QR data');
+          }
         }
       }
     }
