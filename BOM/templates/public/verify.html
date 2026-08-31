@@ -627,20 +627,18 @@
         if (json.success && json.data) {
           const student = json.data;
           renderResultsCard(student);
-          // If we didn't have snapshot, render from live student data
-          if (!dataFromUrl) {
-            renderFromSnapshot({
-              name: student.name,
-              studentId: student.studentId,
-              rollNumber: student.rollNumber,
-              class: student.class,
-              category: student.category,
-              subjects: student.subjects,
-              schoolName: student.schoolName,
-              coordinatorName: student.coordinatorName,
-              coordinatorEmail: student.coordinatorEmail
-            });
-          }
+
+          // Merge snapshot with live student data so coordinator and enrolled subjects are always fresh & complete
+          const merged = {
+            ...d,
+            ...student,
+            subjects: student.subjects || d.subjects,
+            schoolName: student.schoolName || d.schoolName,
+            coordinatorName: student.coordinatorName || d.coordinatorName,
+            coordinatorEmail: student.coordinatorEmail || d.coordinatorEmail,
+            registrationId: student.registrationId || d.registrationId
+          };
+          renderFromSnapshot(merged);
         } else {
           if (resultsPending) resultsPending.style.display = 'flex';
           if (resultsContainer) resultsContainer.style.display = 'none';

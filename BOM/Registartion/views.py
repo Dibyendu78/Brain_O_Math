@@ -96,6 +96,9 @@ def api_public_student_result(request):
                 "category": student.category,
                 "subjects": student.subjects,
                 "schoolName": student.coordinator.school_name if student.coordinator else "",
+                "coordinatorName": student.coordinator.coordinator_name if student.coordinator else "",
+                "coordinatorEmail": student.coordinator.user.email if student.coordinator and student.coordinator.user else "",
+                "registrationId": getattr(getattr(student.coordinator, "payment", None), "registration_id", "") if student.coordinator else "",
                 "marks": {
                     "english": student.english_marks,
                     "math": student.math_marks,

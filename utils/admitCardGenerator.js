@@ -288,6 +288,7 @@ class AdmitCardGenerator {
         subjects: student.subjects || null,
         schoolName: coordinator.schoolName || (student.school?.schoolName) || null,
         coordinatorName: coordinator.coordinatorName || (student.school?.coordinatorName) || null,
+        coordinatorEmail: coordinator.coordinatorEmail || (student.school?.coordinatorEmail) || null,
         registrationId: student.registrationId || null,
         downloadedAt: `${istTimeStr} IST`
       };

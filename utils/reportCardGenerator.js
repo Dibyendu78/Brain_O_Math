@@ -77,11 +77,11 @@ class ReportCardGenerator {
      * -------------------------------------------------- */
     try {
       doc.save();
-      doc.opacity(0.10);
+      doc.opacity(0.14);
 
       const logoWidth = pageWidth * 0.7;
       const logoX = (pageWidth - logoWidth) / 2;
-      const logoY = (pageHeight - logoWidth) / 2 +15;
+      const logoY = (pageHeight - logoWidth) / 2 + 15;
 
       doc.image(this.logoPath, logoX, logoY, { width: logoWidth });
       doc.restore();
@@ -138,7 +138,7 @@ class ReportCardGenerator {
     writeField('Roll Number:', student.rollNumber || 'N/A');
     writeField('Class:', student.class ? `Class ${student.class}` : 'N/A');
     writeField('Category:', student.category || 'N/A');
-    writeField('School:', student.schoolName || 'N/A');
+    writeField('School:', student.schoolName || student.coordinator?.schoolName || 'N/A');
 
     const subjectMap = {
       'english': 'English',
@@ -164,7 +164,11 @@ class ReportCardGenerator {
         name: student.name || null,
         class: student.class || null,
         category: student.category || null,
-        schoolName: student.schoolName || null
+        subjects: student.subjects || null,
+        schoolName: student.schoolName || student.coordinator?.schoolName || null,
+        coordinatorName: student.coordinatorName || student.coordinator?.coordinatorName || null,
+        coordinatorEmail: student.coordinatorEmail || student.coordinator?.coordinatorEmail || null,
+        registrationId: student.registrationId || null
       };
 
       const json = JSON.stringify(snapshot);
@@ -212,38 +216,23 @@ class ReportCardGenerator {
     const twoBoxWidth = Math.floor(availableWidth / 2);
     const singleBoxWidth = availableWidth;
 
-    /* BOX DRAWER */
+    /* BOX DRAWER - Transparent so Watermark is clearly visible */
     const drawScoreBox = (x, width, subject, marks) => {
       const boxHeight = 108;
 
-      // Card Background & Outer Border
+      // Outer Border only (NO opaque background fill)
       doc.save()
-        .lineWidth(1.2)
+        .lineWidth(1.4)
         .strokeColor('#d8c08a')
-        .fillColor('#ffffff')
         .roundedRect(x, y, width, boxHeight, 8)
-        .fillAndStroke()
-        .restore();
-
-      // Card Header Background (soft tint)
-      const headerHeight = 28;
-      doc.save()
-        .fillColor('#f8fafc')
-        .roundedRect(x, y, width, headerHeight, 8)
-        .fill()
-        .restore();
-
-      // Fix square bottom for header
-      doc.save()
-        .fillColor('#f8fafc')
-        .rect(x, y + headerHeight - 8, width, 8)
-        .fill()
+        .stroke()
         .restore();
 
       // Header bottom border line
+      const headerHeight = 28;
       doc.save()
-        .lineWidth(0.8)
-        .strokeColor('#e2e8f0')
+        .lineWidth(0.9)
+        .strokeColor('#d8c08a')
         .moveTo(x, y + headerHeight)
         .lineTo(x + width, y + headerHeight)
         .stroke()
