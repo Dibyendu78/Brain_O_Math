@@ -107,21 +107,21 @@
     .logo {
       width: 48px;
       height: 48px;
-      border-radius: 12px;
+      border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.12);
       overflow: hidden;
       flex-shrink: 0;
       background: #ffffff;
-      border: 1px solid var(--border);
+      border: 2px solid #e2e8f0;
     }
 
     @media (min-width: 640px) {
       .logo {
-        width: 54px;
-        height: 54px;
+        width: 56px;
+        height: 56px;
       }
     }
 
@@ -471,7 +471,7 @@
       <header>
         <div class="header-brand">
           <div class="logo">
-            <img src="{% static 'public/logo.jpg' %}" alt="Brain O Math Logo" style="width:100%;height:100%;object-fit:cover;">
+            <img src="{% static 'public/logo.jpg' %}" alt="Brain O Math Logo" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
           </div>
           <div>
             <h1>Student Verification Portal</h1>
