@@ -99,6 +99,7 @@ def _registration_payload(profile):
         "paymentStatus": payment.status,
         "isRegistrationOpen": settings.is_open,
         "registrationStatus": "open" if settings.is_open else "closed",
+        "resultsPublished": settings.results_published,
         "venue": payment.venue or "Doon Heritage School, Siliguri",
         "utr": payment.utr,
         "totalAmount": total,
@@ -348,8 +349,19 @@ def api_student_results(request):
     settings = RegistrationSettings.current()
     if not settings.results_published:
         return JsonResponse({"success": False, "message": "Results are not published yet."}, status=403)
-    students = request.user.coordinator_profile.students.order_by("student_class", "name")
+    if not hasattr(request.user, "coordinator_profile"):
+        return JsonResponse({"success": True, "data": []})
+    students = request.user.coordinator_profile.students.all()
+    cls = request.GET.get("class")
+    if cls:
+        students = students.filter(student_class=cls)
+    sub = request.GET.get("subject")
+    if sub:
+        students = students.filter(subjects__icontains=sub)
+    students = students.order_by("student_class", "name")
     return JsonResponse({"success": True, "data": [_student_dict(student) for student in students]})
+
+
 
 
 @jwt_required(roles=[User.COORDINATOR, User.ADMIN])

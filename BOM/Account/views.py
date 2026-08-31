@@ -99,6 +99,10 @@ def send_payment_confirmation_email(request, profile, payment):
 
 def send_results_published_email(request, profile):
     students = profile.students.order_by("student_class", "name")
+    try:
+        host = request.get_host()
+    except Exception:
+        host = "brainomath.online"
     send_html_email(
         request,
         "Results are published",
@@ -107,7 +111,7 @@ def send_results_published_email(request, profile):
             "coordinator_name": profile.coordinator_name,
             "school_name": profile.school_name,
             "email": profile.user.email,
-            "dashboard_url": f"{'https' if request.is_secure() else 'http'}://{request.get_host()}/coordinator/dashboard/",
+            "dashboard_url": f"https://{host}/coordinator/dashboard/",
             "students": [
                 {
                     "student_id": student.student_id,
@@ -115,14 +119,17 @@ def send_results_published_email(request, profile):
                     "student_class": student.student_class,
                     "subjects": student.subjects,
                     "roll_number": student.roll_number,
+                    "english_marks": student.english_marks,
                     "math_marks": student.math_marks,
                     "science_marks": student.science_marks,
+                    "cs_marks": student.cs_marks,
                 }
                 for student in students
             ],
         },
         [profile.user.email],
     )
+
 
 
 def issue_login_response(request, user, redirect_url="/"):

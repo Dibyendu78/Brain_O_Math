@@ -227,8 +227,13 @@
         <div class="logo">
           <img src="{% static 'public/logo.jpg' %}" alt="Brain O Math Logo" style="width:100%;height:100%;object-fit:cover;">
         </div>
+      <header>
+        <div class="logo">
+          <img src="{% static 'public/logo.jpg' %}" alt="Brain O Math Logo" style="width:100%;height:100%;object-fit:cover;">
+        </div>
         <div>
-          <h1>Invigilator Verification</h1>
+          <h1>Student Verification &amp; Result Portal</h1>
+          <p style="color: var(--muted); font-size: 0.88rem; margin-top: 2px;">Brain-O-Math Olympiad {{ event_config.event_year }}</p>
         </div>
       </header>
 
@@ -245,10 +250,41 @@
             <p class="empty">School / Registration info will appear here.</p>
           </div>
         </div>
+
+        <!-- Examination Marks & Downloads Section (Appears after scanning QR) -->
+        <div id="resultsCardContainer" style="margin-top: 1.5rem; display: none;">
+          <div style="background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: var(--radius-sm); padding: 1.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1.5px solid #e2e8f0; padding-bottom: 12px; margin-bottom: 16px;">
+              <h3 style="margin: 0; color: #1e3a8a; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.2rem; display: flex; align-items: center; gap: 8px;">
+                <i class="fas fa-award" style="color: #f59e0b;"></i> Examination Result &amp; Score Card
+              </h3>
+              <span id="resultStatusBadge" style="background: #10b981; color: white; padding: 4px 10px; border-radius: 999px; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.05em;">PUBLISHED</span>
+            </div>
+
+            <!-- Marks Grid -->
+            <div id="marksTableWrapper" style="margin-bottom: 20px;"></div>
+
+            <!-- PDF Download Action Buttons -->
+            <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 16px;">
+              <a id="btnDownloadReportCard" href="#" target="_blank" style="flex: 1; min-width: 200px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: linear-gradient(135deg, #2563eb, #1d4ed8); color: white; padding: 12px 18px; border-radius: 8px; font-weight: 700; text-decoration: none; box-shadow: 0 4px 12px rgba(37,99,235,0.25);">
+                <i class="fas fa-file-pdf"></i> Download Official Score Card
+              </a>
+              <a id="btnDownloadCertificate" href="#" target="_blank" style="flex: 1; min-width: 200px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 12px 18px; border-radius: 8px; font-weight: 700; text-decoration: none; box-shadow: 0 4px 12px rgba(16,185,129,0.25);">
+                <i class="fas fa-certificate"></i> Download Certificate
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Result Pending Banner -->
+        <div id="resultsPendingNotice" style="margin-top: 1.5rem; display: none; background: #fffbeb; border: 1px solid #fde68a; border-radius: var(--radius-sm); padding: 1rem 1.25rem; color: #92400e; font-size: 0.92rem; display: flex; align-items: center; gap: 10px;">
+          <i class="fas fa-info-circle" style="font-size: 1.2rem; color: #f59e0b;"></i>
+          <span><strong>Results are not published yet.</strong> Once officially declared, your subject marks and downloadable score cards will appear right here when you scan your Admit Card QR code.</span>
+        </div>
       </div>
 
       <footer>
-        &copy; {{ event_config.event_year }} Brain-O-Math. All rights reserved.  
+        &copy; {{ event_config.event_year }} Brain-O-Math Olympiad. All rights reserved.  
       </footer>
     </div>
   </div>
@@ -257,12 +293,15 @@
     const q = new URLSearchParams(location.search);
     const infobox = document.getElementById('infobox');
     const schoolbox = document.getElementById('schoolbox');
+    const resultsContainer = document.getElementById('resultsCardContainer');
+    const resultsPending = document.getElementById('resultsPendingNotice');
 
     const dataFromUrl = q.get('data');
     if (dataFromUrl) {
       try {
         const obj = decodeBase64UrlJson(dataFromUrl);
         renderFromSnapshot(obj);
+        checkLiveResults(obj);
       } catch (e) {
         console.error('Failed to decode QR data:', e);
         infobox.innerHTML = '<p class="empty">Invalid QR data or corrupted link</p>';
@@ -294,6 +333,74 @@
           Registration ID: <strong style="color:var(--text);">${escapeHtml(d.registrationId || '—')}</strong>
         </div>
       `;
+    }
+
+    async function checkLiveResults(d) {
+      const query = d.rollNumber || d.studentId;
+      if (!query) return;
+
+      try {
+        const res = await fetch(`/api/public/student-result?query=${encodeURIComponent(query)}`);
+        const json = await res.json();
+
+        if (json.success && json.data) {
+          const student = json.data;
+          renderResultsCard(student);
+        } else {
+          if (resultsPending) resultsPending.style.display = 'flex';
+          if (resultsContainer) resultsContainer.style.display = 'none';
+        }
+      } catch (e) {
+        console.log('Result lookup info:', e.message);
+      }
+    }
+
+    function renderResultsCard(st) {
+      if (!resultsContainer) return;
+      if (resultsPending) resultsPending.style.display = 'none';
+      resultsContainer.style.display = 'block';
+
+      const marks = st.marks || {};
+      const subjectLabels = {
+        'english': 'English',
+        'math': 'Mathematics',
+        'science': 'Science',
+        'cs': 'Computer Science'
+      };
+
+      let marksRowsHtml = '';
+      let enrolledSubjects = (st.subjects || '').toLowerCase().split(',').map(s => s.trim()).filter(Boolean);
+      if (enrolledSubjects.length === 0) {
+        enrolledSubjects = Object.keys(marks).filter(k => marks[k] !== null && marks[k] !== undefined);
+      }
+
+      enrolledSubjects.forEach(subKey => {
+        const label = subjectLabels[subKey] || subKey.toUpperCase();
+        const score = marks[subKey] !== null && marks[subKey] !== undefined ? `${marks[subKey]} / 60` : 'Awaiting';
+        marksRowsHtml += `
+          <div style="display: flex; justify-content: space-between; padding: 8px 12px; background: white; border: 1px solid #e2e8f0; border-radius: 6px; margin-bottom: 6px;">
+            <strong style="color: #1e293b;">${escapeHtml(label)}</strong>
+            <span style="font-weight: 700; color: #2563eb;">${escapeHtml(String(score))}</span>
+          </div>
+        `;
+      });
+
+      if (st.totalMarks !== null && st.totalMarks !== undefined) {
+        marksRowsHtml += `
+          <div style="display: flex; justify-content: space-between; padding: 10px 12px; background: #eff6ff; border: 1.5px solid #93c5fd; border-radius: 6px; margin-top: 10px;">
+            <strong style="color: #1e40af;">Total Marks &amp; Percentage</strong>
+            <span style="font-weight: 800; color: #1e40af;">${st.totalMarks} / ${st.maxMarks} (${st.percentage}%)</span>
+          </div>
+        `;
+      }
+
+      document.getElementById('marksTableWrapper').innerHTML = marksRowsHtml;
+
+      const rcBtn = document.getElementById('btnDownloadReportCard');
+      if (rcBtn) rcBtn.href = `/api/public/results/download-report-card/${st.id}`;
+
+      const certBtn = document.getElementById('btnDownloadCertificate');
+      if (certBtn) certBtn.href = `/api/public/results/download-certificate/${st.id}`;
     }
 
     function decodeBase64UrlJson(s) {

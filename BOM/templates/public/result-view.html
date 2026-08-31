@@ -610,7 +610,12 @@
                 </div>
                 <h1>Brain-O-Math Olympiad</h1>
             </div>
-            <div class="header-right">
+                <a href="/" style="text-decoration:none; color: var(--text-muted); font-size: 0.88rem; font-weight: 600; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 6px;">
+                    <i class="fas fa-home"></i> Home
+                </a>
+                <a href="/coordinator/dashboard/" style="text-decoration:none; color: var(--primary); font-size: 0.88rem; font-weight: 600; padding: 8px 14px; border-radius: 8px; background: var(--primary-light); border: 1px solid rgba(37,99,235,0.2); display: flex; align-items: center; gap: 6px;">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
                 <div class="user-info">
                     <div class="name" id="coordinatorName">Loading...</div>
                     <div class="role">Result View</div>
@@ -667,9 +672,10 @@
                         </label>
                         <select id="resultsSubjectFilter" onchange="loadStudentResults()">
                             <option value="">All Subjects</option>
+                            <option value="english">English</option>
                             <option value="math">Mathematics</option>
                             <option value="science">Science</option>
-                            <option value="both">Both</option>
+                            <option value="cs">Computer Science</option>
                         </select>
                     </div>
 
@@ -733,8 +739,7 @@
                 'english': 'English',
                 'math': 'Mathematics',
                 'science': 'Science',
-                'cs': 'Computer Science',
-                'both': 'Math & Science'
+                'cs': 'Computer Science'
             };
             return String(subjects)
                 .split(',')
@@ -925,8 +930,8 @@
                 const activeSubs = String(student.subjects || '').split(',').map(sub => sub.trim().toLowerCase());
 
                 const hasEnglish = activeSubs.includes('english');
-                const hasMath = activeSubs.includes('math') || activeSubs.includes('both');
-                const hasScience = activeSubs.includes('science') || activeSubs.includes('both');
+                const hasMath = activeSubs.includes('math');
+                const hasScience = activeSubs.includes('science');
                 const hasCs = activeSubs.includes('cs');
 
                 const mathMark = student.marks?.math;

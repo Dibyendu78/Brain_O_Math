@@ -11,6 +11,8 @@ def get_token_from_request(request):
     header = request.headers.get("Authorization", "")
     if header.startswith("Bearer "):
         return header.split(" ", 1)[1].strip()
+    if request.GET.get("token"):
+        return request.GET.get("token").strip()
     return request.COOKIES.get("access_token")
 
 

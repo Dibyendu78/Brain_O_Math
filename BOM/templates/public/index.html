@@ -395,6 +395,362 @@
             box-shadow: 0 12px 30px rgba(99, 141, 218, 0.5);
         }
 
+        /* Results Live Badge & Pulse */
+        .badge-pulse {
+            background: #ef4444;
+            color: #ffffff;
+            font-size: 0.68rem;
+            font-weight: 800;
+            padding: 2px 7px;
+            border-radius: 20px;
+            letter-spacing: 0.5px;
+            margin-left: 4px;
+            display: inline-block;
+            vertical-align: middle;
+            animation: pulseBadge 1.8s infinite;
+        }
+
+        @keyframes pulseBadge {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        .results-live-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(22, 163, 74, 0.3));
+            border: 1px solid rgba(34, 197, 94, 0.6);
+            color: #86efac;
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            backdrop-filter: blur(8px);
+            animation: pulse 2.5s ease-in-out infinite;
+        }
+
+        .cta-button.results-cta-btn {
+            background: linear-gradient(135deg, #16a34a, #15803d);
+            box-shadow: 0 8px 25px rgba(22, 163, 74, 0.45);
+        }
+
+        .cta-button.results-cta-btn:hover {
+            box-shadow: 0 12px 30px rgba(34, 197, 94, 0.55);
+        }
+
+        /* Results Section */
+        .results-section {
+            padding: 50px 35px;
+            background: linear-gradient(135deg, #eff6ff 0%, #f8fafc 100%);
+            border-bottom: 1px solid #e2e8f0;
+            position: relative;
+        }
+
+        .results-header {
+            text-align: center;
+            max-width: 760px;
+            margin: 0 auto 30px auto;
+        }
+
+        .results-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 50px;
+            background: #dbeafe;
+            color: #1d4ed8;
+            font-size: 0.82rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .results-header h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #0f172a;
+            letter-spacing: -0.02em;
+            margin-bottom: 8px;
+        }
+
+        .results-header p {
+            color: #64748b;
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+
+        /* Result Search Card */
+        .result-search-card {
+            background: #ffffff;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+            padding: 32px;
+            max-width: 800px;
+            margin: 0 auto 24px auto;
+        }
+
+        .search-card-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .search-card-header h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 6px;
+        }
+
+        .search-card-header p {
+            font-size: 0.92rem;
+            color: #64748b;
+        }
+
+        .search-input-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .input-with-icon {
+            flex: 1;
+            min-width: 260px;
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-with-icon i {
+            position: absolute;
+            left: 16px;
+            color: #94a3b8;
+            font-size: 1.1rem;
+        }
+
+        .input-with-icon input {
+            width: 100%;
+            padding: 14px 16px 14px 44px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1rem;
+            color: #0f172a;
+            background: #f8fafc;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .input-with-icon input:focus {
+            outline: none;
+            border-color: #2563eb;
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+        }
+
+        .btn-check-result {
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 1rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+            white-space: nowrap;
+        }
+
+        .btn-check-result:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+        }
+
+        .result-feedback {
+            margin-top: 20px;
+            padding: 14px 18px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.95rem;
+            background: #eff6ff;
+            color: #1d4ed8;
+            border: 1px solid #bfdbfe;
+        }
+
+        .result-feedback.error-feedback {
+            background: #fef2f2;
+            color: #dc2626;
+            border-color: #fecaca;
+        }
+
+        /* Result Output Card */
+        .student-result-card {
+            margin-top: 26px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 24px;
+            animation: slideInUp 0.4s ease;
+        }
+
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-student-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .res-student-name {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        .res-student-meta {
+            font-size: 0.9rem;
+            color: #64748b;
+            margin-top: 4px;
+        }
+
+        .overall-badge {
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            padding: 8px 16px;
+            border-radius: 10px;
+            text-align: right;
+        }
+
+        .overall-label {
+            display: block;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #059669;
+            font-weight: 700;
+        }
+
+        .overall-val {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #047857;
+        }
+
+        .result-action-btns {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 18px;
+        }
+
+        .btn-download-pdf, .btn-download-cert {
+            flex: 1;
+            min-width: 180px;
+            padding: 12px 18px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.92rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .btn-download-pdf {
+            background: #16a34a;
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(22, 163, 74, 0.25);
+        }
+
+        .btn-download-pdf:hover {
+            background: #15803d;
+            transform: translateY(-2px);
+        }
+
+        .btn-download-cert {
+            background: #ffffff;
+            color: #2563eb;
+            border: 1.5px solid #2563eb;
+        }
+
+        .btn-download-cert:hover {
+            background: #eff6ff;
+            transform: translateY(-2px);
+        }
+
+        /* Coordinator Results Box */
+        .coordinator-results-box {
+            max-width: 800px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            color: #ffffff;
+            border-radius: 14px;
+            padding: 22px 28px;
+            box-shadow: 0 8px 25px rgba(30, 58, 138, 0.25);
+        }
+
+        .coord-box-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 18px;
+        }
+
+        .coord-box-content h4 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .coord-box-content p {
+            font-size: 0.9rem;
+            color: #bfdbfe;
+            margin: 0;
+        }
+
+        .btn-coord-results {
+            background: #f59e0b;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.92rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        }
+
+        .btn-coord-results:hover {
+            background: #d97706;
+            transform: translateY(-2px);
+        }
+
         /* About Section */
         .about-section {
             padding: 60px 40px;
@@ -1402,7 +1758,7 @@
     <!-- Header -->
     <div class="header-top">
         <div class="container">
-            <marquee>{{ event_config.announcement_message }} Register before {{ event_config.last_date_to_apply|date:"d F Y" }}.</marquee>
+            <marquee id="topMarquee">{% if event_config.results_published %}<span style="color:#fde047; font-weight: bold;"><i class="fas fa-trophy"></i> 🎉 BRAIN-O-MATH OLYMPIAD {{ event_config.event_year }} RESULTS &amp; SCORE CARDS ARE DECLARED!</span> — <a href="#results" style="color: #fff; text-decoration: underline; font-weight: bold;">Click here to Check Student Results &amp; Download Score Cards</a> &nbsp;|&nbsp; {% endif %}{{ event_config.announcement_message }} Register before {{ event_config.last_date_to_apply|date:"d F Y" }}.</marquee>
         </div>
     </div>
 
@@ -1417,6 +1773,7 @@
             <ul class="nav-links" id="navLinks">
                 <li><a href="#home">Home</a></li>
                 <li><a href="#about">About</a></li>
+                <li id="navResultsItem"><a href="#results" id="navResultsLink" style="font-weight: 700; color: #2563eb; {% if not event_config.results_published %}display: none;{% endif %}"><i class="fas fa-award"></i> Results <span class="badge-pulse" id="resultsBadge">LIVE</span></a></li>
                 <li><a href="#details">Exam Details</a></li>
                 <li><a href="#syllabus">Syllabus</a></li>
                 <li><a href="#awards">Awards</a></li>
@@ -1437,6 +1794,9 @@
             <main class="main-content">
                 <!-- Hero Section -->
                 <section class="hero-section" id="home">
+                    <div class="results-live-tag" id="heroLiveTag" style="{% if not event_config.results_published %}display: none;{% endif %}">
+                        <i class="fas fa-trophy"></i> Results &amp; Score Cards are Declared!
+                    </div>
                     <h1>Interschool Brain-O-Math Olympiad {{ event_config.event_year }}</h1>
                     <p>
                         The Brain-O-Math Olympiad is a distinguished platform that inspires young minds, cultivates
@@ -1444,14 +1804,68 @@
                         Mathematics and Science.
                     </p>
 
-                    </p>
-
-
                     <div class="hero-buttons">
+                        <a href="#results" class="cta-button results-cta-btn" id="heroResultsCtaBtn" style="{% if not event_config.results_published %}display: none;{% endif %}">
+                            <i class="fas fa-award"></i> View Results / Score Cards
+                        </a>
+                        <a href="/coordinator/results/" class="cta-button secondary" id="heroCoordPortalBtn" style="background: linear-gradient(135deg, #1e40af, #2563eb); {% if not event_config.results_published %}display: none;{% endif %}">
+                            <i class="fas fa-school"></i> Coordinator Portal
+                        </a>
                         <a href="/coordinator/signup/" class="cta-button" id="registerNowBtn1">Register Now</a>
                         <a href="/coordinator/login/" class="cta-button">Login</a>
                         <a href="https://drive.google.com/file/d/1kyUTCx3Mp-JPXo9QF_EdAuje8zuRXq5X/view?usp=drivesdk" target="_blank"
                             class="cta-button secondary">Download Handbook</a>
+                    </div>
+                </section>
+
+                <!-- Results & Score Cards Section -->
+                <section class="results-section" id="results" style="{% if not event_config.results_published %}display: none;{% endif %}">
+                    <div class="results-header">
+                        <div class="results-badge"><i class="fas fa-trophy"></i> Examination Results &amp; Downloads</div>
+                        <h2>Brain-O-Math Olympiad {{ event_config.event_year }} Results</h2>
+                        <p>Check student performance, view subject-wise marks, and download official Score Cards and Participation Certificates.</p>
+                    </div>
+
+                    <!-- Result Search Card (For Students & Parents) -->
+                    <div class="result-search-card">
+                        <div class="search-card-header">
+                            <h3><i class="fas fa-search text-accent"></i> Check Student Result &amp; Score Card</h3>
+                            <p>Enter your Roll Number (printed on Admit Card) or Student ID to view your marks and download your score card.</p>
+                        </div>
+                        
+                        <form id="publicResultForm" onsubmit="searchStudentResult(event)" class="search-input-group">
+                            <div class="input-with-icon">
+                                <i class="fas fa-id-card"></i>
+                                <input type="text" id="resultQueryInput" placeholder="Enter Roll Number (e.g. 2600526001) or Student ID" required autocomplete="off" />
+                            </div>
+                            <button type="submit" id="searchResultBtn" class="btn-check-result">
+                                <i class="fas fa-search"></i> Check Result
+                            </button>
+                        </form>
+                        
+                        <!-- Loading State -->
+                        <div id="resultLoading" class="result-feedback" style="display: none;">
+                            <i class="fas fa-spinner fa-spin"></i> Fetching student results...
+                        </div>
+                        
+                        <!-- Error State -->
+                        <div id="resultError" class="result-feedback error-feedback" style="display: none;"></div>
+
+                        <!-- Result Output Card -->
+                        <div id="resultOutput" class="student-result-card" style="display: none;"></div>
+                    </div>
+
+                    <!-- Coordinator Portal Access Box -->
+                    <div class="coordinator-results-box">
+                        <div class="coord-box-content">
+                            <div>
+                                <h4><i class="fas fa-school"></i> School Coordinators &amp; Teachers</h4>
+                                <p>Access the complete result dashboard for all students from your institution and download bulk score cards &amp; certificates.</p>
+                            </div>
+                            <a href="/coordinator/results/" class="btn-coord-results">
+                                <i class="fas fa-external-link-alt"></i> School Result Portal
+                            </a>
+                        </div>
                     </div>
                 </section>
 
@@ -1708,12 +2122,23 @@
 
                 <!-- Results & Awards Widget -->
                 <div class="sidebar-widget fade-in-up">
-                    <div class="widget-header"><i class="fas fa-trophy text-accent"></i> Results & Awards</div>
+                    <div class="widget-header"><i class="fas fa-trophy text-accent"></i> Results &amp; Awards</div>
                     <div class="widget-content">
-                        <p style="color: #475569; font-size: 0.95rem; line-height: 1.6;">
-                            Results will be declared on <strong>8th September</strong> and shared via Email/WhatsApp to coordinating teachers.<br><br>
-                            Awards and certificates will be sent to respective schools by <strong>25th September 2026</strong>.
-                        </p>
+                        <div id="sidebarResultsDeclared" style="{% if not event_config.results_published %}display: none;{% endif %}">
+                            <div style="background: #ecfdf5; border-left: 4px solid #10b981; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+                                <strong style="color: #047857; display: flex; align-items: center; gap: 6px;"><i class="fas fa-check-circle"></i> Results Declared!</strong>
+                                <span style="font-size: 0.88rem; color: #065f46; display: block; margin-top: 4px;">Score cards and certificates are now available for viewing and download.</span>
+                            </div>
+                            <a href="#results" style="display: block; width: 100%; text-align: center; background: #16a34a; color: #fff; font-weight: 700; padding: 10px 16px; border-radius: 8px; text-decoration: none; box-shadow: 0 4px 12px rgba(22,163,74,0.25); margin-bottom: 12px;">
+                                <i class="fas fa-search"></i> Check Student Result
+                            </a>
+                        </div>
+                        <div id="sidebarResultsPending" style="{% if event_config.results_published %}display: none;{% endif %}">
+                            <p style="color: #475569; font-size: 0.95rem; line-height: 1.6;">
+                                Results will be declared on <strong>8th September</strong> and shared via Email/WhatsApp to coordinating teachers.<br><br>
+                                Awards and certificates will be sent to respective schools by <strong>25th September 2026</strong>.
+                            </p>
+                        </div>
                     </div>
                 </div>
 
@@ -2132,42 +2557,218 @@
 
         console.log('Brain-O-Math Olympiad {{ event_config.event_year }} - Website Loaded Successfully! <i class="fas fa-bullseye text-accent"></i>');
 
+        function escapeHtml(s) {
+            if (!s && s !== 0) return '';
+            return String(s).replace(/[&<>"']/g, function (c) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+            });
+        }
+
+        async function searchStudentResult(e) {
+            if (e) e.preventDefault();
+            const inputEl = document.getElementById('resultQueryInput');
+            const query = (inputEl ? inputEl.value : '').trim();
+            if (!query) return;
+
+            const loadingEl = document.getElementById('resultLoading');
+            const errorEl = document.getElementById('resultError');
+            const outputEl = document.getElementById('resultOutput');
+            const searchBtn = document.getElementById('searchResultBtn');
+
+            if (loadingEl) loadingEl.style.display = 'block';
+            if (errorEl) errorEl.style.display = 'none';
+            if (outputEl) outputEl.style.display = 'none';
+            if (searchBtn) searchBtn.disabled = true;
+
+            try {
+                const res = await fetch(`/api/public/student-result?query=${encodeURIComponent(query)}`);
+                const json = await res.json();
+
+                if (json.success && json.data) {
+                    renderStudentResult(json.data);
+                    if (outputEl) outputEl.style.display = 'block';
+                } else {
+                    if (errorEl) {
+                        errorEl.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${json.message || 'No student found with this Roll Number / Student ID.'}`;
+                        errorEl.style.display = 'block';
+                    }
+                }
+            } catch (err) {
+                if (errorEl) {
+                    errorEl.innerHTML = `<i class="fas fa-exclamation-triangle"></i> Network error: ${err.message}. Please try again.`;
+                    errorEl.style.display = 'block';
+                }
+            } finally {
+                if (loadingEl) loadingEl.style.display = 'none';
+                if (searchBtn) searchBtn.disabled = false;
+            }
+        }
+
+        function renderStudentResult(student) {
+            const outputEl = document.getElementById('resultOutput');
+            if (!outputEl) return;
+            const marks = student.marks || {};
+            const rawSubs = String(student.subjects || '').split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
+
+            const subjectsMap = {
+                'english': { name: 'English', mark: marks.english, max: 60, icon: 'fa-font' },
+                'math': { name: 'Mathematics', mark: marks.math, max: 60, icon: 'fa-calculator' },
+                'science': { name: 'Science', mark: marks.science, max: 60, icon: 'fa-flask' },
+                'cs': { name: 'Computer Science', mark: marks.cs, max: 60, icon: 'fa-desktop' }
+            };
+
+            let activeList = rawSubs.filter(s => subjectsMap[s]);
+            if (activeList.length === 0) {
+                for (const [key, val] of Object.entries(subjectsMap)) {
+                    if (val.mark !== null && val.mark !== undefined) activeList.push(key);
+                }
+            }
+
+            let rowsHtml = '';
+            let totalScored = 0;
+            let totalMax = 0;
+            let hasAnyMarks = false;
+
+            activeList.forEach(key => {
+                const sub = subjectsMap[key];
+                const hasScore = sub.mark !== null && sub.mark !== undefined;
+                if (hasScore) {
+                    totalScored += Number(sub.mark);
+                    totalMax += sub.max;
+                    hasAnyMarks = true;
+                }
+                const scoreText = hasScore ? `<span style="color:#0f172a; font-weight:700;">${sub.mark}</span> <span style="color:#64748b; font-weight:500;">/ ${sub.max}</span>` : '<span style="color:#94a3b8; font-weight:500;">Pending / Absent</span>';
+                const percentText = hasScore ? `<strong style="color:#16a34a;">${((sub.mark / sub.max) * 100).toFixed(1)}%</strong>` : '—';
+                
+                rowsHtml += `
+                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                        <td style="padding: 12px 16px;"><i class="fas ${sub.icon}" style="color:#2563eb; width:20px;"></i> <strong>${sub.name}</strong></td>
+                        <td style="padding: 12px 16px; text-align:center;">${scoreText}</td>
+                        <td style="padding: 12px 16px; text-align:center;">${percentText}</td>
+                    </tr>
+                `;
+            });
+
+            const overallPercentage = totalMax > 0 ? ((totalScored / totalMax) * 100).toFixed(1) : 0;
+
+            outputEl.innerHTML = `
+                <div class="result-card-inner">
+                    <div class="result-student-header">
+                        <div>
+                            <div class="res-student-name">${escapeHtml(student.name)}</div>
+                            <div class="res-student-meta">
+                                <span><strong>Roll No:</strong> <span style="font-family:monospace; font-weight:700; color:#2563eb;">${escapeHtml(student.rollNumber || student.studentId)}</span></span> &bull; 
+                                <span><strong>Class:</strong> ${escapeHtml(student.class)} (Cat. ${escapeHtml(student.category)})</span> &bull; 
+                                <span><strong>School:</strong> ${escapeHtml(student.schoolName || 'N/A')}</span>
+                            </div>
+                        </div>
+                        ${hasAnyMarks ? `
+                        <div class="overall-badge">
+                            <span class="overall-label">Total Score</span>
+                            <span class="overall-val">${totalScored}/${totalMax} (${overallPercentage}%)</span>
+                        </div>` : ''}
+                    </div>
+
+                    <div class="table-container" style="margin: 1.25rem 0; background:#fff; border:1px solid #e2e8f0; border-radius:10px; overflow:hidden;">
+                        <table style="width:100%; border-collapse:collapse; text-align:left;">
+                            <thead>
+                                <tr style="background:#f8fafc; border-bottom:1px solid #e2e8f0;">
+                                    <th style="padding:12px 16px; color:#475569; font-size:0.85rem; font-weight:700;">SUBJECT</th>
+                                    <th style="padding:12px 16px; text-align:center; color:#475569; font-size:0.85rem; font-weight:700;">MARKS OBTAINED</th>
+                                    <th style="padding:12px 16px; text-align:center; color:#475569; font-size:0.85rem; font-weight:700;">PERCENTAGE</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${rowsHtml || '<tr><td colspan="3" style="text-align:center; padding:16px; color:#64748b;">No subjects enrolled</td></tr>'}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="result-action-btns">
+                        <a href="/api/public/results/download-report-card/${student.id}" target="_blank" class="btn-download-pdf">
+                            <i class="fas fa-file-pdf"></i> Download Score Card
+                        </a>
+                        <a href="/api/public/results/download-certificate/${student.id}" target="_blank" class="btn-download-cert">
+                            <i class="fas fa-certificate"></i> Download Certificate
+                        </a>
+                    </div>
+                </div>
+            `;
+        }
+
         // Check registration status and handle Register Now links
         const API = '/api';
+
+        function updateResultsVisibility(isPublished) {
+            const navResults = document.getElementById('navResultsLink');
+            const heroLiveTag = document.getElementById('heroLiveTag');
+            const heroResultsCta = document.getElementById('heroResultsCtaBtn');
+            const heroCoordPortal = document.getElementById('heroCoordPortalBtn');
+            const resultsSection = document.getElementById('results');
+            const sidebarResultsDeclared = document.getElementById('sidebarResultsDeclared');
+            const sidebarResultsPending = document.getElementById('sidebarResultsPending');
+            const marquee = document.getElementById('topMarquee');
+
+            if (isPublished) {
+                if (navResults) navResults.style.display = 'inline-block';
+                if (heroLiveTag) heroLiveTag.style.display = 'inline-flex';
+                if (heroResultsCta) heroResultsCta.style.display = 'inline-block';
+                if (heroCoordPortal) heroCoordPortal.style.display = 'inline-block';
+                if (resultsSection) resultsSection.style.display = 'block';
+                if (sidebarResultsDeclared) sidebarResultsDeclared.style.display = 'block';
+                if (sidebarResultsPending) sidebarResultsPending.style.display = 'none';
+                if (marquee) {
+                    marquee.innerHTML = '<span style="color:#fde047; font-weight: bold;"><i class="fas fa-trophy"></i> 🎉 BRAIN-O-MATH OLYMPIAD {{ event_config.event_year }} RESULTS &amp; SCORE CARDS ARE DECLARED!</span> — <a href="#results" style="color: #fff; text-decoration: underline; font-weight: bold;">Click here to Check Student Results &amp; Download Score Cards</a>';
+                }
+            } else {
+                if (navResults) navResults.style.display = 'none';
+                if (heroLiveTag) heroLiveTag.style.display = 'none';
+                if (heroResultsCta) heroResultsCta.style.display = 'none';
+                if (heroCoordPortal) heroCoordPortal.style.display = 'none';
+                if (resultsSection) resultsSection.style.display = 'none';
+                if (sidebarResultsDeclared) sidebarResultsDeclared.style.display = 'none';
+                if (sidebarResultsPending) sidebarResultsPending.style.display = 'block';
+            }
+        }
 
         async function checkRegistrationStatus() {
             try {
                 const res = await fetch(API + '/public/registration-status');
                 const data = await res.json();
 
-                if (data.success && !data.data.isOpen) {
-                    // Registration is closed
-                    const registerBtn1 = document.getElementById('registerNowBtn1');
-                    const registerBtn2 = document.getElementById('registerNowBtn2');
+                if (data.success) {
+                    // Update results visibility (show when released, hide when stopped)
+                    updateResultsVisibility(Boolean(data.data.resultsPublished));
 
-                    // Add click handlers to show alert and prevent navigation
-                    const handleRegisterClick = (e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        alert('Registration is currently closed. Registration is no longer available. Please check back later or contact the organizing team for more information.');
-                        return false;
-                    };
+                    if (!data.data.isOpen) {
+                        // Registration is closed
+                        const registerBtn1 = document.getElementById('registerNowBtn1');
+                        const registerBtn2 = document.getElementById('registerNowBtn2');
 
-                    // Style the links to show they're disabled
-                    [registerBtn1, registerBtn2].forEach(btn => {
-                        if (btn) {
-                            btn.style.opacity = '0.6';
-                            btn.style.cursor = 'not-allowed';
-                            btn.title = 'Registration is currently closed';
-                            btn.href = '#';
-                            btn.addEventListener('click', handleRegisterClick);
+                        const handleRegisterClick = (e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            alert('Registration is currently closed. Registration is no longer available. Please check back later or contact the organizing team for more information.');
+                            return false;
+                        };
+
+                        [registerBtn1, registerBtn2].forEach(btn => {
+                            if (btn) {
+                                btn.style.opacity = '0.6';
+                                btn.style.cursor = 'not-allowed';
+                                btn.title = 'Registration is currently closed';
+                                btn.href = '#';
+                                btn.addEventListener('click', handleRegisterClick);
+                            }
+                        });
+
+                        // Update marquee announcement if registration is closed and results not published
+                        if (!data.data.resultsPublished) {
+                            const marquee = document.getElementById('topMarquee');
+                            if (marquee) {
+                                marquee.innerHTML = '<span style="color: #fbbf24; font-weight: bold;"><i class="fas fa-exclamation-circle"></i> REGISTRATION IS CURRENTLY CLOSED</span> — Thank you for your interest in Brain-O-Math Olympiad.';
+                            }
                         }
-                    });
-
-                    // Update marquee announcement if registration is closed
-                    const marquee = document.querySelector('.header-top marquee');
-                    if (marquee) {
-                        marquee.innerHTML = '<span style="color: #fbbf24; font-weight: bold;"><i class="fas fa-exclamation-circle"></i> REGISTRATION IS CURRENTLY CLOSED</span> — Thank you for your interest in Brain-O-Math Olympiad.';
                     }
                 }
             } catch (error) {

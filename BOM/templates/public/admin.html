@@ -77,99 +77,399 @@ body {
   background: #94a3b8;
 }
 
-/* Layout */
-.main-container {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 2rem;
-}
-
-/* Header styling */
-.header {
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  padding: 1.5rem 2rem;
-  margin-bottom: 2rem;
-  box-shadow: var(--shadow-sm);
+/* App Layout */
+.admin-app-layout {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1.5rem;
+  min-height: 100vh;
+  background: var(--bg-main);
+  position: relative;
+  width: 100%;
 }
 
-.header h1 {
-  font-size: 1.75rem;
+/* Sidebar Backdrop for Mobile */
+.sidebar-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(2px);
+  z-index: 999;
+  transition: opacity 0.3s ease;
+}
+
+.sidebar-backdrop.active {
+  display: block;
+}
+
+/* Sidebar Styling */
+.admin-sidebar {
+  width: 270px;
+  background: #0f172a;
+  color: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 1000;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 4px 0 25px rgba(0, 0, 0, 0.12);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sidebar-brand {
+  padding: 1.25rem 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(15, 23, 42, 0.8);
+}
+
+.brand-logo {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  object-fit: cover;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.brand-text-wrapper h2 {
+  font-size: 1.1rem;
   font-weight: 800;
-  color: var(--primary);
+  color: #ffffff;
+  letter-spacing: -0.02em;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.brand-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #818cf8;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 2px;
+}
+
+/* Sidebar Quick Status Box */
+.sidebar-status-box {
+  margin: 0.85rem 1rem 0.25rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ef4444;
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
+  flex-shrink: 0;
+}
+
+.status-dot.online {
+  background: #10b981;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+}
+
+.sidebar-status-text {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  line-height: 1.3;
+}
+
+.sidebar-status-text strong {
+  display: block;
+  font-size: 0.85rem;
+  color: #ffffff;
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: 0.85rem 0.75rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.nav-section-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #64748b;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.85rem 0.75rem 0.35rem;
+}
+
+.sidebar-nav .tab-btn, .sidebar-nav .sidebar-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  background: transparent;
+  border: none;
+  color: #cbd5e1;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  text-align: left;
+  transition: all 0.2s ease;
+  position: relative;
+  font-family: inherit;
+}
+
+.sidebar-nav .tab-btn i, .sidebar-nav .sidebar-action-btn i {
+  font-size: 1.1rem;
+  width: 20px;
+  text-align: center;
+  color: #94a3b8;
+  transition: color 0.2s ease;
+}
+
+.sidebar-nav .tab-btn:hover, .sidebar-nav .sidebar-action-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+
+.sidebar-nav .tab-btn:hover i, .sidebar-nav .sidebar-action-btn:hover i {
+  color: #818cf8;
+}
+
+.sidebar-nav .tab-btn.active {
+  background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+  color: #ffffff;
+  box-shadow: 0 4px 15px rgba(79, 70, 229, 0.35);
+}
+
+.sidebar-nav .tab-btn.active i {
+  color: #ffffff;
+}
+
+.sidebar-user-footer {
+  padding: 0.85rem 1rem;
+  background: rgba(0, 0, 0, 0.25);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  letter-spacing: -0.025em;
 }
 
-.header h1 i {
-  font-size: 1.5rem;
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #4f46e5;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  flex-shrink: 0;
 }
 
-.header-actions {
+.user-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.user-name {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-role {
+  font-size: 0.72rem;
+  color: #94a3b8;
+}
+
+.btn-sidebar-logout {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #f87171;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-sidebar-logout:hover {
+  background: #ef4444;
+  color: white;
+}
+
+/* Main Content Area */
+.admin-main-wrapper {
+  margin-left: 270px;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Topbar Header */
+.admin-topbar {
+  background: #ffffff;
+  border-bottom: 1px solid var(--border-color);
+  padding: 0.85rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 900;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.mobile-toggle-btn {
+  display: none;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  color: #334155;
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.topbar-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  color: #64748b;
+}
+
+.breadcrumb-root {
+  font-weight: 500;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.breadcrumb-separator {
+  color: #cbd5e1;
+}
+
+.breadcrumb-current {
+  color: #1e293b;
+  font-weight: 700;
+}
+
+.topbar-right {
   display: flex;
   align-items: center;
   gap: 1rem;
   flex-wrap: wrap;
 }
 
-/* Quick Event Toggle Style */
-.event-toggle-box {
-  background: var(--primary-light);
-  border: 1px dashed var(--primary);
-  padding: 0.5rem 1rem;
-  border-radius: var(--radius-md);
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--primary);
+.topbar-reg-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+}
+
+/* Content Body */
+.admin-content-body {
+  flex: 1;
+  padding: 1.5rem 2rem;
+  max-width: 1600px;
+  width: 100%;
+}
+
+/* Compact Metrics Bar */
+.compact-stats-bar {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 0.65rem 1.25rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  flex-wrap: wrap;
+}
+
+.compact-stat-item {
   display: flex;
   align-items: center;
   gap: 0.75rem;
 }
 
-/* Switch Styles */
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 44px;
-  height: 24px;
+.compact-stat-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
 }
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
+
+.compact-stat-data {
+  display: flex;
+  flex-direction: column;
 }
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-color: #cbd5e1;
-  transition: .3s;
-  border-radius: 24px;
+
+.compact-stat-label {
+  font-size: 0.7rem;
+  color: #64748b;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  line-height: 1.1;
 }
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 18px;
-  width: 18px;
-  left: 3px;
-  bottom: 3px;
-  background-color: white;
-  transition: .3s;
-  border-radius: 50%;
+
+.compact-stat-val {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.2;
 }
-input:checked + .slider {
-  background-color: var(--primary);
-}
-input:checked + .slider:before {
-  transform: translateX(20px);
+
+.compact-stat-divider {
+  width: 1px;
+  height: 28px;
+  background: var(--border-color);
 }
 
 /* Stats Cards */
@@ -249,54 +549,44 @@ input:checked + .slider:before {
 .stat-card.info-accent .stat-icon { background: rgba(6, 182, 212, 0.1); color: var(--info); }
 .stat-card.danger-accent .stat-icon { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
 
-/* Navigation Tabs */
-.tab-nav {
-  display: flex;
-  background: var(--bg-card);
-  padding: 0.375rem;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  margin-bottom: 2rem;
-  gap: 0.25rem;
-  overflow-x: auto;
-  box-shadow: var(--shadow-sm);
-}
-
-.tab-nav button {
-  background: none;
-  border: none;
-  padding: 0.75rem 1.25rem;
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--secondary);
-  cursor: pointer;
-  border-radius: var(--radius-md);
-  transition: all 0.2s;
-  white-space: nowrap;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.tab-nav button:hover {
-  color: var(--primary);
-  background: var(--primary-light);
-}
-
-.tab-nav button.active {
-  background: var(--primary);
-  color: white;
-  box-shadow: var(--shadow-md);
-}
-
 /* Tab content styling */
 .tab-content {
   display: none;
-  animation: fadeIn 0.35s ease-out;
+  animation: fadeIn 0.3s ease-out;
 }
 
 .tab-content.active {
   display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Mobile & Tablet Responsive Rules */
+@media (max-width: 1024px) {
+  .admin-sidebar {
+    transform: translateX(-100%);
+  }
+  .admin-sidebar.open {
+    transform: translateX(0);
+  }
+  .admin-main-wrapper {
+    margin-left: 0;
+    width: 100%;
+  }
+  .mobile-toggle-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .admin-content-body {
+    padding: 1.25rem 1rem;
+  }
+  .admin-topbar {
+    padding: 0.75rem 1rem;
+  }
 }
 
 @keyframes fadeIn {
@@ -325,75 +615,124 @@ input:checked + .slider:before {
 }
 
 /* Toolbars & Controls */
-.toolbar {
+.controls, .toolbar {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-  background: var(--bg-main);
-  padding: 1rem;
-  border-radius: var(--radius-md);
+  gap: 0.75rem;
+  background: #f8fafc;
   border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.filter-group {
+  display: inline-flex;
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 0 0.75rem;
+  height: 40px;
+  gap: 0.5rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease;
+}
+
+.filter-group:hover, .filter-group:focus-within {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.12);
+}
+
+.filter-group i {
+  color: var(--primary);
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.filter-group label {
+  display: none;
+}
+
+.filter-group select, .controls select {
+  border: none;
+  background: transparent;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-main);
+  outline: none;
+  cursor: pointer;
+  height: 100%;
+  font-family: inherit;
+  padding-right: 4px;
+}
+
+.controls select {
+  background-color: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 0 0.75rem;
+  height: 40px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.controls select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.12);
 }
 
 .search-box {
   position: relative;
-  flex-grow: 1;
-  max-width: 400px;
-}
-
-.search-box input {
-  width: 100%;
-  padding: 0.625rem 1rem 0.625rem 2.5rem;
+  display: inline-flex;
+  align-items: center;
+  background: #ffffff;
   border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  font-size: 0.9rem;
-  outline: none;
-  transition: all 0.2s;
-  font-family: inherit;
+  border-radius: 8px;
+  padding: 0 0.75rem 0 2.25rem;
+  height: 40px;
+  flex: 1 1 240px;
+  min-width: 200px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease;
 }
 
-.search-box input:focus {
+.search-box:hover, .search-box:focus-within {
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.12);
 }
 
 .search-box i {
   position: absolute;
-  left: 0.875rem;
+  left: 0.75rem;
   top: 50%;
   transform: translateY(-50%);
   color: var(--secondary);
+  font-size: 0.85rem;
 }
 
-.filter-box {
-  display: flex;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-  align-items: center;
-}
-
-.filter-box select {
-  padding: 0.625rem 2rem 0.625rem 1rem;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  font-size: 0.9rem;
+.search-box input {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: transparent;
+  padding: 0;
+  font-size: 0.875rem;
+  color: var(--text-main);
   outline: none;
-  background-color: var(--bg-card);
-  cursor: pointer;
-  transition: all 0.2s;
   font-family: inherit;
-  appearance: none;
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 0.75rem center;
-  background-size: 1rem;
 }
 
-.filter-box select:focus {
-  border-color: var(--primary);
+.controls .btn {
+  height: 40px;
+  padding: 0 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 8px;
+  white-space: nowrap;
 }
 
 /* Custom Table Styles */
@@ -1333,10 +1672,14 @@ select:focus {
   }
   
   .controls {
-    flex-direction: column;
-    align-items: stretch;
+    flex-wrap: wrap;
+    gap: 8px;
   }
   
+  .filter-group {
+    flex: 1 1 140px;
+  }
+
   table {
     font-size: 0.8rem;
   }
@@ -1344,130 +1687,221 @@ select:focus {
   th, td {
     padding: 0.75rem;
   }
-  
-  .tab-nav {
-    flex-direction: column;
-    gap: 0;
-  }
-  
-  .tab-nav button {
-    padding: 0.75rem 1rem;
-  }
 }
 </style>
 </head>
 <body>
-<div class="main-container">
-  <header>
-    <h1><i class="fas fa-chart-line"></i> Brain-O-Math Admin Dashboard</h1>
-    <button id="logoutBtn" class="btn">
-      <i class="fas fa-sign-out-alt"></i> Logout
-    </button>
-  </header>
+<div class="admin-app-layout">
+  <!-- Sidebar Backdrop for Mobile -->
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
-  <main>
-    <div class="card" id="statsCard">
-      <h2><i class="fas fa-chart-line"></i> Dashboard Overview</h2>
-      <p id="statsLoading" class="loading">
-        <i class="fas fa-spinner"></i> Loading dashboard data...
-      </p>
-      <div id="statsContent" style="display:none">
-        <div class="stats-grid">
-          <div class="stat-item">
-            <i class="fas fa-clipboard-list"></i>
-            <h3 id="totalRegs">0</h3>
-            <p>Total Registrations</p>
-          </div>
-          <div class="stat-item">
-            <i class="fas fa-user-graduate"></i>
-            <h3 id="totalStudents">0</h3>
-            <p>Total Students</p>
-          </div>
-          <div class="stat-item">
-            <i class="fas fa-rupee-sign"></i>
-            <h3 id="totalRevenue">0</h3>
-            <p>Total Revenue</p>
-          </div>
-        </div>
+  <!-- Left Sidebar Navigation -->
+  <aside class="admin-sidebar" id="adminSidebar">
+    <!-- Brand Header -->
+    <div class="sidebar-brand">
+      <img src="{% static 'public/logo.jpg' %}" alt="Brain-O-Math Logo" class="brand-logo">
+      <div class="brand-text-wrapper">
+        <h2>Brain-O-Math</h2>
+        <span class="brand-badge"><i class="fas fa-shield-halved"></i> Admin Console</span>
       </div>
     </div>
 
-    <!-- Messaging Section -->
-    <div class="card" style="margin-bottom: 2rem; background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); color: white;">
-      <h2 style="color: white; margin-bottom: 1rem;">
-        <i class="fas fa-envelope"></i> Send Message to All Coordinators
-      </h2>
-      <div style="display: flex; gap: 1.5rem; flex-direction: column;">
-        <div>
-          <label for="messageContent" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Message Content:</label>
-          <textarea id="messageContent" 
-            placeholder="Write your message here... This will be sent to all coordinators via email." 
-            style="width: 100%; min-height: 120px; padding: 12px; border: 2px solid rgba(255,255,255,0.3); border-radius: 6px; font-size: 0.95rem; font-family: 'Inter', sans-serif; resize: vertical; color: #333; background: white;">
-          </textarea>
-        </div>
-        <div style="display: flex; gap: 1rem; align-items: center;">
-          <button id="sendMessageBtn" class="btn" style="background: #10b981; color: white; padding: 0.8rem 2rem; font-size: 1rem;">
-            <i class="fas fa-paper-plane"></i> Send Message to All
-          </button>
-          <div id="messageStatus" style="display: none; padding: 0.8rem 1.5rem; background: rgba(255,255,255,0.2); border-radius: 6px; font-weight: 500;"></div>
-        </div>
+    <!-- Live Registration Status Widget in Sidebar -->
+    <div class="sidebar-status-box">
+      <div class="status-dot" id="sidebarStatusDot"></div>
+      <div class="sidebar-status-text">
+        <span>Registration</span>
+        <strong id="sidebarRegStatusText">Checking...</strong>
       </div>
+      <span class="badge" id="sidebarRegStatusBadge" style="font-size: 0.72rem; padding: 2px 6px;">Status</span>
     </div>
 
-    <!-- Registration Control Section -->
-    <div class="card" style="margin-bottom: 2rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
-      <h2 style="color: white; margin-bottom: 1rem;">
-        <i class="fas fa-toggle-on"></i> Registration Control
-      </h2>
-      <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
-        <div style="flex: 1;">
-          <p style="margin: 0; font-size: 0.95rem; opacity: 0.95;">
-            Current Status: <strong id="registrationStatusText">Checking...</strong>
-          </p>
-        </div>
-        <div style="display: flex; gap: 1rem;">
-          <button id="stopRegistrationBtn" class="btn btn-danger" style="background: #ef4444;">
-            <i class="fas fa-stop-circle"></i> Stop Registration
-          </button>
-          <button id="startRegistrationBtn" class="btn btn-success" style="background: #10b981; display: none;">
-            <i class="fas fa-play-circle"></i> Start Registration
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Tab Navigation -->
-    <div class="tab-nav">
+    <!-- Navigation Menu -->
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">MAIN NAVIGATION</div>
       <button class="tab-btn active" data-tab="registrations">
-        <i class="fas fa-clipboard-list"></i> Registration Management
+        <i class="fas fa-clipboard-list"></i>
+        <span>Registration Management</span>
       </button>
+
       <button class="tab-btn" data-tab="students">
-        <i class="fas fa-user-graduate"></i> Student Management
+        <i class="fas fa-user-graduate"></i>
+        <span>Student Management</span>
       </button>
-      <button class="tab-btn" data-tab="results">
-        <i class="fas fa-file-alt"></i> Enter Result Details
-      </button>
+
       <button class="tab-btn" data-tab="edit-students">
-        <i class="fas fa-edit"></i> Edit Student Details
+        <i class="fas fa-user-pen"></i>
+        <span>Edit Student Details</span>
       </button>
+
+      <div class="nav-section-label">EXAMS &amp; EVALUATION</div>
+      <button class="tab-btn" data-tab="results">
+        <i class="fas fa-square-poll-vertical"></i>
+        <span>Enter Result Details</span>
+      </button>
+
       <button class="tab-btn" data-tab="report-cards">
-        <i class="fas fa-certificate"></i> Report Cards & Certificates
+        <i class="fas fa-certificate"></i>
+        <span>Report Cards &amp; Certs</span>
       </button>
+
       <button class="tab-btn" data-tab="admit-cards">
-        <i class="fas fa-id-card"></i> Admit Card Management
+        <i class="fas fa-id-card"></i>
+        <span>Admit Card Management</span>
+      </button>
+
+      <div class="nav-section-label">COMMUNICATION &amp; TOOLS</div>
+      <button class="tab-btn" data-tab="messages">
+        <i class="fas fa-envelope"></i>
+        <span>Message Coordinators</span>
+      </button>
+
+      <a href="/" target="_blank" class="sidebar-action-btn">
+        <i class="fas fa-globe"></i>
+        <span>Public Website</span>
+        <i class="fas fa-arrow-up-right-from-square" style="font-size: 0.72rem; margin-left: auto;"></i>
+      </a>
+
+      <button class="sidebar-action-btn" id="sidebarExportTrigger">
+        <i class="fas fa-file-csv"></i>
+        <span>Export CSV Data</span>
+      </button>
+    </nav>
+
+    <!-- Sidebar User Footer -->
+    <div class="sidebar-user-footer">
+      <div class="user-avatar">
+        <i class="fas fa-user-tie"></i>
+      </div>
+      <div class="user-details">
+        <div class="user-name">Administrator</div>
+        <div class="user-role">Super Admin</div>
+      </div>
+      <button id="logoutBtn" class="btn-sidebar-logout" title="Logout">
+        <i class="fas fa-sign-out-alt"></i>
       </button>
     </div>
+  </aside>
+
+  <!-- Main Content Wrapper -->
+  <div class="admin-main-wrapper">
+    <!-- Topbar Header -->
+    <header class="admin-topbar">
+      <div class="topbar-left">
+        <button class="mobile-toggle-btn" id="sidebarToggle" title="Toggle Navigation Menu">
+          <i class="fas fa-bars"></i>
+        </button>
+        <div class="topbar-breadcrumb">
+          <span class="breadcrumb-root"><i class="fas fa-gauge-high"></i> Dashboard</span>
+          <span class="breadcrumb-separator">/</span>
+          <strong class="breadcrumb-current" id="topbarCurrentTabTitle">Registration Management</strong>
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        <!-- Quick Registration Status & Control -->
+        <div class="topbar-reg-pill">
+          <span class="status-dot" id="topbarStatusDot"></span>
+          <span>Registration: <strong id="registrationStatusText">Checking...</strong></span>
+          <button id="stopRegistrationBtn" class="btn btn-danger" style="background: #ef4444; padding: 4px 10px; font-size: 0.78rem; margin-left: 4px;">
+            <i class="fas fa-stop-circle"></i> Stop
+          </button>
+          <button id="startRegistrationBtn" class="btn btn-success" style="background: #10b981; padding: 4px 10px; font-size: 0.78rem; margin-left: 4px; display: none;">
+            <i class="fas fa-play-circle"></i> Start
+          </button>
+        </div>
+
+        <button id="topbarRefreshBtn" class="btn" style="background: #f1f5f9; color: #334155; padding: 7px 14px; font-size: 0.85rem; border: 1px solid #cbd5e1; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+          <i class="fas fa-sync"></i> Refresh
+        </button>
+
+        <button class="btn btn-danger" style="padding: 7px 14px; font-size: 0.85rem; background: #ef4444; color: white; border: none; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;" onclick="logout()">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content Body -->
+    <main class="admin-content-body">
+      <!-- Compact Metrics Bar -->
+      <div id="statsCard" class="compact-stats-bar">
+        <div class="compact-stat-item">
+          <div class="compact-stat-icon" style="background: rgba(79, 70, 229, 0.1); color: #4f46e5;">
+            <i class="fas fa-clipboard-list"></i>
+          </div>
+          <div class="compact-stat-data">
+            <span class="compact-stat-label">Total Registrations</span>
+            <strong class="compact-stat-val" id="totalRegs">0</strong>
+          </div>
+        </div>
+
+        <div class="compact-stat-divider"></div>
+
+        <div class="compact-stat-item">
+          <div class="compact-stat-icon" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
+            <i class="fas fa-user-graduate"></i>
+          </div>
+          <div class="compact-stat-data">
+            <span class="compact-stat-label">Total Students</span>
+            <strong class="compact-stat-val" id="totalStudents">0</strong>
+          </div>
+        </div>
+
+        <div class="compact-stat-divider"></div>
+
+        <div class="compact-stat-item">
+          <div class="compact-stat-icon" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;">
+            <i class="fas fa-rupee-sign"></i>
+          </div>
+          <div class="compact-stat-data">
+            <span class="compact-stat-label">Total Revenue</span>
+            <strong class="compact-stat-val" id="totalRevenue">₹0</strong>
+          </div>
+        </div>
+
+        <div style="margin-left: auto; display: flex; align-items: center;">
+          <p id="statsLoading" style="display: none; margin: 0; font-size: 0.8rem; color: #64748b;">
+            <i class="fas fa-spinner fa-spin"></i> Refreshing...
+          </p>
+          <div id="statsContent" style="display: block;"></div>
+        </div>
+      </div>
+
+      <!-- Dedicated Broadcast Messaging Tab -->
+      <div id="messages" class="tab-content">
+        <div class="card">
+          <h2><i class="fas fa-envelope text-accent"></i> Send Broadcast Message to All Coordinators</h2>
+          <p style="color: #64748b; margin-top: -8px; margin-bottom: 20px; font-size: 0.92rem;">
+            Send an official announcement or notification email simultaneously to all registered school coordinators.
+          </p>
+          
+          <div style="background: #f8fafc; border: 1.5px solid var(--border-color); border-radius: 10px; padding: 24px;">
+            <label for="messageContent" style="display: block; margin-bottom: 8px; font-weight: 700; color: #1e293b; font-size: 0.95rem;">
+              <i class="fas fa-message text-accent"></i> Message Content:
+            </label>
+            <textarea id="messageContent" 
+              placeholder="Write your message here... This will be sent to all coordinators via email." 
+              style="width: 100%; min-height: 160px; padding: 14px 16px; border: 1.5px solid #cbd5e1; border-radius: 8px; font-size: 0.95rem; font-family: 'Inter', sans-serif; resize: vertical; color: #1e293b; background: white; margin-bottom: 16px;">
+            </textarea>
+
+            <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+              <button id="sendMessageBtn" class="btn" style="background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%); color: white; padding: 12px 28px; font-size: 0.95rem; font-weight: 700; border: none; border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);">
+                <i class="fas fa-paper-plane"></i> Send Message to All Coordinators
+              </button>
+              <div id="messageStatus" style="display: none; padding: 10px 18px; border-radius: 8px; font-weight: 600; font-size: 0.9rem;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
 
     <!-- Registration Management Tab -->
     <div id="registrations" class="tab-content active">
       <div class="card">
-        <h2><i class="fas fa-table"></i> Registration Management (UTR-Based)</h2>
+        <h2><i class="fas fa-table text-accent"></i> Registration Management (UTR-Based)</h2>
         
         <div class="controls">
           <div class="filter-group">
-            <label for="statusFilter">
-              <i class="fas fa-filter"></i> Filter by Status:
-            </label>
+            <i class="fas fa-filter"></i>
             <select id="statusFilter">
               <option value="">All Registrations</option>
               <option value="pending">Pending</option>
@@ -1477,7 +1911,7 @@ select:focus {
             </select>
           </div>
           
-          <button id="exportBtn" class="btn">
+          <button id="exportBtn" class="btn" style="margin-left: auto; background: #059669; color: white;">
             <i class="fas fa-download"></i> Export CSV
           </button>
         </div>
@@ -1508,15 +1942,13 @@ select:focus {
     <!-- Student Management Tab -->
     <div id="students" class="tab-content">
       <div class="card">
-        <h2><i class="fas fa-user-graduate"></i> Student Management</h2>
+        <h2><i class="fas fa-user-graduate text-accent"></i> Student Management</h2>
         
         <div class="controls">
           <div class="filter-group">
-            <label for="studentStatusFilter">
-              <i class="fas fa-filter"></i> Filter by Status:
-            </label>
+            <i class="fas fa-filter"></i>
             <select id="studentStatusFilter">
-              <option value="">All Students</option>
+              <option value="">All Statuses</option>
               <option value="pending">Pending</option>
               <option value="verified">Verified</option>
               <option value="rejected">Rejected</option>
@@ -1524,9 +1956,7 @@ select:focus {
           </div>
           
           <div class="filter-group">
-            <label for="classFilter">
-              <i class="fas fa-graduation-cap"></i> Filter by Class:
-            </label>
+            <i class="fas fa-graduation-cap"></i>
             <select id="classFilter">
               <option value="">All Classes</option>
               <option value="3">Class 3</option>
@@ -1541,10 +1971,9 @@ select:focus {
               <option value="12">Class 12</option>
             </select>
           </div>
+
           <div class="filter-group">
-            <label for="studentSubjectFilter">
-              <i class="fas fa-book"></i> Filter by Subject:
-            </label>
+            <i class="fas fa-book"></i>
             <select id="studentSubjectFilter">
               <option value="">All Subjects</option>
               <option value="english">English</option>
@@ -1555,9 +1984,7 @@ select:focus {
           </div>
 
           <div class="filter-group">
-            <label for="studentVenueFilter">
-              <i class="fas fa-map-marker-alt"></i> Filter by Venue:
-            </label>
+            <i class="fas fa-map-marker-alt"></i>
             <select id="studentVenueFilter">
               <option value="">All Venues</option>
               <option value="Doon Heritage School, Siliguri">Doon Heritage School, Siliguri</option>
@@ -1565,7 +1992,7 @@ select:focus {
             </select>
           </div>
           
-          <button id="exportStudentsBtn" class="btn">
+          <button id="exportStudentsBtn" class="btn" style="margin-left: auto; background: #059669; color: white;">
             <i class="fas fa-download"></i> Export Students CSV
           </button>
         </div>
@@ -1598,7 +2025,7 @@ select:focus {
     <!-- Enter Result Details Tab -->
     <div id="results" class="tab-content">
       <div class="card">
-        <h2><i class="fas fa-file-alt"></i> Enter Result Details</h2>
+        <h2><i class="fas fa-file-alt text-accent"></i> Enter Result Details</h2>
         
         <div class="stats-grid" id="resultStatsContainer">
           <div class="stat-box">
@@ -1621,9 +2048,7 @@ select:focus {
 
         <div class="controls">
           <div class="filter-group">
-            <label for="resultClassFilter">
-              <i class="fas fa-graduation-cap"></i> Filter by Class:
-            </label>
+            <i class="fas fa-graduation-cap"></i>
             <select id="resultClassFilter">
               <option value="">All Classes</option>
               <option value="3">Class 3</option>
@@ -1640,9 +2065,7 @@ select:focus {
           </div>
 
           <div class="filter-group">
-            <label for="resultSubjectFilter">
-              <i class="fas fa-book"></i> Filter by Subject:
-            </label>
+            <i class="fas fa-book"></i>
             <select id="resultSubjectFilter">
               <option value="">All Subjects</option>
               <option value="math">Math</option>
@@ -1655,7 +2078,7 @@ select:focus {
             <i class="fas fa-sync"></i> Refresh Stats
           </button>
 
-          <button id="saveAllMarksBtn" class="btn" style="background: #10b981; color: white;">
+          <button id="saveAllMarksBtn" class="btn" style="margin-left: auto; background: #10b981; color: white;">
             <i class="fas fa-save"></i> Save All on This Page
           </button>
         </div>
@@ -1688,7 +2111,7 @@ select:focus {
     <!-- Edit Student Details Tab -->
     <div id="edit-students" class="tab-content">
       <div class="card">
-        <h2><i class="fas fa-edit"></i> Edit Student Details</h2>
+        <h2><i class="fas fa-edit text-accent"></i> Edit Student Details</h2>
         
         <div class="stats-grid" id="editStudentStatsContainer">
           <div class="stat-box">
@@ -1707,9 +2130,7 @@ select:focus {
 
         <div class="controls">
           <div class="filter-group">
-            <label for="editStudentClassFilter">
-              <i class="fas fa-graduation-cap"></i> Filter by Class:
-            </label>
+            <i class="fas fa-graduation-cap"></i>
             <select id="editStudentClassFilter">
               <option value="">All Classes</option>
               <option value="3">Class 3</option>
@@ -1726,9 +2147,7 @@ select:focus {
           </div>
 
           <div class="filter-group">
-            <label for="editStudentSubjectFilter">
-              <i class="fas fa-book"></i> Filter by Subject:
-            </label>
+            <i class="fas fa-book"></i>
             <select id="editStudentSubjectFilter">
               <option value="">All Subjects</option>
               <option value="english">English</option>
@@ -1739,9 +2158,7 @@ select:focus {
           </div>
 
           <div class="filter-group">
-            <label for="editStudentVenueFilter">
-              <i class="fas fa-map-marker-alt"></i> Filter by Venue:
-            </label>
+            <i class="fas fa-map-marker-alt"></i>
             <select id="editStudentVenueFilter">
               <option value="">All Venues</option>
               <option value="Doon Heritage School, Siliguri">Doon Heritage School, Siliguri</option>
@@ -1753,7 +2170,7 @@ select:focus {
             <i class="fas fa-sync"></i> Refresh Stats
           </button>
 
-          <button id="saveAllEditBtn" class="btn" style="background: #10b981; color: white;">
+          <button id="saveAllEditBtn" class="btn" style="margin-left: auto; background: #10b981; color: white;">
             <i class="fas fa-save"></i> Save All Changes on This Page
           </button>
         </div>
@@ -1781,57 +2198,161 @@ select:focus {
     <!-- Report Cards & Certificates Tab -->
     <div id="report-cards" class="tab-content">
       <div class="card">
-        <h2><i class="fas fa-certificate"></i> Report Cards & Certificates Management</h2>
+        <h2><i class="fas fa-certificate"></i> Report Cards &amp; Certificates Management</h2>
         
-        <!-- Release/Stop Options -->
-        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px; padding: 40px; margin-bottom: 20px; color: white;">
-          <h3 style="margin-top: 0; display: flex; align-items: center; gap: 8px; text-align: center; justify-content: center;">
-            <i class="fas fa-paper-plane"></i> Release & Control Results
-          </h3>
-          
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; max-width: 600px; margin: 40px auto;">
-            <!-- Release Button -->
-            <div style="border: 2px solid rgba(255,255,255,0.5); border-radius: 8px; padding: 30px; background: rgba(0,0,0,0.1); text-align: center;">
-              <h4 style="margin: 0 0 15px 0; font-size: 1.1rem;">
-                <i class="fas fa-unlock"></i> Release
-              </h4>
-              <p style="margin: 0 0 20px 0; font-size: 0.9rem; opacity: 0.95;">
-                Release both Report Cards & Certificates to all students
+        <!-- Live Status Banner -->
+        <div id="reportStatusMessage" style="display: none; padding: 16px 20px; border-radius: 8px; margin-bottom: 24px; font-weight: 500;">
+        </div>
+
+        <!-- Summary Statistics Row -->
+        <div class="stats-grid" id="reportStatsContainer" style="margin-bottom: 25px;">
+          <div class="stat-box">
+            <div class="stat-value" id="reportStatsTotalStudents">0</div>
+            <div class="stat-label">Total Students</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value" style="color: #10b981;" id="reportStatsMarksReady">0</div>
+            <div class="stat-label">Marks Entered / Ready</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value" style="color: #f59e0b;" id="reportStatsMarksPending">0</div>
+            <div class="stat-label">Pending Marks</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value" style="color: #6366f1;" id="reportStatsSchoolsCount">0</div>
+            <div class="stat-label">Participating Schools</div>
+          </div>
+        </div>
+
+        <!-- Main Release / Stop Action Panel with School Filter -->
+        <div style="background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); border-radius: 12px; padding: 28px; margin-bottom: 28px; color: white; box-shadow: 0 10px 25px rgba(79, 70, 229, 0.15);">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 18px; margin-bottom: 20px;">
+            <div>
+              <h3 style="margin: 0 0 6px 0; display: flex; align-items: center; gap: 10px; font-size: 1.3rem;">
+                <i class="fas fa-paper-plane"></i> Release &amp; Control Examination Results
+              </h3>
+              <p style="margin: 0; opacity: 0.9; font-size: 0.92rem;">
+                Publish or hide Report Cards &amp; Certificates for all students or filter by school before release.
               </p>
-              <button id="releaseReportCardsAllBtn" class="btn" style="background: #10b981; color: white; width: 100%; cursor: pointer; border: none; padding: 12px; border-radius: 4px; font-size: 1rem; font-weight: 600;">
-                <i class="fas fa-unlock"></i> Release
+            </div>
+            <div style="display: flex; gap: 12px; align-items: center;">
+              <button id="releaseReportCardsAllBtn" class="btn" style="background: #10b981; color: white; padding: 12px 24px; border-radius: 8px; font-size: 1rem; font-weight: 700; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(16,185,129,0.3);">
+                <i class="fas fa-unlock"></i> Release Results &amp; Certificates
+              </button>
+              <button id="stopAllBtn" class="btn" style="background: #ef4444; color: white; padding: 12px 24px; border-radius: 8px; font-size: 1rem; font-weight: 700; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(239,68,68,0.3);">
+                <i class="fas fa-lock"></i> Stop / Hide Results
               </button>
             </div>
+          </div>
 
-            <!-- Stop Button -->
-            <div style="border: 2px solid rgba(255,255,255,0.5); border-radius: 8px; padding: 30px; background: rgba(0,0,0,0.1); text-align: center;">
-              <h4 style="margin: 0 0 15px 0; font-size: 1.1rem;">
-                <i class="fas fa-lock"></i> Stop
-              </h4>
-              <p style="margin: 0 0 20px 0; font-size: 0.9rem; opacity: 0.95;">
-                Stop both Report Cards & Certificates access from students
-              </p>
-              <button id="stopAllBtn" class="btn" style="background: #ef4444; color: white; width: 100%; cursor: pointer; border: none; padding: 12px; border-radius: 4px; font-size: 1rem; font-weight: 600;">
-                <i class="fas fa-lock"></i> Stop
-              </button>
+          <!-- Quick School Selector & Summary -->
+          <div style="background: rgba(255,255,255,0.12); border-radius: 8px; padding: 16px 20px; display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+            <label style="font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; white-space: nowrap;">
+              <i class="fas fa-school"></i> Filter by School before Release:
+            </label>
+            <select id="schoolSelectForReportRelease" style="flex: 1; min-width: 250px; padding: 10px 14px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.3); background: white; color: #1e293b; font-size: 0.95rem; font-weight: 500;">
+              <option value="">All Schools (Entire Competition)</option>
+            </select>
+            <button id="filterSchoolReportBtn" class="btn" style="background: white; color: #4f46e5; padding: 10px 18px; border-radius: 6px; font-weight: 700; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+              <i class="fas fa-filter"></i> View School Students
+            </button>
+          </div>
+        </div>
+
+        <!-- Schools Overview Section -->
+        <div style="margin-bottom: 25px;">
+          <h3 style="color: #1e293b; font-size: 1.1rem; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+            <i class="fas fa-building-columns text-accent"></i> Participating Schools Overview
+          </h3>
+          <div id="reportSchoolsCardsGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px;">
+            <div style="padding: 20px; text-align: center; color: #64748b; background: #f8fafc; border-radius: 8px;">
+              <i class="fas fa-spinner fa-spin"></i> Loading participating schools...
             </div>
           </div>
         </div>
 
-        <!-- Status Message -->
-        <div id="reportStatusMessage" style="display: none; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-weight: 500;">
+        <!-- Interactive Filters for Student Score Cards Table -->
+        <div class="controls">
+          <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="reportSearchFilter" placeholder="Search by student name, roll number, or student ID...">
+          </div>
+          
+          <div class="filter-group">
+            <i class="fas fa-school"></i>
+            <select id="reportSchoolFilter">
+              <option value="">All Schools</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <i class="fas fa-graduation-cap"></i>
+            <select id="reportClassFilter">
+              <option value="">All Classes</option>
+              <option value="3">Class 3</option>
+              <option value="4">Class 4</option>
+              <option value="5">Class 5</option>
+              <option value="6">Class 6</option>
+              <option value="7">Class 7</option>
+              <option value="8">Class 8</option>
+              <option value="9">Class 9</option>
+              <option value="10">Class 10</option>
+              <option value="11">Class 11</option>
+              <option value="12">Class 12</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <i class="fas fa-check-circle"></i>
+            <select id="reportMarksStatusFilter">
+              <option value="">All Marks Status</option>
+              <option value="completed">Marks Entered (Ready)</option>
+              <option value="pending">Marks Pending</option>
+            </select>
+          </div>
+
+          <button id="refreshReportStudentsBtn" class="btn" style="background: #3b82f6; color: white;">
+            <i class="fas fa-sync"></i> Refresh
+          </button>
         </div>
 
-        <p style="text-align: center; color: #666; font-size: 0.9rem; margin-top: 20px;">
-          <i class="fas fa-info-circle"></i> When released, students can view results in their dashboard. When stopped, results are hidden from all students.
-        </p>
+        <!-- Student Results & Score Cards Table -->
+        <div class="table-container">
+          <table id="reportStudentsTable">
+            <thead>
+              <tr>
+                <th>Student Name</th>
+                <th>Roll Number</th>
+                <th>School Name</th>
+                <th>Class</th>
+                <th>English</th>
+                <th>Math</th>
+                <th>Science</th>
+                <th>CS</th>
+                <th>Total / %</th>
+                <th>Marks Status</th>
+                <th><i class="fas fa-cog"></i> Score Card / Certificate</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan="11" class="loading">
+                  <i class="fas fa-spinner fa-spin"></i>
+                  <p>Loading student results...</p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <div class="pagination" id="reportStudentPager"></div>
       </div>
     </div>
 
     <!-- Admit Card Management Tab -->
     <div id="admit-cards" class="tab-content">
       <div class="card">
-        <h2><i class="fas fa-id-card"></i> Admit Card Management</h2>
+        <h2><i class="fas fa-id-card text-accent"></i> Admit Card Management</h2>
         
         <div class="stats-grid" id="admitStatsContainer">
           <div class="stat-box">
@@ -1906,16 +2427,8 @@ select:focus {
         </div>
 
         <div class="controls">
-          <button id="refreshAdmitStatsBtn" class="btn" style="background: #3b82f6; color: white;">
-            <i class="fas fa-sync"></i> Refresh Stats
-          </button>
-        </div>
-
-        <div class="controls">
           <div class="filter-group">
-            <label for="admitClassFilter">
-              <i class="fas fa-graduation-cap"></i> Filter by Class:
-            </label>
+            <i class="fas fa-graduation-cap"></i>
             <select id="admitClassFilter">
               <option value="">All Classes</option>
               <option value="3">Class 3</option>
@@ -1932,9 +2445,7 @@ select:focus {
           </div>
 
           <div class="filter-group">
-            <label for="admitStatusFilter">
-              <i class="fas fa-info-circle"></i> Filter by Status:
-            </label>
+            <i class="fas fa-info-circle"></i>
             <select id="admitStatusFilter">
               <option value="">All Status</option>
               <option value="released">Released</option>
@@ -1943,9 +2454,7 @@ select:focus {
           </div>
 
           <div class="filter-group">
-            <label for="admitSubjectFilter">
-              <i class="fas fa-book"></i> Filter by Subject:
-            </label>
+            <i class="fas fa-book"></i>
             <select id="admitSubjectFilter">
               <option value="">All Subjects</option>
               <option value="english">English</option>
@@ -1956,15 +2465,17 @@ select:focus {
           </div>
 
           <div class="filter-group">
-            <label for="admitVenueFilter">
-              <i class="fas fa-map-marker-alt"></i> Filter by Venue:
-            </label>
+            <i class="fas fa-map-marker-alt"></i>
             <select id="admitVenueFilter">
               <option value="">All Venues</option>
               <option value="Doon Heritage School, Siliguri">Doon Heritage School, Siliguri</option>
               <option value="Don Bosco School, Mayanaguri">Don Bosco School, Mayanaguri</option>
             </select>
           </div>
+
+          <button id="refreshAdmitStatsBtn" class="btn" style="background: #3b82f6; color: white;">
+            <i class="fas fa-sync"></i> Refresh Stats
+          </button>
         </div>
 
         <!-- Export Section -->
@@ -2007,7 +2518,8 @@ select:focus {
         <div class="pagination" id="admitCardPager"></div>
       </div>
     </div>
-  </main>
+    </main>
+  </div>
 </div>
 
 <script>
@@ -2021,6 +2533,47 @@ if (!token) {
 const headers = () => ({ 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token });
 const qs = (sel) => document.querySelector(sel);
 
+// Tab titles mapping
+const tabTitles = {
+  'registrations': 'Registration Management (UTR-Based)',
+  'students': 'Student Management',
+  'results': 'Enter Result Details',
+  'edit-students': 'Edit Student Details',
+  'report-cards': 'Report Cards & Certificates Management',
+  'admit-cards': 'Admit Card Management',
+  'messages': 'Broadcast Message to Coordinators'
+};
+
+function closeMobileSidebar() {
+  const sidebar = qs('#adminSidebar');
+  const backdrop = qs('#sidebarBackdrop');
+  if (sidebar) sidebar.classList.remove('open');
+  if (backdrop) backdrop.classList.remove('active');
+}
+
+function openMobileSidebar() {
+  const sidebar = qs('#adminSidebar');
+  const backdrop = qs('#sidebarBackdrop');
+  if (sidebar) sidebar.classList.add('open');
+  if (backdrop) backdrop.classList.add('active');
+}
+
+// Sidebar toggle for mobile
+if (qs('#sidebarToggle')) {
+  qs('#sidebarToggle').onclick = () => {
+    const sidebar = qs('#adminSidebar');
+    if (sidebar && sidebar.classList.contains('open')) {
+      closeMobileSidebar();
+    } else {
+      openMobileSidebar();
+    }
+  };
+}
+
+if (qs('#sidebarBackdrop')) {
+  qs('#sidebarBackdrop').onclick = closeMobileSidebar;
+}
+
 // Tab functionality
 document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.addEventListener('click', () => {
@@ -2030,7 +2583,17 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
     
     btn.classList.add('active');
-    document.getElementById(tabName).classList.add('active');
+    const targetTabEl = document.getElementById(tabName);
+    if (targetTabEl) targetTabEl.classList.add('active');
+    
+    // Update breadcrumb
+    const breadcrumb = qs('#topbarCurrentTabTitle');
+    if (breadcrumb && tabTitles[tabName]) {
+      breadcrumb.textContent = tabTitles[tabName];
+    }
+
+    // Close mobile drawer on item select
+    closeMobileSidebar();
     
     if (tabName === 'registrations') {
       loadRegs();
@@ -2043,13 +2606,38 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
       loadEditStudentStats();
       loadStudentsForEditing();
     } else if (tabName === 'report-cards') {
-      // Report cards tab loaded
+      loadReportCardStats();
+      loadReportCardSchools();
+      loadReportCardStudents();
     } else if (tabName === 'admit-cards') {
       loadAdmitCardStats();
       loadAdmitCards();
     }
   });
 });
+
+// Topbar refresh button
+if (qs('#topbarRefreshBtn')) {
+  qs('#topbarRefreshBtn').onclick = () => {
+    loadStats();
+    loadRegistrationStatus();
+    const activeTab = document.querySelector('.tab-btn.active')?.dataset.tab || 'registrations';
+    if (activeTab === 'registrations') loadRegs();
+    else if (activeTab === 'students') loadStudents();
+    else if (activeTab === 'results') { loadResultEntryStats(); loadResultsForEntry(); }
+    else if (activeTab === 'edit-students') { loadEditStudentStats(); loadStudentsForEditing(); }
+    else if (activeTab === 'report-cards') { loadReportCardStats(); loadReportCardSchools(); loadReportCardStudents(); }
+    else if (activeTab === 'admit-cards') { loadAdmitCardStats(); loadAdmitCards(); }
+  };
+}
+
+// Sidebar export trigger
+if (qs('#sidebarExportTrigger')) {
+  qs('#sidebarExportTrigger').onclick = () => {
+    if (qs('#exportBtn')) qs('#exportBtn').click();
+    else if (qs('#exportCSVBtn')) qs('#exportCSVBtn').click();
+  };
+}
 
 async function loadStats() {
   try {
@@ -2485,8 +3073,7 @@ function formatSubjects(subjects) {
     'english': 'English',
     'math': 'Mathematics',
     'science': 'Science',
-    'cs': 'Computer Science',
-    'both': 'Math & Science'
+    'cs': 'Computer Science'
   };
   return String(subjects)
     .split(',')
@@ -2495,6 +3082,15 @@ function formatSubjects(subjects) {
     .map(s => mapping[s] || s)
     .join(', ') || 'N/A';
 }
+
+function escapeHtml(s) {
+  if (!s && s !== 0) return '';
+  return String(s).replace(/[&<>"']/g, function(c) {
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":"&#39;"}[c];
+  });
+}
+
+
 
 // Event listeners
 qs('#statusFilter').onchange = e => {
@@ -2604,6 +3200,9 @@ async function loadRegistrationStatus() {
     if (j.success) {
       registrationStatus = j.data.status;
       updateRegistrationUI();
+      if (typeof j.data.resultsPublished !== 'undefined') {
+        updateReportCardsUI(j.data.resultsPublished);
+      }
     }
   } catch (e) {
     console.error('Failed to load registration status:', e);
@@ -2611,27 +3210,45 @@ async function loadRegistrationStatus() {
 }
 
 function updateRegistrationUI() {
+  const isOpen = registrationStatus === 'open';
+
   if (qs('#regStatusBadge')) {
     qs('#regStatusBadge').textContent = registrationStatus.toUpperCase();
-    qs('#regStatusBadge').className = 'status-badge ' + (registrationStatus === 'open' ? 'status-verified' : 'status-rejected');
+    qs('#regStatusBadge').className = 'status-badge ' + (isOpen ? 'status-verified' : 'status-rejected');
   }
   
   if (qs('#registrationStatusText')) {
     const statusText = qs('#registrationStatusText');
-    if (registrationStatus === 'closed') {
-      statusText.textContent = 'CLOSED';
-      statusText.style.color = '#ef4444';
-    } else {
-      statusText.textContent = 'OPEN';
-      statusText.style.color = '#10b981';
-    }
+    statusText.textContent = isOpen ? 'OPEN' : 'CLOSED';
+    statusText.style.color = isOpen ? '#10b981' : '#ef4444';
+  }
+
+  if (qs('#sidebarRegStatusText')) {
+    const sbText = qs('#sidebarRegStatusText');
+    sbText.textContent = isOpen ? 'OPEN' : 'CLOSED';
+    sbText.style.color = isOpen ? '#10b981' : '#f87171';
+  }
+
+  if (qs('#sidebarRegStatusBadge')) {
+    const badge = qs('#sidebarRegStatusBadge');
+    badge.textContent = isOpen ? 'ACTIVE' : 'CLOSED';
+    badge.style.background = isOpen ? '#065f46' : '#7f1d1d';
+    badge.style.color = isOpen ? '#34d399' : '#fca5a5';
+  }
+
+  if (qs('#sidebarStatusDot')) {
+    qs('#sidebarStatusDot').className = 'status-dot ' + (isOpen ? 'online' : '');
+  }
+
+  if (qs('#topbarStatusDot')) {
+    qs('#topbarStatusDot').className = 'status-dot ' + (isOpen ? 'online' : '');
   }
 
   if (qs('#stopRegistrationBtn')) {
-    qs('#stopRegistrationBtn').style.display = registrationStatus === 'open' ? 'inline-flex' : 'none';
+    qs('#stopRegistrationBtn').style.display = isOpen ? 'inline-flex' : 'none';
   }
   if (qs('#startRegistrationBtn')) {
-    qs('#startRegistrationBtn').style.display = registrationStatus === 'closed' ? 'inline-flex' : 'none';
+    qs('#startRegistrationBtn').style.display = !isOpen ? 'inline-flex' : 'none';
   }
 }
 
@@ -2791,15 +3408,20 @@ async function loadAdmitCards() {
         <td>${s.school?.schoolName || 'N/A'}</td>
         <td><span class="status-badge ${statusClass}">${statusText}</span></td>
         <td class="actions">
-          ${!s.admitCardReleased ? `
-            <button class="action-btn release-btn" onclick="releaseStudentAdmitCard('${s._id || s.id}')" title="Release Admit Card">
-              <i class="fas fa-check-circle"></i> Release
-            </button>
-          ` : `
-            <button class="action-btn revoke-btn" onclick="revokeStudentAdmitCard('${s._id || s.id}')" title="Revoke Admit Card">
-              <i class="fas fa-ban"></i> Revoke
-            </button>
-          `}
+          <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+            ${!s.admitCardReleased ? `
+              <button class="action-btn release-btn" onclick="releaseStudentAdmitCard('${s._id || s.id}')" title="Release Admit Card">
+                <i class="fas fa-check-circle"></i> Release
+              </button>
+            ` : `
+              <a href="/api/coordinator/admit-cards/student/${s._id || s.id}?token=${token}" target="_blank" class="btn" style="background: #2563eb; color: white; padding: 4px 8px; font-size: 0.8rem; border-radius: 4px; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;" title="Download Admit Card">
+                <i class="fas fa-file-pdf"></i> Admit Card
+              </a>
+              <button class="action-btn revoke-btn" onclick="revokeStudentAdmitCard('${s._id || s.id}')" title="Revoke Admit Card">
+                <i class="fas fa-ban"></i> Revoke
+              </button>
+            `}
+          </div>
         </td>
       `;
       tbody.appendChild(tr);
@@ -3329,8 +3951,8 @@ async function loadResultsForEntry() {
       const csMarks = s.marks?.cs !== undefined && s.marks?.cs !== null ? s.marks.cs : '';
       
       const hasEnglish = activeSubs.includes('english');
-      const hasMath = activeSubs.includes('math') || activeSubs.includes('both');
-      const hasScience = activeSubs.includes('science') || activeSubs.includes('both');
+      const hasMath = activeSubs.includes('math');
+      const hasScience = activeSubs.includes('science');
       const hasCs = activeSubs.includes('cs');
 
       tr.innerHTML = `
@@ -4053,108 +4675,457 @@ if (qs('#sendMessageBtn')) {
 // REPORT CARDS & CERTIFICATES MANAGEMENT
 // ============================================
 
+let reportSchoolsList = [];
+let reportStudentsList = [];
+let reportCurrentPage = 1;
+const reportPerPage = 10;
+let reportFilterSchool = '';
+let reportFilterClass = '';
+let reportFilterMarksStatus = '';
+let reportFilterSearch = '';
+
+function updateReportCardsUI(isPublished) {
+  const statusDiv = qs('#reportStatusMessage');
+  if (statusDiv) {
+    statusDiv.style.display = 'block';
+    if (isPublished) {
+      statusDiv.style.background = 'rgba(16, 185, 129, 0.25)';
+      statusDiv.style.border = '1.5px solid #10b981';
+      statusDiv.style.color = '#065f46';
+      statusDiv.innerHTML = `<i class="fas fa-check-circle" style="color: #10b981; font-size: 1.2rem;"></i> <strong>Status: RELEASED &amp; LIVE</strong> — Report Cards &amp; Certificates are published. Students and coordinators can view results and download score cards.`;
+    } else {
+      statusDiv.style.background = 'rgba(239, 68, 68, 0.15)';
+      statusDiv.style.border = '1.5px solid #ef4444';
+      statusDiv.style.color = '#7f1d1d';
+      statusDiv.innerHTML = `<i class="fas fa-lock" style="color: #ef4444; font-size: 1.2rem;"></i> <strong>Status: STOPPED (HIDDEN)</strong> — Results and certificates are currently hidden from students and coordinators. Click "Release" above to publish them.`;
+    }
+  }
+}
+
+async function loadReportCardStats() {
+  try {
+    const res = await fetch(API + '/admin/results/stats', { headers: headers() });
+    const j = await res.json();
+    if (j.success && j.data && j.data.summary) {
+      const s = j.data.summary;
+      if (qs('#reportStatsTotalStudents')) qs('#reportStatsTotalStudents').textContent = s.totalStudents || 0;
+      if (qs('#reportStatsMarksReady')) qs('#reportStatsMarksReady').textContent = `${s.withMarks || 0} (${s.percentage || 0}%)`;
+      if (qs('#reportStatsMarksPending')) qs('#reportStatsMarksPending').textContent = s.pending || 0;
+    }
+  } catch (e) {
+    console.error('Error loading report card stats:', e);
+  }
+}
+
+async function loadReportCardSchools() {
+  try {
+    const res = await fetch(API + '/admin/schools', { headers: headers() });
+    const j = await res.json();
+    if (j.success && Array.isArray(j.data)) {
+      reportSchoolsList = j.data;
+      if (qs('#reportStatsSchoolsCount')) qs('#reportStatsSchoolsCount').textContent = reportSchoolsList.length;
+
+      // Populate Quick Release Select
+      const releaseSelect = qs('#schoolSelectForReportRelease');
+      if (releaseSelect) {
+        releaseSelect.innerHTML = '<option value="">All Schools (Entire Competition)</option>';
+        reportSchoolsList.forEach(sch => {
+          const opt = document.createElement('option');
+          opt.value = sch.schoolName;
+          opt.textContent = `${sch.schoolName} (${sch.coordinatorName})`;
+          releaseSelect.appendChild(opt);
+        });
+      }
+
+      // Populate Table School Filter
+      const tableFilter = qs('#reportSchoolFilter');
+      if (tableFilter) {
+        tableFilter.innerHTML = '<option value="">All Schools</option>';
+        reportSchoolsList.forEach(sch => {
+          const opt = document.createElement('option');
+          opt.value = sch.schoolName;
+          opt.textContent = sch.schoolName;
+          tableFilter.appendChild(opt);
+        });
+      }
+
+      // Render School Overview Cards
+      renderSchoolOverviewCards();
+    }
+  } catch (e) {
+    console.error('Error loading schools for report cards:', e);
+  }
+}
+
+async function renderSchoolOverviewCards() {
+  const container = qs('#reportSchoolsCardsGrid');
+  if (!container) return;
+
+  if (reportSchoolsList.length === 0) {
+    container.innerHTML = '<div style="grid-column: 1/-1; padding: 20px; text-align: center; color: #666;">No participating schools registered yet.</div>';
+    return;
+  }
+
+  // Fetch all students to count per school
+  try {
+    const res = await fetch(API + '/admin/students', { headers: headers() });
+    const j = await res.json();
+    const students = j.success ? (j.data || []) : [];
+
+    container.innerHTML = '';
+    reportSchoolsList.forEach(sch => {
+      const schoolStudents = students.filter(st => (st.schoolName || st.school?.schoolName || '').toLowerCase() === sch.schoolName.toLowerCase());
+      const withMarks = schoolStudents.filter(st => st.marks && Object.values(st.marks).some(m => m !== null && m !== undefined)).length;
+      const pct = schoolStudents.length > 0 ? Math.round((withMarks / schoolStudents.length) * 100) : 0;
+
+      const card = document.createElement('div');
+      card.style.background = 'white';
+      card.style.border = '1.5px solid #e2e8f0';
+      card.style.borderRadius = '10px';
+      card.style.padding = '16px 18px';
+      card.style.boxShadow = '0 4px 10px rgba(0,0,0,0.03)';
+      card.style.display = 'flex';
+      card.style.flexDirection = 'column';
+      card.style.justifyContent = 'space-between';
+      card.style.gap = '12px';
+
+      card.innerHTML = `
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: start; gap: 8px;">
+            <h4 style="margin: 0; color: #1e3a8a; font-size: 1.05rem; font-weight: 700;">
+              <i class="fas fa-school" style="color: #4f46e5;"></i> ${escapeHtml(sch.schoolName)}
+            </h4>
+            <span style="font-size: 0.78rem; font-weight: 700; padding: 3px 8px; border-radius: 999px; background: ${pct === 100 ? '#ecfdf5; color: #047857;' : (pct > 0 ? '#eff6ff; color: #1d4ed8;' : '#fef2f2; color: #b91c1c;')}">
+              ${pct}% Marks Ready
+            </span>
+          </div>
+          <p style="margin: 6px 0 0 0; color: #64748b; font-size: 0.85rem;">
+            Coordinator: <strong style="color: #334155;">${escapeHtml(sch.coordinatorName)}</strong>
+          </p>
+        </div>
+
+        <div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 6px; color: #475569;">
+            <span>Students: <strong>${schoolStudents.length}</strong></span>
+            <span>Marks Entered: <strong style="color: #10b981;">${withMarks}/${schoolStudents.length}</strong></span>
+          </div>
+          <div style="width: 100%; height: 6px; background: #f1f5f9; border-radius: 999px; overflow: hidden;">
+            <div style="width: ${pct}%; height: 100%; background: ${pct === 100 ? '#10b981' : '#3b82f6'}; border-radius: 999px;"></div>
+          </div>
+        </div>
+
+        <button class="btn" onclick="filterReportTableBySchool(decodeURIComponent('${encodeURIComponent(sch.schoolName)}'))" style="width: 100%; background: #f8fafc; border: 1px solid #cbd5e1; color: #1e293b; font-size: 0.88rem; font-weight: 600; padding: 8px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+          <i class="fas fa-filter text-accent"></i> Filter Student Results
+        </button>
+      `;
+      container.appendChild(card);
+    });
+  } catch (err) {
+    console.error('Error rendering school cards:', err);
+  }
+}
+
+function filterReportTableBySchool(schoolName) {
+  reportFilterSchool = schoolName;
+  const select = qs('#reportSchoolFilter');
+  if (select) select.value = schoolName;
+  const quickSelect = qs('#schoolSelectForReportRelease');
+  if (quickSelect) quickSelect.value = schoolName;
+  reportCurrentPage = 1;
+  loadReportCardStudents();
+  qs('#reportStudentsTable')?.scrollIntoView({ behavior: 'smooth' });
+}
+
+async function loadReportCardStudents() {
+  const tbody = qs('#reportStudentsTable tbody');
+  if (!tbody) return;
+
+  tbody.innerHTML = `
+    <tr>
+      <td colspan="11" class="loading">
+        <i class="fas fa-spinner fa-spin"></i>
+        <p>Loading student results...</p>
+      </td>
+    </tr>
+  `;
+
+  try {
+    let url = `${API}/admin/students?`;
+    const params = [];
+    if (reportFilterClass) params.push(`class=${encodeURIComponent(reportFilterClass)}`);
+    if (reportFilterSchool) params.push(`school=${encodeURIComponent(reportFilterSchool)}`);
+    if (reportFilterMarksStatus) params.push(`marks_status=${encodeURIComponent(reportFilterMarksStatus)}`);
+    if (reportFilterSearch) params.push(`search=${encodeURIComponent(reportFilterSearch)}`);
+
+    url += params.join('&');
+
+    const res = await fetch(url, { headers: headers() });
+    const j = await res.json();
+
+    if (!j.success || !Array.isArray(j.data) || j.data.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="11" class="empty">
+            <i class="fas fa-search"></i>
+            <p>No student results found matching your filters</p>
+          </td>
+        </tr>
+      `;
+      renderReportCardPagination(0);
+      return;
+    }
+
+    reportStudentsList = j.data;
+    renderReportCardStudentsTable();
+    renderReportCardPagination(reportStudentsList.length);
+  } catch (e) {
+    console.error('Error loading report card students:', e);
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="11" class="error">
+          <i class="fas fa-exclamation-triangle"></i>
+          <p>Failed to load student results</p>
+        </td>
+      </tr>
+    `;
+  }
+}
+
+function renderReportCardStudentsTable() {
+  const tbody = qs('#reportStudentsTable tbody');
+  if (!tbody) return;
+
+  const startIdx = (reportCurrentPage - 1) * reportPerPage;
+  const pageStudents = reportStudentsList.slice(startIdx, startIdx + reportPerPage);
+
+  tbody.innerHTML = '';
+
+  pageStudents.forEach(st => {
+    const marks = st.marks || {};
+    const tr = document.createElement('tr');
+
+    const eng = marks.english !== null && marks.english !== undefined ? marks.english : '—';
+    const math = marks.math !== null && marks.math !== undefined ? marks.math : '—';
+    const sci = marks.science !== null && marks.science !== undefined ? marks.science : '—';
+    const cs = marks.cs !== null && marks.cs !== undefined ? marks.cs : '—';
+
+    // Calculate total & percentage
+    const validScores = [marks.english, marks.math, marks.science, marks.cs].filter(m => m !== null && m !== undefined);
+    let totalScore = '—';
+    let isReady = false;
+
+    if (validScores.length > 0) {
+      const sum = validScores.reduce((a, b) => a + b, 0);
+      const maxMarks = validScores.length * 60;
+      const pct = ((sum / maxMarks) * 100).toFixed(1);
+      totalScore = `<strong>${sum}</strong> <span style="font-size:0.8rem;color:#64748b;">/${maxMarks} (${pct}%)</span>`;
+      isReady = true;
+    }
+
+    const studentDbId = st._id || st.id;
+    const schoolName = st.schoolName || st.school?.schoolName || '—';
+
+    tr.innerHTML = `
+      <td><strong>${escapeHtml(st.name)}</strong><br><small style="color: #64748b;">${escapeHtml(st.studentId || '')}</small></td>
+      <td><span style="font-family: monospace; font-weight: 700; color: #1e40af;">${escapeHtml(st.rollNumber || 'Not Generated')}</span></td>
+      <td>${escapeHtml(schoolName)}</td>
+      <td><span class="badge" style="background: #eff6ff; color: #1d4ed8; font-weight: 700;">Class ${escapeHtml(st.class)}</span></td>
+      <td style="text-align: center; ${eng !== '—' ? 'font-weight: 700; color: #047857;' : 'color: #94a3b8;'}">${eng}</td>
+      <td style="text-align: center; ${math !== '—' ? 'font-weight: 700; color: #047857;' : 'color: #94a3b8;'}">${math}</td>
+      <td style="text-align: center; ${sci !== '—' ? 'font-weight: 700; color: #047857;' : 'color: #94a3b8;'}">${sci}</td>
+      <td style="text-align: center; ${cs !== '—' ? 'font-weight: 700; color: #047857;' : 'color: #94a3b8;'}">${cs}</td>
+      <td style="text-align: center;">${totalScore}</td>
+      <td>
+        ${isReady 
+          ? `<span style="background: #ecfdf5; color: #047857; padding: 4px 8px; border-radius: 4px; font-size: 0.82rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;"><i class="fas fa-check-circle"></i> Marks Ready</span>`
+          : `<span style="background: #fffbeb; color: #b45309; padding: 4px 8px; border-radius: 4px; font-size: 0.82rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;"><i class="fas fa-clock"></i> Pending</span>`
+        }
+      </td>
+      <td>
+        <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+          <a href="/api/public/results/download-report-card/${studentDbId}" target="_blank" class="btn" style="background: #2563eb; color: white; padding: 5px 10px; font-size: 0.8rem; border-radius: 4px; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
+            <i class="fas fa-file-pdf"></i> Score Card
+          </a>
+          <a href="/api/public/results/download-certificate/${studentDbId}" target="_blank" class="btn" style="background: #10b981; color: white; padding: 5px 10px; font-size: 0.8rem; border-radius: 4px; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
+            <i class="fas fa-award"></i> Certificate
+          </a>
+        </div>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function renderReportCardPagination(totalItems) {
+  const pager = qs('#reportStudentPager');
+  if (!pager) return;
+
+  const totalPages = Math.ceil(totalItems / reportPerPage);
+  if (totalPages <= 1) {
+    pager.innerHTML = totalItems > 0 ? `<div style="text-align: center; color: #64748b; font-size: 0.88rem; width: 100%;">Showing all <strong>${totalItems}</strong> student results</div>` : '';
+    return;
+  }
+
+  let html = `
+    <button class="btn" ${reportCurrentPage === 1 ? 'disabled' : ''} onclick="changeReportPage(${reportCurrentPage - 1})">
+      <i class="fas fa-chevron-left"></i> Prev
+    </button>
+    <span style="display: flex; align-items: center; font-size: 0.9rem; font-weight: 600; color: #475569; padding: 0 10px;">
+      Page ${reportCurrentPage} of ${totalPages} (Total: ${totalItems} students)
+    </span>
+    <button class="btn" ${reportCurrentPage === totalPages ? 'disabled' : ''} onclick="changeReportPage(${reportCurrentPage + 1})">
+      Next <i class="fas fa-chevron-right"></i>
+    </button>
+  `;
+  pager.innerHTML = html;
+}
+
+function changeReportPage(page) {
+  reportCurrentPage = page;
+  renderReportCardStudentsTable();
+  renderReportCardPagination(reportStudentsList.length);
+}
+
 async function releaseAll() {
-  if (!confirm('Release both Report Cards & Certificates to all students? This will make them visible in their dashboard.')) {
+  const schoolSelect = qs('#schoolSelectForReportRelease');
+  const targetSchool = schoolSelect ? schoolSelect.value : '';
+  const confirmMsg = targetSchool 
+    ? `Release Report Cards & Certificates for students of "${targetSchool}"? This will make them visible to students & coordinators.`
+    : 'Release Report Cards & Certificates for ALL students across ALL schools? This will make them visible to students & coordinators.';
+
+  if (!confirm(confirmMsg)) {
     return;
   }
   
-  const btn = qs('#releaseAllBtn');
-  btn.disabled = true;
-  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+  const btn = qs('#releaseReportCardsAllBtn') || qs('#releaseAllBtn');
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+  }
   
   try {
-    // Release both report cards and certificates
     const resReports = await fetch(API + '/admin/results/release-report-cards', {
       method: 'POST',
       headers: headers()
     });
     
-    const resCerts = await fetch(API + '/admin/results/release-certificates', {
-      method: 'POST',
-      headers: headers()
-    });
-    
     const j1 = await resReports.json();
-    const j2 = await resCerts.json();
-    const statusDiv = qs('#reportStatusMessage');
     
-    if (j1.success && j2.success) {
-      statusDiv.style.display = 'block';
-      statusDiv.style.background = 'rgba(16, 185, 129, 0.3)';
-      statusDiv.style.color = '#065f46';
-      statusDiv.innerHTML = `<i class="fas fa-check-circle"></i> ✓ Report Cards & Certificates Released Successfully!`;
+    if (j1.success) {
+      updateReportCardsUI(true);
+      loadReportCardStats();
+      loadReportCardStudents();
+      alert('✓ Report Cards & Certificates Released Successfully! Students & coordinators can now view and download them.');
     } else {
-      statusDiv.style.display = 'block';
-      statusDiv.style.background = 'rgba(239, 68, 68, 0.3)';
-      statusDiv.style.color = '#7f1d1d';
-      statusDiv.innerHTML = `<i class="fas fa-times-circle"></i> ✗ ${j1.message || j2.message}`;
+      alert('Failed: ' + (j1.message || 'Error releasing documents'));
     }
   } catch (error) {
     console.error('Release Error:', error);
-    qs('#reportStatusMessage').style.display = 'block';
-    qs('#reportStatusMessage').style.background = 'rgba(239, 68, 68, 0.3)';
-    qs('#reportStatusMessage').style.color = '#7f1d1d';
-    qs('#reportStatusMessage').innerHTML = `<i class="fas fa-times-circle"></i> ✗ Error releasing documents`;
+    alert('Error releasing documents: ' + error.message);
   } finally {
-    btn.disabled = false;
-    btn.innerHTML = '<i class="fas fa-unlock"></i> Release';
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-unlock"></i> Release Results & Certificates';
+    }
   }
 }
 
 async function stopAll() {
-  if (!confirm('Stop Report Cards & Certificates? Students will no longer be able to see results.')) {
+  if (!confirm('Stop Report Cards & Certificates? Results will be hidden from students and coordinators.')) {
     return;
   }
   
   const btn = qs('#stopAllBtn');
-  btn.disabled = true;
-  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+  }
   
   try {
-    // Stop both report cards and certificates
     const resReports = await fetch(API + '/admin/results/stop-report-cards', {
       method: 'POST',
       headers: headers()
     });
     
-    const resCerts = await fetch(API + '/admin/results/stop-certificates', {
-      method: 'POST',
-      headers: headers()
-    });
-    
     const j1 = await resReports.json();
-    const j2 = await resCerts.json();
-    const statusDiv = qs('#reportStatusMessage');
     
-    if (j1.success && j2.success) {
-      statusDiv.style.display = 'block';
-      statusDiv.style.background = 'rgba(239, 68, 68, 0.3)';
-      statusDiv.style.color = '#7f1d1d';
-      statusDiv.innerHTML = `<i class="fas fa-lock"></i> ✓ Report Cards & Certificates Stopped`;
+    if (j1.success) {
+      updateReportCardsUI(false);
+      loadReportCardStats();
+      loadReportCardStudents();
+      alert('✓ Report Cards & Certificates Stopped Successfully');
     } else {
-      statusDiv.style.display = 'block';
-      statusDiv.style.background = 'rgba(239, 68, 68, 0.3)';
-      statusDiv.style.color = '#7f1d1d';
-      statusDiv.innerHTML = `<i class="fas fa-times-circle"></i> ✗ ${j1.message || j2.message}`;
+      alert('Failed: ' + (j1.message || 'Error stopping documents'));
     }
   } catch (error) {
     console.error('Stop Error:', error);
-    qs('#reportStatusMessage').style.display = 'block';
-    qs('#reportStatusMessage').style.background = 'rgba(239, 68, 68, 0.3)';
-    qs('#reportStatusMessage').style.color = '#7f1d1d';
-    qs('#reportStatusMessage').innerHTML = `<i class="fas fa-times-circle"></i> ✗ Error stopping documents`;
+    alert('Error stopping documents: ' + error.message);
   } finally {
-    btn.disabled = false;
-    btn.innerHTML = '<i class="fas fa-lock"></i> Stop';
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-lock"></i> Stop / Hide Results';
+    }
   }
 }
 
-// Attach event listeners
+// Attach Report Cards event listeners
 if (qs('#releaseReportCardsAllBtn')) {
   qs('#releaseReportCardsAllBtn').onclick = releaseAll;
 }
 if (qs('#stopAllBtn')) {
   qs('#stopAllBtn').onclick = stopAll;
+}
+
+if (qs('#filterSchoolReportBtn')) {
+  qs('#filterSchoolReportBtn').onclick = () => {
+    const schoolVal = qs('#schoolSelectForReportRelease').value;
+    filterReportTableBySchool(schoolVal);
+  };
+}
+
+if (qs('#reportSchoolFilter')) {
+  qs('#reportSchoolFilter').onchange = (e) => {
+    reportFilterSchool = e.target.value;
+    if (qs('#schoolSelectForReportRelease')) qs('#schoolSelectForReportRelease').value = reportFilterSchool;
+    reportCurrentPage = 1;
+    loadReportCardStudents();
+  };
+}
+
+if (qs('#reportClassFilter')) {
+  qs('#reportClassFilter').onchange = (e) => {
+    reportFilterClass = e.target.value;
+    reportCurrentPage = 1;
+    loadReportCardStudents();
+  };
+}
+
+if (qs('#reportMarksStatusFilter')) {
+  qs('#reportMarksStatusFilter').onchange = (e) => {
+    reportFilterMarksStatus = e.target.value;
+    reportCurrentPage = 1;
+    loadReportCardStudents();
+  };
+}
+
+if (qs('#reportSearchFilter')) {
+  let searchTimer;
+  qs('#reportSearchFilter').oninput = (e) => {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(() => {
+      reportFilterSearch = e.target.value.trim();
+      reportCurrentPage = 1;
+      loadReportCardStudents();
+    }, 350);
+  };
+}
+
+if (qs('#refreshReportStudentsBtn')) {
+  qs('#refreshReportStudentsBtn').onclick = () => {
+    loadReportCardStats();
+    loadReportCardSchools();
+    loadReportCardStudents();
+  };
 }
 
 // Initialize
@@ -4167,6 +5138,9 @@ loadResultEntryStats();
 loadResultsForEntry();
 loadEditStudentStats();
 loadStudentsForEditing();
+loadReportCardStats();
+loadReportCardSchools();
+loadReportCardStudents();
 </script>
 </body>
 </html>

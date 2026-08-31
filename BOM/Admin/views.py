@@ -114,11 +114,15 @@ def api_registration_status_update(request, registration_id):
 
 @jwt_required(roles=[User.ADMIN])
 def api_students(request):
+    from django.db.models import Q
     qs = Student.objects.select_related("coordinator", "coordinator__user", "coordinator__payment").order_by("student_class", "name")
     cls = request.GET.get("class")
     venue = request.GET.get("venue")
     subject = request.GET.get("subject")
     status = request.GET.get("status")
+    school = request.GET.get("school") or request.GET.get("school_id")
+    search = request.GET.get("search")
+    marks_status = request.GET.get("marks_status")
 
     if cls:
         qs = qs.filter(student_class=cls)
@@ -128,6 +132,31 @@ def api_students(request):
         qs = qs.filter(subjects__icontains=subject)
     if status:
         qs = qs.filter(coordinator__payment__status=status)
+    if school:
+        if str(school).isdigit():
+            qs = qs.filter(coordinator_id=int(school))
+        else:
+            qs = qs.filter(coordinator__school_name__icontains=school)
+    if search:
+        qs = qs.filter(
+            Q(name__icontains=search) |
+            Q(roll_number__icontains=search) |
+            Q(student_id__icontains=search)
+        )
+    if marks_status == "completed":
+        qs = qs.filter(
+            Q(english_marks__isnull=False) |
+            Q(math_marks__isnull=False) |
+            Q(science_marks__isnull=False) |
+            Q(cs_marks__isnull=False)
+        )
+    elif marks_status == "pending":
+        qs = qs.filter(
+            english_marks__isnull=True,
+            math_marks__isnull=True,
+            science_marks__isnull=True,
+            cs_marks__isnull=True
+        )
 
     data = []
     for student in qs:
@@ -138,6 +167,7 @@ def api_students(request):
             item["status"] = student.coordinator.payment.status
         data.append(item)
     return JsonResponse({"success": True, "data": data, "pagination": {"total": qs.count(), "page": 1}})
+
 
 
 @csrf_exempt
@@ -224,6 +254,8 @@ def api_registration_open(request):
     )
 
 
+import threading
+
 @csrf_exempt
 @jwt_required(roles=[User.ADMIN])
 def api_publish_results(request):
@@ -232,10 +264,17 @@ def api_publish_results(request):
     settings.results_published = True
     settings.save(update_fields=["results_published", "updated_at"])
     if not was_published:
-        for profile in CoordinatorProfile.objects.select_related("user").all():
-            if profile.user and profile.user.email:
-                send_results_published_email(request, profile)
+        def _send_all_emails():
+            for profile in CoordinatorProfile.objects.select_related("user").all():
+                if profile.user and profile.user.email:
+                    try:
+                        send_results_published_email(request, profile)
+                    except Exception:
+                        pass
+        threading.Thread(target=_send_all_emails, daemon=True).start()
     return JsonResponse({"success": True, "message": "Results published successfully.", "data": {"resultsPublished": settings.results_published}})
+
+
 
 
 @csrf_exempt

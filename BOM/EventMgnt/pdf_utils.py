@@ -57,7 +57,10 @@ def generate_student_pdf(student, kind, request=None):
 
     payload = student_payload(student)
     if request:
-        payload["verifyBaseUrl"] = request.build_absolute_uri("/")
+        try:
+            payload["verifyBaseUrl"] = request.build_absolute_uri("/")
+        except Exception:
+            payload["verifyBaseUrl"] = "https://brainomath.online/"
 
     with tempfile.TemporaryDirectory() as tmpdir:
         tmpdir = Path(tmpdir)

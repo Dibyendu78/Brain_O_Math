@@ -22,7 +22,7 @@ from django.urls import include, path
 from Admin import views as admin_views
 from Corrdinator import views as coordinator_views
 from EventMgnt.views import verify_page
-from Registartion.views import registration_status
+from Registartion import views as registartion_views
 
 
 def home(request):
@@ -39,6 +39,8 @@ urlpatterns = [
     path("", home, name="home"),
     path("syllabus/", syllabus_view, name="syllabus"),
     path("syllabus.html", syllabus_view, name="syllabus_html"),
+    path("results/", coordinator_views.result_view, name="results"),
+    path("results.html", coordinator_views.result_view),
     path("django-admin/", django_admin.site.urls),
     path("account/", include("Account.urls")),
     path("coordinator/", include("Corrdinator.urls")),
@@ -51,13 +53,21 @@ urlpatterns = [
     path("verify.html", verify_page),
     path("verify/", verify_page, name="verify"),
 
-    path("api/public/registration-status", registration_status),
+    path("api/public/registration-status", registartion_views.registration_status),
+    path("api/public/student-result", registartion_views.api_public_student_result),
+    path("api/public/results/download-report-card/<int:student_id>", registartion_views.api_public_download_report_card),
+    path("api/public/results/download-certificate/<int:student_id>", registartion_views.api_public_download_certificate),
+    path("coordinator/report-card/<int:student_id>", registartion_views.api_public_download_report_card),
+    path("coordinator/certificate/<int:student_id>", registartion_views.api_public_download_certificate),
+    path("admin/report-card/<int:student_id>", registartion_views.api_public_download_report_card),
+    path("admin/certificate/<int:student_id>", registartion_views.api_public_download_certificate),
     path("api/coordinator/signup", coordinator_views.api_signup),
     path("api/coordinator/login", coordinator_views.api_login),
     path("api/coordinator/forgot-password", coordinator_views.api_forgot_password),
     path("api/coordinator/change-password", coordinator_views.api_change_password),
     path("api/coordinator/registration", coordinator_views.api_registration),
     path("api/coordinator/students", coordinator_views.api_students),
+
     path("api/coordinator/students/<int:index>", coordinator_views.api_students),
     path("api/coordinator/students/edit/<int:student_id>", coordinator_views.api_student_by_id),
     path("api/coordinator/payment", coordinator_views.api_payment),
