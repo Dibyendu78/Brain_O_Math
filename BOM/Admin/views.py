@@ -125,25 +125,28 @@ def api_students(request):
     marks_status = request.GET.get("marks_status")
 
     if cls:
-        qs = qs.filter(student_class=cls)
+        qs = qs.filter(student_class=str(cls).strip())
     if venue:
-        qs = qs.filter(venue=venue)
+        qs = qs.filter(venue__iexact=venue.strip())
     if subject:
-        qs = qs.filter(subjects__icontains=subject)
+        qs = qs.filter(subjects__icontains=subject.strip())
     if status:
-        qs = qs.filter(coordinator__payment__status=status)
+        qs = qs.filter(coordinator__payment__status=status.strip())
     if school:
-        if str(school).isdigit():
-            qs = qs.filter(coordinator_id=int(school))
+        school_str = str(school).strip()
+        if school_str.isdigit():
+            qs = qs.filter(coordinator_id=int(school_str))
         else:
-            qs = qs.filter(coordinator__school_name__icontains=school)
+            qs = qs.filter(coordinator__school_name__icontains=school_str)
     if search:
+        search_str = search.strip()
         qs = qs.filter(
-            Q(name__icontains=search) |
-            Q(roll_number__icontains=search) |
-            Q(student_id__icontains=search)
+            Q(name__icontains=search_str) |
+            Q(roll_number__icontains=search_str) |
+            Q(student_id__icontains=search_str) |
+            Q(coordinator__school_name__icontains=search_str)
         )
-    if marks_status == "completed":
+    if marks_status in ("completed", "ready"):
         qs = qs.filter(
             Q(english_marks__isnull=False) |
             Q(math_marks__isnull=False) |
@@ -506,7 +509,16 @@ def _optional_int(value):
 
 @jwt_required(roles=[User.ADMIN])
 def api_schools(request):
-    return JsonResponse({"success": True, "data": [_profile_dict(profile) for profile in CoordinatorProfile.objects.all()]})
+    seen = set()
+    schools = []
+    for profile in CoordinatorProfile.objects.select_related("user").order_by("school_name"):
+        sname = (profile.school_name or "").strip()
+        if sname and sname.lower() not in seen:
+            seen.add(sname.lower())
+            item = _profile_dict(profile)
+            item["schoolName"] = sname
+            schools.append(item)
+    return JsonResponse({"success": True, "data": schools})
 
 
 @csrf_exempt

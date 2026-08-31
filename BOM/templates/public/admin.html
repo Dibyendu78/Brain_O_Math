@@ -2304,6 +2304,17 @@ select:focus {
           </div>
 
           <div class="filter-group">
+            <i class="fas fa-book"></i>
+            <select id="reportSubjectFilter">
+              <option value="">All Subjects</option>
+              <option value="english">English</option>
+              <option value="math">Mathematics</option>
+              <option value="science">Science</option>
+              <option value="cs">Computer Science</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
             <i class="fas fa-check-circle"></i>
             <select id="reportMarksStatusFilter">
               <option value="">All Marks Status</option>
@@ -4682,6 +4693,7 @@ let reportCurrentPage = 1;
 const reportPerPage = 10;
 let reportFilterSchool = '';
 let reportFilterClass = '';
+let reportFilterSubject = '';
 let reportFilterMarksStatus = '';
 let reportFilterSearch = '';
 
@@ -4855,6 +4867,7 @@ async function loadReportCardStudents() {
     const params = [];
     if (reportFilterClass) params.push(`class=${encodeURIComponent(reportFilterClass)}`);
     if (reportFilterSchool) params.push(`school=${encodeURIComponent(reportFilterSchool)}`);
+    if (reportFilterSubject) params.push(`subject=${encodeURIComponent(reportFilterSubject)}`);
     if (reportFilterMarksStatus) params.push(`marks_status=${encodeURIComponent(reportFilterMarksStatus)}`);
     if (reportFilterSearch) params.push(`search=${encodeURIComponent(reportFilterSearch)}`);
 
@@ -5096,6 +5109,14 @@ if (qs('#reportSchoolFilter')) {
 if (qs('#reportClassFilter')) {
   qs('#reportClassFilter').onchange = (e) => {
     reportFilterClass = e.target.value;
+    reportCurrentPage = 1;
+    loadReportCardStudents();
+  };
+}
+
+if (qs('#reportSubjectFilter')) {
+  qs('#reportSubjectFilter').onchange = (e) => {
+    reportFilterSubject = e.target.value;
     reportCurrentPage = 1;
     loadReportCardStudents();
   };
