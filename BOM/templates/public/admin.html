@@ -4957,10 +4957,10 @@ function renderReportCardStudentsTable() {
       </td>
       <td>
         <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-          <a href="/api/public/results/download-report-card/${studentDbId}" target="_blank" class="btn" style="background: #2563eb; color: white; padding: 5px 10px; font-size: 0.8rem; border-radius: 4px; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
+          <a href="/api/public/results/download-report-card/${studentDbId}?token=${token}" target="_blank" class="btn" style="background: #2563eb; color: white; padding: 5px 10px; font-size: 0.8rem; border-radius: 4px; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
             <i class="fas fa-file-pdf"></i> Score Card
           </a>
-          <a href="/api/public/results/download-certificate/${studentDbId}" target="_blank" class="btn" style="background: #10b981; color: white; padding: 5px 10px; font-size: 0.8rem; border-radius: 4px; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
+          <a href="/api/public/results/download-certificate/${studentDbId}?token=${token}" target="_blank" class="btn" style="background: #10b981; color: white; padding: 5px 10px; font-size: 0.8rem; border-radius: 4px; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
             <i class="fas fa-award"></i> Certificate
           </a>
         </div>

@@ -1,8 +1,29 @@
 from django.db.models import Q
 from django.http import HttpResponse, JsonResponse
 
+from Account.authentication import decode_access_token
+from Account.decorators import get_token_from_request
+from Account.models import User
 from EventMgnt.pdf_utils import PdfGenerationError, clean_roll_number, generate_student_pdf
 from Registartion.models import RegistrationSettings, Student
+
+
+def _is_admin_requester(request):
+    token = get_token_from_request(request)
+    if token:
+        try:
+            payload = decode_access_token(token)
+            if payload.get("role") == User.ADMIN:
+                return True
+            user = User.objects.filter(id=payload.get("user_id"), is_active=True).first()
+            if user and (user.role == User.ADMIN or user.is_superuser):
+                return True
+        except Exception:
+            pass
+    if hasattr(request, "user") and getattr(request.user, "is_authenticated", False):
+        if getattr(request.user, "role", None) == User.ADMIN or getattr(request.user, "is_superuser", False):
+            return True
+    return False
 
 
 def registration_status(request):
@@ -25,7 +46,7 @@ def registration_status(request):
 
 def api_public_student_result(request):
     settings = RegistrationSettings.current()
-    if not settings.results_published:
+    if not settings.results_published and not _is_admin_requester(request):
         return JsonResponse(
             {"success": False, "message": "Results for Brain-O-Math Olympiad are not published yet."},
             status=403,
@@ -88,7 +109,7 @@ def api_public_student_result(request):
 
 def api_public_download_report_card(request, student_id):
     settings = RegistrationSettings.current()
-    if not settings.results_published:
+    if not settings.results_published and not _is_admin_requester(request):
         return JsonResponse(
             {"success": False, "message": "Results are not published yet."},
             status=403,
@@ -115,7 +136,7 @@ def api_public_download_report_card(request, student_id):
 
 def api_public_download_certificate(request, student_id):
     settings = RegistrationSettings.current()
-    if not settings.results_published:
+    if not settings.results_published and not _is_admin_requester(request):
         return JsonResponse(
             {"success": False, "message": "Results are not published yet."},
             status=403,
