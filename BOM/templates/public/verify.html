@@ -542,43 +542,10 @@
   </div>
 
   <script>
-    const q = new URLSearchParams(location.search);
     const infobox = document.getElementById('infobox');
     const schoolbox = document.getElementById('schoolbox');
     const resultsContainer = document.getElementById('resultsCardContainer');
     const resultsPending = document.getElementById('resultsPendingNotice');
-
-    const dataFromUrl = q.get('data');
-    const rollFromUrl = q.get('rollNumber') || q.get('roll') || q.get('query') || q.get('studentId');
-
-    if (dataFromUrl) {
-      try {
-        const obj = decodeBase64UrlJson(dataFromUrl);
-        if (obj) {
-          renderFromSnapshot(obj);
-          checkLiveResults(obj);
-        } else {
-          throw new Error('Empty data');
-        }
-      } catch (e) {
-        console.error('Failed to decode QR data:', e);
-        const fallbackRoll = (location.href.match(/26\d{8}/) || location.href.match(/BOM[A-Z0-9]+/i) || [])[0];
-        if (fallbackRoll) {
-          checkLiveResults({ rollNumber: fallbackRoll });
-        } else {
-          infobox.innerHTML = '<p class="empty-state"><i class="fas fa-exclamation-triangle" style="color:#ef4444;font-size:1.5rem;margin-bottom:8px;display:block;"></i>Invalid QR data or corrupted link. Please scan again.</p>';
-        }
-      }
-    } else if (rollFromUrl) {
-      checkLiveResults({ rollNumber: rollFromUrl });
-    } else {
-      const fallbackRoll = (location.href.match(/26\d{8}/) || location.href.match(/BOM[A-Z0-9]+/i) || [])[0];
-      if (fallbackRoll) {
-        checkLiveResults({ rollNumber: fallbackRoll });
-      } else {
-        infobox.innerHTML = '<p class="empty-state"><i class="fas fa-qrcode" style="color:var(--primary);font-size:1.5rem;margin-bottom:8px;display:block;"></i>No QR data received. Please scan the Admit Card or Score Card QR code.</p>';
-      }
-    }
 
     const subjectMap = {
       'english': 'English',
@@ -746,7 +713,11 @@
       if (!s) return null;
       s = String(s).trim();
 
-      // Case 1: Plain JSON object string
+      try {
+        s = decodeURIComponent(s);
+      } catch (e) {}
+
+      // Case 1: Plain JSON string
       if (s.startsWith('{') && s.endsWith('}')) {
         try {
           return JSON.parse(s);
@@ -759,8 +730,8 @@
       }
 
       // Case 3: Base64 / Base64URL string
-      // URLSearchParams converts '+' to ' ' -> replace ' ' with '+'
       let clean = s.replace(/ /g, '+').replace(/-/g, '+').replace(/_/g, '/');
+      clean = clean.replace(/[^A-Za-z0-9+/=]/g, '');
       while (clean.length % 4 !== 0) {
         clean += '=';
       }
@@ -771,24 +742,34 @@
         for (let i = 0; i < bin.length; i++) {
           bytes[i] = bin.charCodeAt(i);
         }
-        return JSON.parse(new TextDecoder('utf-8').decode(bytes));
-      } catch (e1) {
+        const text = new TextDecoder('utf-8').decode(bytes);
+
         try {
-          const bin = atob(clean);
-          return JSON.parse(decodeURIComponent(escape(bin)));
-        } catch (e2) {
-          try {
-            return JSON.parse(atob(clean));
-          } catch (e3) {
-            // Case 4: Fallback search for embedded roll number or student ID inside raw string
-            const rollMatch = clean.match(/26\d{8}/) || clean.match(/BOM[A-Z0-9]+/i);
-            if (rollMatch) {
-              return { rollNumber: rollMatch[0] };
-            }
-            throw new Error('Failed to parse embedded QR data');
+          return JSON.parse(text);
+        } catch (e1) {
+          const match = text.match(/\{[\s\S]*?\}(?=[^\}]*$)/) || text.match(/\{[\s\S]*?\}/);
+          if (match) {
+            return JSON.parse(match[0]);
+          }
+          const rollMatch = text.match(/26\d{8}/) || text.match(/BOM[A-Z0-9]+/i);
+          if (rollMatch) {
+            return { rollNumber: rollMatch[0], studentId: rollMatch[0] };
           }
         }
+      } catch (e) {
+        try {
+          const bin = atob(clean);
+          const decoded = decodeURIComponent(escape(bin));
+          return JSON.parse(decoded);
+        } catch (e2) {}
       }
+
+      const rollMatch = s.match(/26\d{8}/) || s.match(/BOM[A-Z0-9]+/i);
+      if (rollMatch) {
+        return { rollNumber: rollMatch[0], studentId: rollMatch[0] };
+      }
+
+      return null;
     }
 
     function escapeHtml(s) {
@@ -796,6 +777,43 @@
       return String(s).replace(/[&<>"']/g, function(c){
         return {'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":"&#39;"}[c];
       });
+    }
+
+    // --- Page Initialization ---
+    const rawUrl = location.href;
+    const q = new URLSearchParams(location.search);
+    const dataFromUrl = q.get('data');
+    const rollFromUrl = q.get('rollNumber') || q.get('roll') || q.get('query') || q.get('studentId');
+
+    let studentObj = null;
+
+    if (dataFromUrl) {
+      try {
+        studentObj = decodeBase64UrlJson(dataFromUrl);
+      } catch (e) {
+        console.warn('Decode error:', e);
+      }
+    }
+
+    if (!studentObj && rollFromUrl) {
+      studentObj = { rollNumber: rollFromUrl, studentId: rollFromUrl };
+    }
+
+    // Fallback scan of the raw URL
+    if (!studentObj) {
+      const urlRoll = (rawUrl.match(/(26\d{8})/i) || rawUrl.match(/(BOM[A-Z0-9]{6,12})/i) || [])[0];
+      if (urlRoll) {
+        studentObj = { rollNumber: urlRoll, studentId: urlRoll };
+      }
+    }
+
+    if (studentObj) {
+      if (studentObj.name) {
+        renderFromSnapshot(studentObj);
+      }
+      checkLiveResults(studentObj);
+    } else {
+      infobox.innerHTML = '<p class="empty-state"><i class="fas fa-qrcode" style="color:var(--primary);font-size:1.6rem;margin-bottom:10px;display:block;"></i>No QR data detected. Please scan the Admit Card or Score Card QR code.</p>';
     }
   </script>
 </body>
