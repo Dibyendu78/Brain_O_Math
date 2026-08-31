@@ -94,7 +94,6 @@ class AdmitCardGenerator {
     if (m === 'math' || m === 'mathematics') return 'Mathematics';
     if (m === 'science') return 'Science';
     if (m === 'cs' || m === 'computer science' || m === 'computer_science') return 'Computer Science';
-    if (m === 'both') return 'Mathematics & Science';
     return s;
   }
 
@@ -189,111 +188,97 @@ class AdmitCardGenerator {
     // rather than limiting it to the space beside the logo.
     doc.text('ADMIT CARD', leftX, doc.y + 6, { width: contentW, align: 'center' });
 
-    doc.moveDown(1.5);
-    const contentStartY = doc.y;
+    doc.moveDown(1.2);
+    const contentStartY = Math.round(doc.y);
 
-    // Colorful section divider line
-    doc.strokeColor('#3b82f6').lineWidth(2).moveTo(leftX, doc.y).lineTo(this.pageWidth - this.margin, doc.y).stroke();
-    doc.moveDown(0.3);
+    // Section divider line
+    doc.strokeColor('#3b82f6').lineWidth(2).moveTo(leftX, contentStartY - 4).lineTo(this.pageWidth - this.margin, contentStartY - 4).stroke();
 
-    // LEFT COLUMN: Student Info (with subtle background)
-    // Keep the complete student-information section inside its blue panel,
-    // including the downloaded timestamp.
-    doc.rect(leftX - 5, doc.y - 5, leftColW + 10, 260).fillColor('#f0f9ff').fill();
+    const panelsHeight = 225;
 
-    doc.fontSize(this.labelSize).font('Helvetica-Bold').fillColor('#1e40af').text('Name of Student', leftX);
-    doc.fontSize(this.valueSize).font('Helvetica').fillColor('#000000').text((student.name || 'N/A').toUpperCase(), leftX, doc.y + 2, { width: leftColW });
-    doc.moveDown(0.7);
+    // LEFT COLUMN: Student Info Panel
+    doc.save()
+      .roundedRect(leftX - 5, contentStartY, leftColW + 10, panelsHeight, 6)
+      .fillColor('#f0f9ff')
+      .fill()
+      .strokeColor('#bfdbfe')
+      .lineWidth(1)
+      .stroke()
+      .restore();
 
-    doc.fontSize(this.labelSize).font('Helvetica-Bold').fillColor('#1e40af').text('Institution Name');
-    doc.fontSize(this.valueSize).font('Helvetica').fillColor('#000000').text(coordinator.schoolName || (student.school?.schoolName) || 'N/A', leftX, doc.y + 2, { width: leftColW });
-    doc.moveDown(1.0);
+    let infoY = contentStartY + 8;
+    const infoLeft = leftX + 4;
+    const infoColW = leftColW - 4;
 
-    // Inline fields (left column) with colored labels
+    doc.fontSize(9.5).font('Helvetica-Bold').fillColor('#1e40af').text('Name of Student', infoLeft, infoY);
+    infoY += 13;
+    doc.fontSize(10).font('Helvetica-Bold').fillColor('#0f172a').text((student.name || 'N/A').toUpperCase(), infoLeft, infoY, { width: infoColW });
+    infoY += 16;
+
+    doc.fontSize(9.5).font('Helvetica-Bold').fillColor('#1e40af').text('Institution Name', infoLeft, infoY);
+    infoY += 13;
+    doc.fontSize(9).font('Helvetica').fillColor('#0f172a').text(coordinator.schoolName || (student.school?.schoolName) || 'N/A', infoLeft, infoY, { width: infoColW, lineBreak: false });
+    infoY += 17;
+
     const rollNumber = String(student.rollNumber || student._id || 'N/A').replace(/^BOM/, '');
-    this._drawInlineField(doc, 'Roll Number:', rollNumber, leftX, '#1e40af');
-    this._drawInlineField(doc, 'Class:', String(student.class || 'N/A'), leftX, '#1e40af');
-    this._drawInlineField(doc, 'Category:', this.getCategoryName(student.category), leftX, '#1e40af');
-    this._drawInlineField(doc, 'Registration Number:', String(student.registrationId || 'N/A'), leftX, '#1e40af');
+    
+    const drawRow = (label, val) => {
+      doc.fontSize(9).font('Helvetica-Bold').fillColor('#1e40af').text(label, infoLeft, infoY, { continued: true });
+      doc.fontSize(9).font('Helvetica').fillColor('#0f172a').text(' ' + val);
+      infoY += 15;
+    };
 
-    doc.fontSize(this.labelSize).font('Helvetica-Bold').fillColor('#1e40af').text('Enrolled Subject(s):', leftX);
-    doc.fontSize(this.valueSize).font('Helvetica').fillColor('#000000').text(this.formatSubjects(student.subjects), leftX, doc.y + 2, { width: leftColW });
-    doc.moveDown(0.5);
+    drawRow('Roll Number:', rollNumber);
+    drawRow('Class:', String(student.class || 'N/A'));
+    drawRow('Category:', this.getCategoryName(student.category));
+    drawRow('Registration No:', String(student.registrationId || 'N/A'));
+    
+    doc.fontSize(9).font('Helvetica-Bold').fillColor('#1e40af').text('Enrolled Subject(s):', infoLeft, infoY);
+    infoY += 13;
+    doc.fontSize(8.5).font('Helvetica').fillColor('#0f172a').text(this.formatSubjects(student.subjects), infoLeft, infoY, { width: infoColW });
+    infoY += 16;
 
-    this._drawInlineField(doc, 'Downloaded On:', `${istTimeStr} IST`, leftX, '#1e40af');
+    drawRow('Downloaded On:', `${istTimeStr} IST`);
 
-    const leftColumnEndY = doc.y + 35;
+    // RIGHT COLUMN: Top = Exam Schedule, Bottom = Verification QR Code
+    const rightPanelX = rightX - 5;
+    const rightPanelW = leftColW + 10;
+    const examBoxH = 68;
 
-    // Parse student enrolled subjects
-    const rawSubs = Array.isArray(student.subjects) ? student.subjects.join(',').toLowerCase() : String(student.subjects || '').toLowerCase();
-    let hasEnglish = rawSubs.includes('english');
-    let hasCS = rawSubs.includes('cs') || rawSubs.includes('computer science');
-    let hasMath = rawSubs.includes('math') || rawSubs.includes('both');
-    let hasScience = rawSubs.includes('science') || rawSubs.includes('both');
+    // Exam Schedule Box
+    doc.save()
+      .roundedRect(rightPanelX, contentStartY, rightPanelW, examBoxH, 6)
+      .fillColor('#fef3c7')
+      .fill()
+      .strokeColor('#f59e0b')
+      .lineWidth(1.5)
+      .stroke()
+      .restore();
 
-    // Fallback: if no subject matched, show all by default
-    if (!hasEnglish && !hasCS && !hasMath && !hasScience) {
-      hasEnglish = true;
-      hasCS = true;
-      hasMath = true;
-      hasScience = true;
-    }
+    let schY = contentStartY + 8;
+    doc.fontSize(9.5).font('Helvetica-Bold').fillColor('#92400e').text('EXAM SCHEDULE (2026)', rightPanelX + 8, schY);
+    schY += 16;
+    doc.fontSize(9.5).font('Helvetica-Bold').fillColor('#b45309').text('29th August, 2026 (Saturday)', rightPanelX + 8, schY);
+    schY += 15;
+    doc.fontSize(9).font('Helvetica-Bold').fillColor('#1e40af').text('Report: ', rightPanelX + 8, schY, { continued: true });
+    doc.fontSize(9).font('Helvetica').fillColor('#0f172a').text('9:00 AM onwards');
 
-    const hasFri = hasEnglish || hasCS;
-    const hasSat = hasMath || hasScience;
+    // QR Code Container Box
+    const qrBoxY = contentStartY + examBoxH + 6;
+    const qrBoxH = panelsHeight - examBoxH - 6;
 
-    // RIGHT COLUMN: Exam Times Box
-    const examTimesStartY = contentStartY + 30;
-    const examBoxHeight = 150;
-    doc.rect(rightX - 10, examTimesStartY, leftColW + 15, examBoxHeight).fillColor('#fef3c7').fill();
-    doc.rect(rightX - 10, examTimesStartY, leftColW + 15, examBoxHeight).strokeColor('#f59e0b').lineWidth(2).stroke();
+    doc.save()
+      .roundedRect(rightPanelX, qrBoxY, rightPanelW, qrBoxH, 6)
+      .fillColor('#ffffff')
+      .fill()
+      .strokeColor('#e2e8f0')
+      .lineWidth(1)
+      .stroke()
+      .restore();
 
-    let currY = examTimesStartY + 8;
-    doc.fontSize(this.labelSize).font('Helvetica-Bold').fillColor('#92400e').text('EXAM SCHEDULE (2026)', rightX, currY);
-    currY += 16;
-
-    // 7th August 2026 (Friday)
-    if (hasFri) {
-      doc.fontSize(8.5).font('Helvetica-Bold').fillColor('#b45309').text('7th August 2026 (Friday)', rightX, currY);
-      currY += 12;
-      if (hasEnglish) {
-        doc.fontSize(8).font('Helvetica-Bold').fillColor('#1e40af').text('English:', rightX, currY);
-        doc.fontSize(8).font('Helvetica').fillColor('#000000').text('Report: 8:45-9:15 AM | Exam: 9:30-10:30 AM', rightX + 42, currY);
-        currY += 12;
-      }
-      if (hasCS) {
-        doc.fontSize(8).font('Helvetica-Bold').fillColor('#1e40af').text('Computer Science:', rightX, currY);
-        doc.fontSize(8).font('Helvetica').fillColor('#000000').text('Report: 10:15-10:45 AM | Exam: 11:00-12:00 PM', rightX + 52, currY);
-        currY += 12;
-      }
-      currY += 4;
-    }
-
-    // 8th August 2026 (Saturday)
-    if (hasSat) {
-      doc.fontSize(8.5).font('Helvetica-Bold').fillColor('#b45309').text('8th August 2026 (Saturday)', rightX, currY);
-      currY += 12;
-      if (hasMath) {
-        doc.fontSize(8).font('Helvetica-Bold').fillColor('#1e40af').text('Mathematics:', rightX, currY);
-        doc.fontSize(8).font('Helvetica').fillColor('#000000').text('Report: 8:45-9:15 AM | Exam: 9:30-10:30 AM', rightX + 62, currY);
-        currY += 12;
-      }
-      if (hasScience) {
-        doc.fontSize(8).font('Helvetica-Bold').fillColor('#1e40af').text('Science:', rightX, currY);
-        doc.fontSize(8).font('Helvetica').fillColor('#000000').text('Report: 10:15-10:45 AM | Exam: 11:00-12:00 PM', rightX + 45, currY);
-        currY += 12;
-      }
-    }
-
-    // Set doc.y to below left column to ensure proper layout
-    doc.y = leftColumnEndY;
-
-    // Generate QR for verification and place it below exam times
+    // Generate and draw QR Code
     try {
-      // Base verify URL - allow override via student payload, env, or options
       const baseVerify = student.verifyBaseUrl || process.env.VERIFY_BASE_URL || this.verifyBaseUrl || 'https://brainomath.online';
-
-      // Build a compact snapshot of the student data to embed in the QR
       const snapshot = {
         studentId: student.studentId || null,
         rollNumber: student.rollNumber || null,
@@ -301,96 +286,98 @@ class AdmitCardGenerator {
         class: student.class || null,
         category: student.category || null,
         subjects: student.subjects || null,
-        parentName: student.parentName || null,
-        parentContact: student.parentContact || null,
         schoolName: coordinator.schoolName || (student.school?.schoolName) || null,
         coordinatorName: coordinator.coordinatorName || (student.school?.coordinatorName) || null,
-        coordinatorEmail: coordinator.coordinatorEmail || (student.school?.coordinatorEmail) || null,
-        coordinatorPhone: coordinator.coordinatorPhone || (student.school?.coordinatorPhone) || null,
         registrationId: student.registrationId || null,
         downloadedAt: `${istTimeStr} IST`
       };
 
-      // JSON -> base64url encode (URL safe)
       const json = JSON.stringify(snapshot);
       const b64 = Buffer.from(json).toString('base64');
       const b64url = b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-
-      // QR contains a direct link to verify.html with embedded data
       const verifyUrl = `${baseVerify.replace(/\/$/, '')}/verify.html?data=${b64url}`;
 
-      // Create data URL (PNG) from the verify URL
       const dataUrl = await QRCode.toDataURL(verifyUrl, { margin: 1, color: { dark: '#000000', light: '#FFFFFF' } });
-      // Strip data:image/png;base64,
       const base64 = dataUrl.split(',')[1];
       const imgBuf = Buffer.from(base64, 'base64');
 
-      // Place QR below exam times box (right column, under exam schedule)
-      const qrSize = 95;
-      const qrX = rightX + (leftColW - qrSize) / 2; // Center QR horizontally in right column
-      const qrY = examTimesStartY + 155; // Below the exam times box
-      try {
-        doc.image(imgBuf, qrX, qrY, { width: qrSize, height: qrSize });
-      } catch (e) {
-        console.log('QR draw error:', e.message);
-      }
+      const qrSize = 100;
+      const qrX = rightPanelX + (rightPanelW - qrSize) / 2;
+      const qrY = qrBoxY + 8;
+
+      doc.image(imgBuf, qrX, qrY, { width: qrSize, height: qrSize });
+      doc.fontSize(7.5).font('Helvetica-Bold').fillColor('#1e40af').text('Scan to Verify & Check Result', rightPanelX, qrY + qrSize + 4, { width: rightPanelW, align: 'center' });
     } catch (e) {
       console.log('QR generation error:', e.message);
     }
 
-    // VENUE - with colorful background
-    doc.moveDown(0.6);
-    doc.rect(leftX - 5, doc.y - 5, contentW + 10, 75).fillColor('#dcfce7').fill();
+    // VENUE PANEL
+    const venueY = contentStartY + panelsHeight + 8;
+    const venueH = 58;
+
+    doc.save()
+      .roundedRect(leftX - 5, venueY, contentW + 10, venueH, 6)
+      .fillColor('#f0fdf4')
+      .fill()
+      .strokeColor('#86efac')
+      .lineWidth(1)
+      .stroke()
+      .restore();
 
     const venue = this.getVenueDetails(student.venue || (coordinator && coordinator.venue));
-    doc.fontSize(this.labelSize).font('Helvetica-Bold').fillColor('#15803d').text('Venue', leftX);
-    doc.fontSize(this.valueSize).font('Helvetica').fillColor('#000000').text(venue.name, leftX, doc.y + 2, { width: contentW - 20 });
-    venue.address.forEach((line) => {
-      doc.moveDown(0.4);
-      doc.fontSize(this.valueSize).font('Helvetica').fillColor('#000000').text(line, leftX);
-    });
+    let vy = venueY + 6;
+    doc.fontSize(9.5).font('Helvetica-Bold').fillColor('#15803d').text('VENUE', leftX + 4, vy);
+    vy += 14;
+    doc.fontSize(9).font('Helvetica-Bold').fillColor('#0f172a').text(venue.name, leftX + 4, vy);
+    vy += 13;
+    if (venue.address && venue.address.length > 0) {
+      doc.fontSize(8.5).font('Helvetica').fillColor('#334155').text(venue.address.join(' '), leftX + 4, vy);
+    }
 
-    // INSTRUCTIONS
-    doc.moveDown(1.2);
-    // Give the section title enough vertical padding so the background fully
-    // covers the text instead of appearing as a thin strip behind its top.
-    doc.rect(leftX - 5, doc.y - 6, contentW + 10, 19).fillColor('#dbeafe').fill();
-    doc.fontSize(this.labelSize).font('Helvetica-Bold').fillColor('#0c4a6e').text('GENERAL INSTRUCTIONS', leftX, doc.y);
-    doc.moveDown(0.6);
+    // GENERAL INSTRUCTIONS
+    const instHeaderY = venueY + venueH + 8;
+    doc.save()
+      .roundedRect(leftX - 5, instHeaderY, contentW + 10, 18, 4)
+      .fillColor('#dbeafe')
+      .fill()
+      .restore();
 
+    doc.fontSize(9).font('Helvetica-Bold').fillColor('#0c4a6e').text('GENERAL INSTRUCTIONS', leftX + 4, instHeaderY + 4);
+
+    let instY = instHeaderY + 23;
     const instructions = [
-      '1. Students must carry a printed copy of the Admit Card along with their School Identity Card or any other valid identity card to the examination hall. No entry will be allowed without these documents.',
-      '2. Students are advised to reach the examination venue at least 15 minutes before the reporting time for each examination.',
+      '1. Students must carry a printed copy of the Admit Card along with their School Identity Card to the examination hall.',
+      '2. Students are advised to reach the examination venue at least 15 minutes before the reporting time.',
       '3. Students must appear only for the subject(s) mentioned on their Admit Card.',
       '4. Each student must carry a blue or black ballpoint pen and a pencil for the examination.',
-      '5. The examination will be conducted using an OMR answer sheet. Students must fill in their details and mark their answers carefully as instructed by the invigilator. Do not fold, tear, or damage the OMR sheet.',
-      '6. Electronic devices such as calculators, smartwatches, and mobile phones are strictly prohibited inside the examination venue.',
-      '7. Students must strictly follow the instructions of the invigilators and maintain silence and discipline inside the examination hall.',
-      '8. Any form of unfair means, misconduct, or violation of the examination rules may result in disqualification.',
+      '5. The examination will be conducted using an OMR answer sheet. Mark your answers carefully. Do not fold or damage the OMR sheet.',
+      '6. Electronic devices such as calculators, smartwatches, and mobile phones are strictly prohibited.',
+      '7. Students must strictly follow invigilator instructions and maintain silence and discipline.',
+      '8. Any form of unfair means or misconduct may result in immediate disqualification.',
       '9. Parents/guardians are requested not to enter the examination hall.',
-      '10. IMPORTANT: If you have an examination on the second day, please preserve and carry this Admit Card for the next day\'s examination. Keep the Admit Card safely until the results are declared.'
+      '10. Please preserve and keep this Admit Card safely until results and certificates are declared.'
     ];
 
-    doc.fontSize(this.instructionSize).font('Helvetica').fillColor('#000000');
+    doc.fontSize(7.5).font('Helvetica').fillColor('#1e293b');
     instructions.forEach((inst) => {
-      doc.text(inst, leftX, doc.y, { width: contentW - 20, align: 'left', lineGap: 1 });
-      doc.moveDown(0.22);
+      doc.text(inst, leftX, instY, { width: contentW, align: 'left' });
+      instY += 13.5;
     });
 
-    // SIGNATURE LINES (positioned closer to footer)
-    const sigY = this.pageHeight - this.margin - 65;
-    const sigLineLen = 120;
+    // SIGNATURE LINES
+    const sigY = this.pageHeight - this.margin - 48;
+    const sigLineLen = 130;
 
-    doc.fontSize(this.labelSize).font('Helvetica').fillColor('#1e40af').text("Student's Signature:", leftX, sigY);
-    doc.moveTo(leftX + 105, sigY + 9).lineWidth(1.5).lineTo(leftX + 125 + sigLineLen, sigY + 9).strokeColor('#3b82f6').stroke();
+    doc.fontSize(9).font('Helvetica-Bold').fillColor('#1e40af').text("Student's Signature:", leftX, sigY);
+    doc.moveTo(leftX + 110, sigY + 8).lineWidth(1.2).lineTo(leftX + 110 + sigLineLen, sigY + 8).strokeColor('#3b82f6').stroke();
 
-    doc.fontSize(this.labelSize).font('Helvetica').fillColor('#1e40af').text("Invigilator's Signature:", rightX, sigY);
-    doc.moveTo(rightX + 120, sigY + 9).lineWidth(1.5).lineTo(rightX + 135 + sigLineLen, sigY + 9).strokeColor('#3b82f6').stroke();
+    doc.fontSize(9).font('Helvetica-Bold').fillColor('#1e40af').text("Invigilator's Signature:", rightX - 5, sigY);
+    doc.moveTo(rightX + 115, sigY + 8).lineWidth(1.2).lineTo(rightX + 115 + sigLineLen, sigY + 8).strokeColor('#3b82f6').stroke();
 
-    // FOOTER with colorful background
-    doc.rect(0, this.pageHeight - this.margin - 35, this.pageWidth, 35).fillColor('#1e3a8a').fill();
-    doc.fontSize(this.footerSize).font('Helvetica-Bold').fillColor('#fbbf24').text('BRAIN O MATH OLYMPIAD 2026', leftX, this.pageHeight - this.margin - 30, { width: contentW, align: 'center' });
-    doc.fontSize(this.footerSize).font('Helvetica').fillColor('#e0e7ff').text('BRAIN-O-MATH OLYMPIAD', leftX, this.pageHeight - this.margin - 18, { width: contentW, align: 'center' });
+    // FOOTER
+    doc.rect(0, this.pageHeight - this.margin - 24, this.pageWidth, 24).fillColor('#1e3a8a').fill();
+    doc.fontSize(7.5).font('Helvetica-Bold').fillColor('#fbbf24').text('BRAIN O MATH OLYMPIAD 2026', leftX, this.pageHeight - this.margin - 20, { width: contentW, align: 'center' });
+    doc.fontSize(7).font('Helvetica').fillColor('#e0e7ff').text('brainomath.online', leftX, this.pageHeight - this.margin - 10, { width: contentW, align: 'center' });
   }
 
   _drawRoundedRectangle(doc, x, y, width, height, radius, fillColor = null) {

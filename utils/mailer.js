@@ -133,7 +133,7 @@ async function sendCoordinatorWelcomeEmail(data) {
   const title = 'Welcome to Brain-O-Math Olympiad!';
   const content = `
     <p style="${styles.body}">Dear ${data.coordinatorName},</p>
-    <p style="${styles.body}">Your account for the Interschool Brain-O-Math Olympiad 2025 portal has been successfully created.</p>
+    <p style="${styles.body}">Your account for the Interschool Brain-O-Math Olympiad 2026 portal has been successfully created.</p>
     
     <div style="${styles.card}">
       <h3 style="margin-top: 0; color: #333;">Registration Details:</h3>
@@ -172,7 +172,7 @@ async function sendStudentSubmissionEmail(coordinatorData, studentCount, totalAm
   const title = 'Student Registration Submitted!';
   const content = `
     <p style="${styles.body}">Dear ${coordinatorData.coordinatorName},</p>
-    <p style="${styles.body}">Your student registration for Brain-O-Math Olympiad 2025 has been submitted successfully.</p>
+    <p style="${styles.body}">Your student registration for Brain-O-Math Olympiad 2026 has been submitted successfully.</p>
     
     <div style="${styles.card}">
       <h3 style="margin-top: 0; color: #333;">Registration Summary:</h3>
@@ -242,7 +242,8 @@ async function sendCoordinatorCredentialsEmail(coordinatorData) {
   const title = 'Your Coordinator Login Details';
   const content = `
     <p style="${styles.body}">Dear ${coordinatorData.coordinatorName},</p>
-    <p style="${styles.body}">As requested, here are your login credentials for the Brain-O-Math Olympiad 2025 coordinator portal.</p>
+    <p style="${styles.body}">As requested, here are your login credentials for the Brain-O-Math Olympiad 2026 coordinator portal.</p>
+
     
     <div style="${styles.card}">
       <h3 style="margin-top: 0; color: #333;">Account Details:</h3>

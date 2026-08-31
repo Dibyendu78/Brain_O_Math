@@ -43,9 +43,10 @@ function getSubjectCode(subjects) {
     const subjectMap = {
         'math': '01',
         'science': '02',
-        'both': '03'
+        'english': '04',
+        'cs': '05'
     };
-    return subjectMap[subjects] || '03';
+    return subjectMap[subjects] || '00';
 }
 
 function getCategoryDigit(cls) {

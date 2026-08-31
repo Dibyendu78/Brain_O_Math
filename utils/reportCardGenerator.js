@@ -4,6 +4,7 @@
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
 const path = require('path');
+const QRCode = require('qrcode');
 
 class ReportCardGenerator {
   constructor() {
@@ -95,7 +96,7 @@ class ReportCardGenerator {
       .font('Times-Bold')
       .fontSize(28)
       .fillColor('#222')
-      .text("Brain O Math Olympiad 2025", 0, titleY + 5, {
+      .text("Brain O Math Olympiad 2026", 0, titleY + 5, {
         width: pageWidth,
         align: 'center'
       });
@@ -109,7 +110,7 @@ class ReportCardGenerator {
       });
 
     /* ----------------------------------------------------
-     * STUDENT INFORMATION
+     * STUDENT INFORMATION & VERIFICATION QR CODE
      * -------------------------------------------------- */
     const leftX = margin + 18;
     const infoY = titleY + 70;
@@ -128,7 +129,7 @@ class ReportCardGenerator {
       doc.text(label, leftX, y);
 
       doc.font('Helvetica').fontSize(10).fillColor('#000');
-      doc.text(value, leftX + labelWidth, y);
+      doc.text(value, leftX + labelWidth, y, { width: contentWidth - 220 });
 
       y += 18;
     };
@@ -143,8 +144,7 @@ class ReportCardGenerator {
       'english': 'English',
       'math': 'Mathematics',
       'science': 'Science',
-      'cs': 'Computer Science',
-      'both': 'Mathematics & Science'
+      'cs': 'Computer Science'
     };
     const subjects = String(student.subjects || '')
       .split(',')
@@ -154,6 +154,46 @@ class ReportCardGenerator {
       .join(', ') || 'N/A';
 
     writeField('Subject Choice:', subjects);
+
+    // DRAW VERIFICATION QR CODE ON THE RIGHT SIDE OF STUDENT INFO
+    try {
+      const baseVerify = student.verifyBaseUrl || process.env.VERIFY_BASE_URL || 'https://brainomath.online';
+      const snapshot = {
+        studentId: student.studentId || null,
+        rollNumber: student.rollNumber || null,
+        name: student.name || null,
+        class: student.class || null,
+        category: student.category || null,
+        schoolName: student.schoolName || null
+      };
+
+      const json = JSON.stringify(snapshot);
+      const b64 = Buffer.from(json).toString('base64');
+      const b64url = b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+      const verifyUrl = `${baseVerify.replace(/\/$/, '')}/verify.html?data=${b64url}`;
+
+      const dataUrl = await QRCode.toDataURL(verifyUrl, { margin: 1, color: { dark: '#000000', light: '#FFFFFF' } });
+      const base64 = dataUrl.split(',')[1];
+      const imgBuf = Buffer.from(base64, 'base64');
+
+      const qrSize = 72;
+      const qrX = pageWidth - margin - innerMargin - qrSize - 15;
+      const qrY = infoY - 14;
+
+      doc.save()
+        .roundedRect(qrX - 4, qrY - 4, qrSize + 8, qrSize + 22, 6)
+        .fillColor('#ffffff')
+        .fill()
+        .strokeColor('#d8c08a')
+        .lineWidth(1)
+        .stroke()
+        .restore();
+
+      doc.image(imgBuf, qrX, qrY, { width: qrSize, height: qrSize });
+      doc.fontSize(6.5).font('Helvetica-Bold').fillColor('#0b4f6c').text('Scan to Verify', qrX - 4, qrY + qrSize + 2, { width: qrSize + 8, align: 'center' });
+    } catch (e) {
+      console.log('Report card QR error:', e.message);
+    }
 
     /* ----------------------------------------------------
      * SUBJECT PERFORMANCE SECTION
@@ -211,12 +251,13 @@ class ReportCardGenerator {
     const englishMarks = student.marks?.english ?? null;
     const csMarks = student.marks?.cs ?? null;
 
-    /* SUBJECT CHOICE RESOLUTION */
+    /* SUBJECT CHOICE RESOLUTION — individual subjects only (no 'both') */
     const activeSubjects = String(student.subjects || '')
       .split(',')
       .map(s => s.trim().toLowerCase())
       .filter(s => ['english', 'math', 'science', 'cs'].includes(s));
 
+    // Fallback: if no subjects resolved, infer from marks
     if (activeSubjects.length === 0) {
       if (mathMarks !== null) activeSubjects.push('math');
       if (scienceMarks !== null) activeSubjects.push('science');
@@ -224,12 +265,14 @@ class ReportCardGenerator {
       if (csMarks !== null) activeSubjects.push('cs');
     }
 
+
     /* ----------------------------------------------------
      * DRAW BOXES BASED ON ACTIVE SUBJECTS
      * -------------------------------------------------- */
     const count = activeSubjects.length;
     if (count > 0) {
-      const boxWidth = Math.floor((availableWidth - (count - 1) * 8) / count);
+      const boxGap = 10;
+      const boxWidth = Math.floor((availableWidth - (count - 1) * boxGap) / count);
       const subjectNames = {
         'english': 'English',
         'math': 'Mathematics',
@@ -238,7 +281,7 @@ class ReportCardGenerator {
       };
 
       activeSubjects.forEach((sub, index) => {
-        const x = leftX + index * (boxWidth + 8);
+        const x = leftX + index * (boxWidth + boxGap);
         const marks = student.marks?.[sub] ?? null;
         drawScoreBox(x, boxWidth, subjectNames[sub] || sub, marks, null);
       });
@@ -247,6 +290,7 @@ class ReportCardGenerator {
       doc.text('No subject performance available.', leftX, y + 40);
     }
 
+
     /* ----------------------------------------------------
      * FOOTER
      * -------------------------------------------------- */
@@ -254,7 +298,7 @@ class ReportCardGenerator {
       .font('Helvetica')
       .fontSize(11)
       .fillColor('#555')
-      .text("This score card is generated by Brain O Math Olympiad 2025.", 0, pageHeight - 55, {
+      .text("This score card is generated by Brain O Math Olympiad 2026.", 0, pageHeight - 55, {
         width: pageWidth,
         align: 'center'
       });

@@ -103,7 +103,7 @@ class CertificateGenerator {
     doc.font('Times-Bold')
        .fontSize(20)
        .fillColor('#000000')
-       .text("BRAIN O MATH OLYMPIAD", margin, outerPad +30, {
+       .text("BRAIN O MATH OLYMPIAD 2026", margin, outerPad +30, {
          width: pageWidth - margin*2 ,
          align: 'center'
        });
@@ -131,7 +131,7 @@ class CertificateGenerator {
     doc.font('Helvetica-Bold')
        .fontSize(18)
        .fillColor('#666')
-       .text('This certificate is proudly presented to', margin, decorY + 62, {
+       .text('This Certificate is proudly presented to', margin, decorY + 62, {
          width: pageWidth - margin * 2,
          align: 'center'
        });
@@ -140,13 +140,14 @@ class CertificateGenerator {
     doc.font(nameFont)
        .fontSize(60)
        .fillColor('#000')
-       .text(student.name || 'Name Surname', margin, decorY + 84, {
+       .text(student.name || 'Debadrita Upadhyay', margin, decorY + 84, {
          width: pageWidth - margin * 2,
          align: 'center'
        });
 
+    const pronoun = (student.gender === 'male' || student.gender === 'boy') ? 'his' : 'her';
     const body =
-      "for participating in the Brain O Math Olympiad Examination, held on 22nd November, 2025, and displaying enthusiasm, effort, and a keen spirit of academic exploration in the fields of Mathematics and Science.";
+      `in recognition of ${pronoun} participation in the Brain-O-Math Olympiad Examination 2026 and in appreciation of ${pronoun} curiosity, dedication, and enthusiasm for learning.`;
 
     doc.font('Times-Roman')
        .fontSize(15)
@@ -159,7 +160,7 @@ class CertificateGenerator {
 
     const bottomY = pageHeight - 120;
 
-    const issued = new Date('2025-12-16');
+    const issued = new Date('2026-10-01');
 
     const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
     const issuedFormatted = `${issued.getDate()} ${months[issued.getMonth()]}, ${issued.getFullYear()}`;
@@ -197,7 +198,7 @@ class CertificateGenerator {
     doc.font('Helvetica')
        .fontSize(9)
        .fillColor('#666')
-       .text("BRAIN O MATH OLYMPIAD 2025", -14, pageHeight - 13, {
+       .text("BRAIN O MATH OLYMPIAD 2026", -14, pageHeight - 13, {
          width: pageWidth,
          align: 'center'
        });
