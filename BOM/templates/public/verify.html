@@ -665,6 +665,13 @@
 
     function renderResultsCard(st) {
       if (!resultsContainer) return;
+
+      if (!st.marks) {
+        resultsContainer.style.display = 'none';
+        if (resultsPending) resultsPending.style.display = 'flex';
+        return;
+      }
+
       if (resultsPending) resultsPending.style.display = 'none';
       resultsContainer.style.display = 'block';
 

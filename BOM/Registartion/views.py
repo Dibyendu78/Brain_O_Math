@@ -46,11 +46,8 @@ def registration_status(request):
 
 def api_public_student_result(request):
     settings = RegistrationSettings.current()
-    if not settings.results_published and not _is_admin_requester(request):
-        return JsonResponse(
-            {"success": False, "message": "Results for Brain-O-Math Olympiad are not published yet."},
-            status=403,
-        )
+    is_admin = _is_admin_requester(request)
+    can_view_marks = settings.results_published or is_admin
 
     query = (
         request.GET.get("query")
@@ -84,6 +81,19 @@ def api_public_student_result(request):
             status=404,
         )
 
+    marks_data = None
+    if can_view_marks:
+        marks_data = {
+            "english": student.english_marks,
+            "math": student.math_marks,
+            "science": student.science_marks,
+            "cs": student.cs_marks,
+        }
+
+    coordinator_profile = getattr(student, "coordinator", None)
+    coordinator_user = getattr(coordinator_profile, "user", None) if coordinator_profile else None
+    payment = getattr(coordinator_profile, "payment", None) if coordinator_profile else None
+
     return JsonResponse(
         {
             "success": True,
@@ -95,16 +105,12 @@ def api_public_student_result(request):
                 "class": student.student_class,
                 "category": student.category,
                 "subjects": student.subjects,
-                "schoolName": student.coordinator.school_name if student.coordinator else "",
-                "coordinatorName": student.coordinator.coordinator_name if student.coordinator else "",
-                "coordinatorEmail": student.coordinator.user.email if student.coordinator and student.coordinator.user else "",
-                "registrationId": getattr(getattr(student.coordinator, "payment", None), "registration_id", "") if student.coordinator else "",
-                "marks": {
-                    "english": student.english_marks,
-                    "math": student.math_marks,
-                    "science": student.science_marks,
-                    "cs": student.cs_marks,
-                },
+                "schoolName": coordinator_profile.school_name if coordinator_profile else "",
+                "coordinatorName": coordinator_profile.coordinator_name if coordinator_profile else "",
+                "coordinatorEmail": coordinator_user.email if coordinator_user else "",
+                "registrationId": getattr(payment, "registration_id", "") if payment else "",
+                "resultsPublished": settings.results_published,
+                "marks": marks_data,
             },
         }
     )
