@@ -213,37 +213,98 @@ class ReportCardGenerator {
     const singleBoxWidth = availableWidth;
 
     /* BOX DRAWER */
-    const drawScoreBox = (x, width, subject, marks, rank) => {
+    const drawScoreBox = (x, width, subject, marks) => {
+      const boxHeight = 108;
+
+      // Card Background & Outer Border
       doc.save()
         .lineWidth(1.2)
         .strokeColor('#d8c08a')
-        .roundedRect(x, y, width, 120, 8)
+        .fillColor('#ffffff')
+        .roundedRect(x, y, width, boxHeight, 8)
+        .fillAndStroke()
+        .restore();
+
+      // Card Header Background (soft tint)
+      const headerHeight = 28;
+      doc.save()
+        .fillColor('#f8fafc')
+        .roundedRect(x, y, width, headerHeight, 8)
+        .fill()
+        .restore();
+
+      // Fix square bottom for header
+      doc.save()
+        .fillColor('#f8fafc')
+        .rect(x, y + headerHeight - 8, width, 8)
+        .fill()
+        .restore();
+
+      // Header bottom border line
+      doc.save()
+        .lineWidth(0.8)
+        .strokeColor('#e2e8f0')
+        .moveTo(x, y + headerHeight)
+        .lineTo(x + width, y + headerHeight)
         .stroke()
         .restore();
 
-      doc.font('Helvetica-Bold').fontSize(11).fillColor('#0b4f6c');
-      doc.text(subject.toUpperCase(), x + 12, y + 10);
+      // Subject Title
+      const isNarrow = width < 150;
+      const isVeryLong = subject.length > 12;
+      const titleSize = isNarrow ? (isVeryLong ? 8.5 : 9.5) : (isVeryLong ? 10.5 : 11.5);
+      doc
+        .font('Helvetica-Bold')
+        .fontSize(titleSize)
+        .fillColor('#0b4f6c')
+        .text(subject.toUpperCase(), x + 4, y + 8, {
+          width: width - 8,
+          align: 'center'
+        });
 
-      // Marks
-      doc.font('Helvetica').fontSize(10).fillColor('#000');
-      doc.text('Marks Scored:', x + 12, y + 36);
-      doc.text(
-        marks !== null ? `${marks} / 60` : 'N.A.',
-        x + Math.min(110, width - 50),
-        y + 36
-      );
+      // Marks Scored
+      const labelSize = isNarrow ? 7.5 : 8.5;
+      const valueSize = isNarrow ? 12 : 13.5;
+      const percSize = isNarrow ? 10.5 : 12;
+
+      doc
+        .font('Helvetica-Bold')
+        .fontSize(labelSize)
+        .fillColor('#64748b')
+        .text('MARKS SCORED', x + 4, y + 36, {
+          width: width - 8,
+          align: 'center'
+        });
+
+      const scoreText = marks !== null && marks !== undefined ? `${marks} / 60` : 'N/A';
+      doc
+        .font('Helvetica-Bold')
+        .fontSize(valueSize)
+        .fillColor('#047857')
+        .text(scoreText, x + 4, y + 48, {
+          width: width - 8,
+          align: 'center'
+        });
 
       // Percentage
-      doc.text('Percentage:', x + 12, y + 56);
-      const perc = marks !== null ? `${((marks / 60) * 100).toFixed(2)}%` : 'N.A.';
-      doc.text(
-        perc,
-        x + Math.min(110, width - 50),
-        y + 56
-      );
+      doc
+        .font('Helvetica-Bold')
+        .fontSize(labelSize)
+        .fillColor('#64748b')
+        .text('PERCENTAGE', x + 4, y + 70, {
+          width: width - 8,
+          align: 'center'
+        });
 
-      // Rank
-      
+      const perc = marks !== null && marks !== undefined ? `${((marks / 60) * 100).toFixed(2)}%` : 'N/A';
+      doc
+        .font('Helvetica-Bold')
+        .fontSize(percSize)
+        .fillColor('#1e40af')
+        .text(perc, x + 4, y + 82, {
+          width: width - 8,
+          align: 'center'
+        });
     };
 
     const mathMarks = student.marks?.math ?? null;
@@ -283,7 +344,7 @@ class ReportCardGenerator {
       activeSubjects.forEach((sub, index) => {
         const x = leftX + index * (boxWidth + boxGap);
         const marks = student.marks?.[sub] ?? null;
-        drawScoreBox(x, boxWidth, subjectNames[sub] || sub, marks, null);
+        drawScoreBox(x, boxWidth, subjectNames[sub] || sub, marks);
       });
     } else {
       doc.font('Helvetica').fontSize(10).fillColor('#333');
