@@ -102,6 +102,7 @@ urlpatterns = [
     path("api/admin/export-students", admin_views.api_export_students),
     path("api/admin/export-docx", admin_views.api_export_docx),
     path("api/admin/schools", admin_views.api_schools),
+    path("api/admin/venues", admin_views.api_venues),
     path("api/admin/send-message-to-coordinators", admin_views.api_send_message_to_coordinators),
     path("api/admin/results/release-report-cards", admin_views.api_publish_results),
     path("api/admin/results/release-certificates", admin_views.api_publish_results),

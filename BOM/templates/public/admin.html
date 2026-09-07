@@ -655,31 +655,122 @@ body {
   display: none;
 }
 
-.filter-group select, .controls select {
-  border: none;
-  background: transparent;
+.filter-group select {
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
   font-size: 0.875rem;
   font-weight: 500;
   color: var(--text-main);
   outline: none;
   cursor: pointer;
-  height: 100%;
+  height: 100% !important;
   font-family: inherit;
-  padding-right: 4px;
+  padding: 0 4px 0 0 !important;
 }
 
-.controls select {
+.controls > select {
   background-color: #ffffff;
   border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 0 0.75rem;
   height: 40px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-main);
+  outline: none;
+  cursor: pointer;
+  font-family: inherit;
 }
 
-.controls select:focus {
+.controls > select:focus {
   border-color: var(--primary);
   box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.12);
+}
+
+.controls .filter-group select {
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 4px 0 0 !important;
+  height: 100% !important;
+}
+
+/* Modern Admin Toast Notifications */
+#toastContainer {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 999999;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  pointer-events: none;
+  max-width: 440px;
+  width: calc(100vw - 48px);
+}
+
+.admin-toast {
+  pointer-events: auto;
+  min-width: 280px;
+  padding: 14px 18px;
+  border-radius: 10px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18), 0 2px 8px rgba(0, 0, 0, 0.08);
+  animation: toastSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transition: all 0.25s ease;
+  line-height: 1.4;
+}
+
+@keyframes toastSlideIn {
+  from {
+    transform: translateX(120%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes toastFadeOut {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(120%);
+    opacity: 0;
+  }
+}
+
+.admin-toast.toast-success {
+  background: #059669;
+  color: #ffffff;
+  border-left: 5px solid #34d399;
+}
+
+.admin-toast.toast-error {
+  background: #dc2626;
+  color: #ffffff;
+  border-left: 5px solid #f87171;
+}
+
+.admin-toast.toast-warning {
+  background: #d97706;
+  color: #ffffff;
+  border-left: 5px solid #fbbf24;
+}
+
+.admin-toast.toast-info {
+  background: #2563eb;
+  color: #ffffff;
+  border-left: 5px solid #60a5fa;
 }
 
 .search-box {
@@ -1989,6 +2080,7 @@ select:focus {
               <option value="">All Venues</option>
               <option value="Doon Heritage School, Siliguri">Doon Heritage School, Siliguri</option>
               <option value="Don Bosco School, Mayanaguri">Don Bosco School, Mayanaguri</option>
+              <option value="Delhi World Public School, Malda">Delhi World Public School, Malda</option>
             </select>
           </div>
           
@@ -2164,6 +2256,7 @@ select:focus {
               <option value="">All Venues</option>
               <option value="Doon Heritage School, Siliguri">Doon Heritage School, Siliguri</option>
               <option value="Don Bosco School, Mayanaguri">Don Bosco School, Mayanaguri</option>
+              <option value="Delhi World Public School, Malda">Delhi World Public School, Malda</option>
             </select>
           </div>
 
@@ -2225,50 +2318,42 @@ select:focus {
           </div>
         </div>
 
-        <!-- Main Release / Stop Action Panel with School Filter -->
-        <div style="background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); border-radius: 12px; padding: 28px; margin-bottom: 28px; color: white; box-shadow: 0 10px 25px rgba(79, 70, 229, 0.15);">
-          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 18px; margin-bottom: 20px;">
-            <div>
-              <h3 style="margin: 0 0 6px 0; display: flex; align-items: center; gap: 10px; font-size: 1.3rem;">
-                <i class="fas fa-paper-plane"></i> Release &amp; Control Examination Results
-              </h3>
-              <p style="margin: 0; opacity: 0.9; font-size: 0.92rem;">
-                Publish or hide Report Cards &amp; Certificates for all students or filter by school before release.
-              </p>
+        <!-- Minimalist Venue & Marks Filter & Publish Action Bar -->
+        <div style="background: #ffffff; border: 1px solid var(--border-color); border-radius: 10px; padding: 16px 20px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.03);">
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;">
+            <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+              <div class="filter-group" style="margin: 0; width: 310px; flex-shrink: 0;">
+                <i class="fas fa-map-marker-alt"></i>
+                <select id="reportVenueFilter" style="width: 100%;">
+                  <option value="">Select Venue to Publish...</option>
+                  <option value="Doon Heritage School, Siliguri">Doon Heritage School, Siliguri</option>
+                  <option value="Don Bosco School, Mayanaguri">Don Bosco School, Mayanaguri</option>
+                  <option value="Delhi World Public School, Malda">Delhi World Public School, Malda</option>
+                </select>
+              </div>
+
+              <div class="filter-group" style="margin: 0; width: 220px; flex-shrink: 0;">
+                <i class="fas fa-check-circle"></i>
+                <select id="reportMarksStatusFilter" style="width: 100%;">
+                  <option value="">All Marks Status</option>
+                  <option value="completed">Marks Entered (Ready)</option>
+                  <option value="pending">Marks Pending</option>
+                </select>
+              </div>
             </div>
-            <div style="display: flex; gap: 12px; align-items: center;">
-              <button id="releaseReportCardsAllBtn" class="btn" style="background: #10b981; color: white; padding: 12px 24px; border-radius: 8px; font-size: 1rem; font-weight: 700; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(16,185,129,0.3);">
-                <i class="fas fa-unlock"></i> Release Results &amp; Certificates
+
+            <div style="display: flex; gap: 10px; align-items: center; flex-shrink: 0;">
+              <button id="releaseReportCardsAllBtn" class="btn btn-primary" disabled style="padding: 9px 20px; font-size: 0.88rem; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; opacity: 0.55; cursor: not-allowed; transition: all 0.2s ease;">
+                <i class="fas fa-paper-plane"></i> Publish Results
               </button>
-              <button id="stopAllBtn" class="btn" style="background: #ef4444; color: white; padding: 12px 24px; border-radius: 8px; font-size: 1rem; font-weight: 700; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(239,68,68,0.3);">
-                <i class="fas fa-lock"></i> Stop / Hide Results
+              <button id="stopAllBtn" class="btn" style="background: #ffffff; border: 1px solid #e2e8f0; color: #dc2626; padding: 9px 16px; font-size: 0.88rem; font-weight: 600; border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+                <i class="fas fa-eye-slash"></i> Hide Results
               </button>
             </div>
           </div>
 
-          <!-- Quick School Selector & Summary -->
-          <div style="background: rgba(255,255,255,0.12); border-radius: 8px; padding: 16px 20px; display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
-            <label style="font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; white-space: nowrap;">
-              <i class="fas fa-school"></i> Filter by School before Release:
-            </label>
-            <select id="schoolSelectForReportRelease" style="flex: 1; min-width: 250px; padding: 10px 14px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.3); background: white; color: #1e293b; font-size: 0.95rem; font-weight: 500;">
-              <option value="">All Schools (Entire Competition)</option>
-            </select>
-            <button id="filterSchoolReportBtn" class="btn" style="background: white; color: #4f46e5; padding: 10px 18px; border-radius: 6px; font-weight: 700; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
-              <i class="fas fa-filter"></i> View School Students
-            </button>
-          </div>
-        </div>
-
-        <!-- Schools Overview Section -->
-        <div style="margin-bottom: 25px;">
-          <h3 style="color: #1e293b; font-size: 1.1rem; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
-            <i class="fas fa-building-columns text-accent"></i> Participating Schools Overview
-          </h3>
-          <div id="reportSchoolsCardsGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px;">
-            <div style="padding: 20px; text-align: center; color: #64748b; background: #f8fafc; border-radius: 8px;">
-              <i class="fas fa-spinner fa-spin"></i> Loading participating schools...
-            </div>
+          <div id="venuePublishStatusHint" style="font-size: 0.84rem; color: #64748b; font-weight: 500; margin-top: 10px; min-height: 18px; display: flex; align-items: center; gap: 6px;">
+            <i class="fas fa-info-circle text-accent"></i> Select a venue to filter students and enable publishing
           </div>
         </div>
 
@@ -2311,15 +2396,6 @@ select:focus {
               <option value="math">Mathematics</option>
               <option value="science">Science</option>
               <option value="cs">Computer Science</option>
-            </select>
-          </div>
-
-          <div class="filter-group">
-            <i class="fas fa-check-circle"></i>
-            <select id="reportMarksStatusFilter">
-              <option value="">All Marks Status</option>
-              <option value="completed">Marks Entered (Ready)</option>
-              <option value="pending">Marks Pending</option>
             </select>
           </div>
 
@@ -2482,6 +2558,7 @@ select:focus {
               <option value="">All Venues</option>
               <option value="Doon Heritage School, Siliguri">Doon Heritage School, Siliguri</option>
               <option value="Don Bosco School, Mayanaguri">Don Bosco School, Mayanaguri</option>
+              <option value="Delhi World Public School, Malda">Delhi World Public School, Malda</option>
             </select>
           </div>
 
@@ -2544,6 +2621,66 @@ if (!token) {
 
 const headers = () => ({ 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token });
 const qs = (sel) => document.querySelector(sel);
+
+// Toaster Notification System
+function showToast(message, type = 'info', duration = 4000) {
+  let container = qs('#toastContainer');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'toastContainer';
+    document.body.appendChild(container);
+  }
+
+  const toast = document.createElement('div');
+  toast.className = `admin-toast toast-${type}`;
+  
+  let icon = 'info-circle';
+  if (type === 'success') icon = 'check-circle';
+  else if (type === 'error') icon = 'exclamation-circle';
+  else if (type === 'warning') icon = 'exclamation-triangle';
+
+  const cleanMsg = String(message || '').replace(/^[✓✔⚠️ℹ️]\s*/, '');
+  const msgDiv = document.createElement('div');
+  msgDiv.style.cssText = 'flex: 1; word-break: break-word;';
+  msgDiv.textContent = cleanMsg;
+
+  const iconEl = document.createElement('i');
+  iconEl.className = `fas fa-${icon}`;
+  iconEl.style.cssText = 'font-size: 1.15rem; flex-shrink: 0;';
+
+  const closeBtn = document.createElement('button');
+  closeBtn.type = 'button';
+  closeBtn.style.cssText = 'background: transparent; border: none; color: inherit; opacity: 0.75; cursor: pointer; padding: 2px 4px; display: flex; align-items: center; margin-left: 6px; font-size: 0.9rem;';
+  closeBtn.innerHTML = '<i class="fas fa-times"></i>';
+  closeBtn.onclick = () => toast.remove();
+
+  toast.appendChild(iconEl);
+  toast.appendChild(msgDiv);
+  toast.appendChild(closeBtn);
+
+  container.appendChild(toast);
+
+  const timeoutId = setTimeout(() => {
+    toast.style.animation = 'toastFadeOut 0.3s ease forwards';
+    setTimeout(() => toast.remove(), 300);
+  }, duration);
+
+  toast.addEventListener('mouseenter', () => clearTimeout(timeoutId));
+}
+
+// Global alert override so all alerts become modern, non-blocking toaster messages
+window.alert = function(msg) {
+  const text = String(msg || '');
+  if (text.includes('✓') || text.toLowerCase().includes('success') || text.toLowerCase().includes('released')) {
+    showToast(text, 'success', 4200);
+  } else if (text.toLowerCase().includes('fail') || text.toLowerCase().includes('error') || text.toLowerCase().includes('stopped')) {
+    showToast(text, 'error', 4500);
+  } else if (text.toLowerCase().includes('please') || text.toLowerCase().includes('warn') || text.toLowerCase().includes('select')) {
+    showToast(text, 'warning', 4000);
+  } else {
+    showToast(text, 'info', 3500);
+  }
+};
 
 // Tab titles mapping
 const tabTitles = {
@@ -2619,6 +2756,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
       loadStudentsForEditing();
     } else if (tabName === 'report-cards') {
       loadReportCardStats();
+      loadReportCardVenues();
       loadReportCardSchools();
       loadReportCardStudents();
     } else if (tabName === 'admit-cards') {
@@ -2638,7 +2776,7 @@ if (qs('#topbarRefreshBtn')) {
     else if (activeTab === 'students') loadStudents();
     else if (activeTab === 'results') { loadResultEntryStats(); loadResultsForEntry(); }
     else if (activeTab === 'edit-students') { loadEditStudentStats(); loadStudentsForEditing(); }
-    else if (activeTab === 'report-cards') { loadReportCardStats(); loadReportCardSchools(); loadReportCardStudents(); }
+    else if (activeTab === 'report-cards') { loadReportCardStats(); loadReportCardVenues(); loadReportCardSchools(); loadReportCardStudents(); }
     else if (activeTab === 'admit-cards') { loadAdmitCardStats(); loadAdmitCards(); }
   };
 }
@@ -4691,6 +4829,7 @@ let reportSchoolsList = [];
 let reportStudentsList = [];
 let reportCurrentPage = 1;
 const reportPerPage = 10;
+let reportFilterVenue = '';
 let reportFilterSchool = '';
 let reportFilterClass = '';
 let reportFilterSubject = '';
@@ -4730,6 +4869,43 @@ async function loadReportCardStats() {
   }
 }
 
+async function loadReportCardVenues() {
+  try {
+    const res = await fetch(API + '/admin/venues', { headers: headers() });
+    const j = await res.json();
+    const venues = (j.success && Array.isArray(j.data) && j.data.length > 0)
+      ? j.data
+      : ['Doon Heritage School, Siliguri', 'Don Bosco School, Mayanaguri', 'Delhi World Public School, Malda'];
+
+    const venueSelect = qs('#reportVenueFilter');
+    if (venueSelect) {
+      const currentVal = venueSelect.value;
+      venueSelect.innerHTML = '<option value="">Select Venue to Publish...</option>';
+      venues.forEach(v => {
+        if (!v) return;
+        const opt = document.createElement('option');
+        opt.value = v;
+        opt.textContent = v;
+        venueSelect.appendChild(opt);
+      });
+      if (currentVal && venues.includes(currentVal)) {
+        venueSelect.value = currentVal;
+      }
+    }
+  } catch (e) {
+    console.error('Error loading venues for report cards:', e);
+    const venueSelect = qs('#reportVenueFilter');
+    if (venueSelect && venueSelect.options.length <= 1) {
+      venueSelect.innerHTML = `
+        <option value="">Select Venue to Publish...</option>
+        <option value="Doon Heritage School, Siliguri">Doon Heritage School, Siliguri</option>
+        <option value="Don Bosco School, Mayanaguri">Don Bosco School, Mayanaguri</option>
+        <option value="Delhi World Public School, Malda">Delhi World Public School, Malda</option>
+      `;
+    }
+  }
+}
+
 async function loadReportCardSchools() {
   try {
     const res = await fetch(API + '/admin/schools', { headers: headers() });
@@ -4737,18 +4913,6 @@ async function loadReportCardSchools() {
     if (j.success && Array.isArray(j.data)) {
       reportSchoolsList = j.data;
       if (qs('#reportStatsSchoolsCount')) qs('#reportStatsSchoolsCount').textContent = reportSchoolsList.length;
-
-      // Populate Quick Release Select
-      const releaseSelect = qs('#schoolSelectForReportRelease');
-      if (releaseSelect) {
-        releaseSelect.innerHTML = '<option value="">All Schools (Entire Competition)</option>';
-        reportSchoolsList.forEach(sch => {
-          const opt = document.createElement('option');
-          opt.value = sch.schoolName;
-          opt.textContent = `${sch.schoolName} (${sch.coordinatorName})`;
-          releaseSelect.appendChild(opt);
-        });
-      }
 
       // Populate Table School Filter
       const tableFilter = qs('#reportSchoolFilter');
@@ -4761,80 +4925,9 @@ async function loadReportCardSchools() {
           tableFilter.appendChild(opt);
         });
       }
-
-      // Render School Overview Cards
-      renderSchoolOverviewCards();
     }
   } catch (e) {
     console.error('Error loading schools for report cards:', e);
-  }
-}
-
-async function renderSchoolOverviewCards() {
-  const container = qs('#reportSchoolsCardsGrid');
-  if (!container) return;
-
-  if (reportSchoolsList.length === 0) {
-    container.innerHTML = '<div style="grid-column: 1/-1; padding: 20px; text-align: center; color: #666;">No participating schools registered yet.</div>';
-    return;
-  }
-
-  // Fetch all students to count per school
-  try {
-    const res = await fetch(API + '/admin/students', { headers: headers() });
-    const j = await res.json();
-    const students = j.success ? (j.data || []) : [];
-
-    container.innerHTML = '';
-    reportSchoolsList.forEach(sch => {
-      const schoolStudents = students.filter(st => (st.schoolName || st.school?.schoolName || '').toLowerCase() === sch.schoolName.toLowerCase());
-      const withMarks = schoolStudents.filter(st => st.marks && Object.values(st.marks).some(m => m !== null && m !== undefined)).length;
-      const pct = schoolStudents.length > 0 ? Math.round((withMarks / schoolStudents.length) * 100) : 0;
-
-      const card = document.createElement('div');
-      card.style.background = 'white';
-      card.style.border = '1.5px solid #e2e8f0';
-      card.style.borderRadius = '10px';
-      card.style.padding = '16px 18px';
-      card.style.boxShadow = '0 4px 10px rgba(0,0,0,0.03)';
-      card.style.display = 'flex';
-      card.style.flexDirection = 'column';
-      card.style.justifyContent = 'space-between';
-      card.style.gap = '12px';
-
-      card.innerHTML = `
-        <div>
-          <div style="display: flex; justify-content: space-between; align-items: start; gap: 8px;">
-            <h4 style="margin: 0; color: #1e3a8a; font-size: 1.05rem; font-weight: 700;">
-              <i class="fas fa-school" style="color: #4f46e5;"></i> ${escapeHtml(sch.schoolName)}
-            </h4>
-            <span style="font-size: 0.78rem; font-weight: 700; padding: 3px 8px; border-radius: 999px; background: ${pct === 100 ? '#ecfdf5; color: #047857;' : (pct > 0 ? '#eff6ff; color: #1d4ed8;' : '#fef2f2; color: #b91c1c;')}">
-              ${pct}% Marks Ready
-            </span>
-          </div>
-          <p style="margin: 6px 0 0 0; color: #64748b; font-size: 0.85rem;">
-            Coordinator: <strong style="color: #334155;">${escapeHtml(sch.coordinatorName)}</strong>
-          </p>
-        </div>
-
-        <div>
-          <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 6px; color: #475569;">
-            <span>Students: <strong>${schoolStudents.length}</strong></span>
-            <span>Marks Entered: <strong style="color: #10b981;">${withMarks}/${schoolStudents.length}</strong></span>
-          </div>
-          <div style="width: 100%; height: 6px; background: #f1f5f9; border-radius: 999px; overflow: hidden;">
-            <div style="width: ${pct}%; height: 100%; background: ${pct === 100 ? '#10b981' : '#3b82f6'}; border-radius: 999px;"></div>
-          </div>
-        </div>
-
-        <button class="btn" onclick="filterReportTableBySchool(decodeURIComponent('${encodeURIComponent(sch.schoolName)}'))" style="width: 100%; background: #f8fafc; border: 1px solid #cbd5e1; color: #1e293b; font-size: 0.88rem; font-weight: 600; padding: 8px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
-          <i class="fas fa-filter text-accent"></i> Filter Student Results
-        </button>
-      `;
-      container.appendChild(card);
-    });
-  } catch (err) {
-    console.error('Error rendering school cards:', err);
   }
 }
 
@@ -4842,8 +4935,6 @@ function filterReportTableBySchool(schoolName) {
   reportFilterSchool = schoolName;
   const select = qs('#reportSchoolFilter');
   if (select) select.value = schoolName;
-  const quickSelect = qs('#schoolSelectForReportRelease');
-  if (quickSelect) quickSelect.value = schoolName;
   reportCurrentPage = 1;
   loadReportCardStudents();
   qs('#reportStudentsTable')?.scrollIntoView({ behavior: 'smooth' });
@@ -4865,6 +4956,7 @@ async function loadReportCardStudents() {
   try {
     let url = `${API}/admin/students?`;
     const params = [];
+    if (reportFilterVenue) params.push(`venue=${encodeURIComponent(reportFilterVenue)}`);
     if (reportFilterClass) params.push(`class=${encodeURIComponent(reportFilterClass)}`);
     if (reportFilterSchool) params.push(`school=${encodeURIComponent(reportFilterSchool)}`);
     if (reportFilterSubject) params.push(`subject=${encodeURIComponent(reportFilterSubject)}`);
@@ -5001,26 +5093,29 @@ function changeReportPage(page) {
 }
 
 async function releaseAll() {
-  const schoolSelect = qs('#schoolSelectForReportRelease');
-  const targetSchool = schoolSelect ? schoolSelect.value : '';
-  const confirmMsg = targetSchool 
-    ? `Release Report Cards & Certificates for students of "${targetSchool}"? This will make them visible to students & coordinators.`
-    : 'Release Report Cards & Certificates for ALL students across ALL schools? This will make them visible to students & coordinators.';
+  if (!reportFilterVenue) {
+    showToast('Please select a venue from the dropdown first before publishing results.', 'warning');
+    qs('#reportVenueFilter')?.focus();
+    return;
+  }
+
+  const confirmMsg = `Release Report Cards & Certificates for students of venue "${reportFilterVenue}"? This will make them visible to students & coordinators of this venue.`;
 
   if (!confirm(confirmMsg)) {
     return;
   }
   
-  const btn = qs('#releaseReportCardsAllBtn') || qs('#releaseAllBtn');
+  const btn = qs('#releaseReportCardsAllBtn');
   if (btn) {
     btn.disabled = true;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Publishing...';
   }
   
   try {
     const resReports = await fetch(API + '/admin/results/release-report-cards', {
       method: 'POST',
-      headers: headers()
+      headers: headers(),
+      body: JSON.stringify({ venue: reportFilterVenue })
     });
     
     const j1 = await resReports.json();
@@ -5029,17 +5124,17 @@ async function releaseAll() {
       updateReportCardsUI(true);
       loadReportCardStats();
       loadReportCardStudents();
-      alert('✓ Report Cards & Certificates Released Successfully! Students & coordinators can now view and download them.');
+      showToast(`Report Cards & Certificates Released Successfully for "${reportFilterVenue}"!`, 'success', 5000);
     } else {
-      alert('Failed: ' + (j1.message || 'Error releasing documents'));
+      showToast('Failed: ' + (j1.message || 'Error releasing documents'), 'error', 4500);
     }
   } catch (error) {
     console.error('Release Error:', error);
-    alert('Error releasing documents: ' + error.message);
+    showToast('Error releasing documents: ' + error.message, 'error', 4500);
   } finally {
     if (btn) {
       btn.disabled = false;
-      btn.innerHTML = '<i class="fas fa-unlock"></i> Release Results & Certificates';
+      btn.innerHTML = '<i class="fas fa-paper-plane"></i> Publish Results';
     }
   }
 }
@@ -5067,17 +5162,17 @@ async function stopAll() {
       updateReportCardsUI(false);
       loadReportCardStats();
       loadReportCardStudents();
-      alert('✓ Report Cards & Certificates Stopped Successfully');
+      showToast('Report Cards & Certificates Stopped Successfully', 'info', 4000);
     } else {
-      alert('Failed: ' + (j1.message || 'Error stopping documents'));
+      showToast('Failed: ' + (j1.message || 'Error stopping documents'), 'error', 4500);
     }
   } catch (error) {
     console.error('Stop Error:', error);
-    alert('Error stopping documents: ' + error.message);
+    showToast('Error stopping documents: ' + error.message, 'error', 4500);
   } finally {
     if (btn) {
       btn.disabled = false;
-      btn.innerHTML = '<i class="fas fa-lock"></i> Stop / Hide Results';
+      btn.innerHTML = '<i class="fas fa-eye-slash"></i> Hide Results';
     }
   }
 }
@@ -5090,17 +5185,42 @@ if (qs('#stopAllBtn')) {
   qs('#stopAllBtn').onclick = stopAll;
 }
 
-if (qs('#filterSchoolReportBtn')) {
-  qs('#filterSchoolReportBtn').onclick = () => {
-    const schoolVal = qs('#schoolSelectForReportRelease').value;
-    filterReportTableBySchool(schoolVal);
+if (qs('#reportVenueFilter')) {
+  qs('#reportVenueFilter').onchange = (e) => {
+    reportFilterVenue = e.target.value.trim();
+    const pubBtn = qs('#releaseReportCardsAllBtn');
+    const hint = qs('#venuePublishStatusHint');
+    
+    if (reportFilterVenue) {
+      if (pubBtn) {
+        pubBtn.disabled = false;
+        pubBtn.style.opacity = '1';
+        pubBtn.style.cursor = 'pointer';
+        pubBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Publish Results';
+        pubBtn.title = `Publish Results for ${reportFilterVenue}`;
+      }
+      if (hint) {
+        hint.innerHTML = `<i class="fas fa-check-circle" style="color: #10b981;"></i> Venue active: <strong>${escapeHtml(reportFilterVenue)}</strong>`;
+      }
+    } else {
+      if (pubBtn) {
+        pubBtn.disabled = true;
+        pubBtn.style.opacity = '0.55';
+        pubBtn.style.cursor = 'not-allowed';
+        pubBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Publish Results';
+      }
+      if (hint) {
+        hint.innerHTML = '<i class="fas fa-info-circle text-accent"></i> Select a venue to filter students and enable publishing';
+      }
+    }
+    reportCurrentPage = 1;
+    loadReportCardStudents();
   };
 }
 
 if (qs('#reportSchoolFilter')) {
   qs('#reportSchoolFilter').onchange = (e) => {
     reportFilterSchool = e.target.value;
-    if (qs('#schoolSelectForReportRelease')) qs('#schoolSelectForReportRelease').value = reportFilterSchool;
     reportCurrentPage = 1;
     loadReportCardStudents();
   };
@@ -5145,6 +5265,7 @@ if (qs('#reportSearchFilter')) {
 if (qs('#refreshReportStudentsBtn')) {
   qs('#refreshReportStudentsBtn').onclick = () => {
     loadReportCardStats();
+    loadReportCardVenues();
     loadReportCardSchools();
     loadReportCardStudents();
   };
@@ -5161,6 +5282,7 @@ loadResultsForEntry();
 loadEditStudentStats();
 loadStudentsForEditing();
 loadReportCardStats();
+loadReportCardVenues();
 loadReportCardSchools();
 loadReportCardStudents();
 </script>

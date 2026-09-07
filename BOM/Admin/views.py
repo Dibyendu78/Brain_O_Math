@@ -127,7 +127,19 @@ def api_students(request):
     if cls:
         qs = qs.filter(student_class=str(cls).strip())
     if venue:
-        qs = qs.filter(venue__iexact=venue.strip())
+        venue_str = venue.strip()
+        if venue_str.lower() == "doon heritage school, siliguri".lower():
+            qs = qs.filter(
+                Q(venue__iexact=venue_str) |
+                Q(coordinator__payment__venue__iexact=venue_str) |
+                Q(venue__isnull=True) |
+                Q(venue="")
+            )
+        else:
+            qs = qs.filter(
+                Q(venue__iexact=venue_str) |
+                Q(coordinator__payment__venue__iexact=venue_str)
+            )
     if subject:
         qs = qs.filter(subjects__icontains=subject.strip())
     if status:
@@ -262,20 +274,31 @@ import threading
 @csrf_exempt
 @jwt_required(roles=[User.ADMIN])
 def api_publish_results(request):
+    data = _body(request)
+    venue = data.get("venue")
     settings = RegistrationSettings.current()
     was_published = settings.results_published
     settings.results_published = True
     settings.save(update_fields=["results_published", "updated_at"])
-    if not was_published:
-        def _send_all_emails():
-            for profile in CoordinatorProfile.objects.select_related("user").all():
-                if profile.user and profile.user.email:
-                    try:
-                        send_results_published_email(request, profile)
-                    except Exception:
-                        pass
-        threading.Thread(target=_send_all_emails, daemon=True).start()
-    return JsonResponse({"success": True, "message": "Results published successfully.", "data": {"resultsPublished": settings.results_published}})
+    def _send_emails():
+        profiles = CoordinatorProfile.objects.select_related("user")
+        if venue:
+            from django.db.models import Q
+            venue_str = str(venue).strip()
+            profiles = profiles.filter(
+                Q(venue__iexact=venue_str) |
+                Q(payment__venue__iexact=venue_str) |
+                Q(students__venue__iexact=venue_str)
+            ).distinct()
+        for profile in profiles:
+            if profile.user and profile.user.email:
+                try:
+                    send_results_published_email(request, profile)
+                except Exception:
+                    pass
+    threading.Thread(target=_send_emails, daemon=True).start()
+    msg = f"Results published successfully for venue '{venue}'." if venue else "Results published successfully for all venues."
+    return JsonResponse({"success": True, "message": msg, "data": {"resultsPublished": settings.results_published, "venue": venue}})
 
 
 
@@ -519,6 +542,19 @@ def api_schools(request):
             item["schoolName"] = sname
             schools.append(item)
     return JsonResponse({"success": True, "data": schools})
+
+
+@jwt_required(roles=[User.ADMIN])
+def api_venues(request):
+    from Registartion.models import VENUE_CHOICES
+    venues = set(c[0] for c in VENUE_CHOICES)
+    for v in Student.objects.exclude(venue__isnull=True).exclude(venue="").values_list("venue", flat=True):
+        if v and v.strip():
+            venues.add(v.strip())
+    for v in RegistrationPayment.objects.exclude(venue__isnull=True).exclude(venue="").values_list("venue", flat=True):
+        if v and v.strip():
+            venues.add(v.strip())
+    return JsonResponse({"success": True, "data": sorted(list(venues))})
 
 
 @csrf_exempt

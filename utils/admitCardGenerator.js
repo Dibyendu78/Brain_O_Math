@@ -116,6 +116,9 @@ class AdmitCardGenerator {
       ],
       'Don Bosco School, Mayanaguri': [
         'Mayanaguri, Jalpaiguri, West Bengal'
+      ],
+      'Delhi World Public School, Malda': [
+        'Malda, West Bengal'
       ]
     };
     return { name, address: details[name] || [] };

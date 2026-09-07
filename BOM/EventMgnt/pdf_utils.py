@@ -21,6 +21,15 @@ def clean_roll_number(value):
 
 
 def student_payload(student):
+    cert_date = "10 September 2026"
+    try:
+        from Registartion.models import RegistrationSettings
+        reg_settings = RegistrationSettings.current()
+        if reg_settings and reg_settings.result_declaration_date:
+            cert_date = reg_settings.result_declaration_date.strftime("%d %B %Y").lstrip("0")
+    except Exception:
+        pass
+
     return {
         "name": student.name,
         "studentId": student.student_id,
@@ -29,6 +38,7 @@ def student_payload(student):
         "category": student.category,
         "subjects": student.subjects,
         "venue": student.venue,
+        "certificateDate": cert_date,
         "schoolName": student.coordinator.school_name,
         "coordinatorName": student.coordinator.coordinator_name,
         "coordinatorEmail": student.coordinator.user.email,

@@ -68,6 +68,7 @@ class RegistrationSettings(models.Model):
 VENUE_CHOICES = [
     ("Doon Heritage School, Siliguri", "Doon Heritage School, Siliguri"),
     ("Don Bosco School, Mayanaguri", "Don Bosco School, Mayanaguri"),
+    ("Delhi World Public School, Malda", "Delhi World Public School, Malda"),
 ]
 
 

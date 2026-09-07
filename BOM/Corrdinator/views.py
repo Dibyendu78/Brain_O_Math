@@ -328,9 +328,10 @@ def api_payment(request):
     if not utr.isdigit() or len(utr) != 12:
         return JsonResponse({"success": False, "message": "UTR must be 12 digits"}, status=400)
     venue = str(data.get("venue", "")).strip()
-    valid_venues = ["Doon Heritage School, Siliguri", "Don Bosco School, Mayanaguri"]
+    from Registartion.models import VENUE_CHOICES
+    valid_venues = [c[0] for c in VENUE_CHOICES]
     if venue not in valid_venues:
-        return JsonResponse({"success": False, "message": "Please select a valid venue option (Doon Heritage School, Siliguri or Don Bosco School, Mayanaguri)"}, status=400)
+        return JsonResponse({"success": False, "message": f"Please select a valid venue option ({', '.join(valid_venues)})"}, status=400)
     profile = request.user.coordinator_profile
     payment, _ = RegistrationPayment.objects.get_or_create(coordinator=profile)
     payment.utr = utr
