@@ -21,14 +21,20 @@ def clean_roll_number(value):
 
 
 def student_payload(student):
-    cert_date = "10 September 2026"
+    from django.utils import timezone
+    cert_date = ""
     try:
         from Registartion.models import RegistrationSettings
         reg_settings = RegistrationSettings.current()
         if reg_settings and reg_settings.result_declaration_date:
-            cert_date = reg_settings.result_declaration_date.strftime("%d %B %Y").lstrip("0")
+            d = reg_settings.result_declaration_date
+            cert_date = f"{d.day} {d.strftime('%B %Y')}"
     except Exception:
         pass
+
+    if not cert_date:
+        today = timezone.localtime(timezone.now()).date()
+        cert_date = f"{today.day} {today.strftime('%B %Y')}"
 
     return {
         "name": student.name,

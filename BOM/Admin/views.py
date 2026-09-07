@@ -279,14 +279,15 @@ def api_publish_results(request):
     settings = RegistrationSettings.current()
     was_published = settings.results_published
     settings.results_published = True
-    settings.save(update_fields=["results_published", "updated_at"])
+    from django.utils import timezone
+    settings.result_declaration_date = timezone.localtime(timezone.now()).date()
+    settings.save(update_fields=["results_published", "result_declaration_date", "updated_at"])
     def _send_emails():
         profiles = CoordinatorProfile.objects.select_related("user")
         if venue:
             from django.db.models import Q
             venue_str = str(venue).strip()
             profiles = profiles.filter(
-                Q(venue__iexact=venue_str) |
                 Q(payment__venue__iexact=venue_str) |
                 Q(students__venue__iexact=venue_str)
             ).distinct()
