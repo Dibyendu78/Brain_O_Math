@@ -208,11 +208,11 @@ class CertificateGenerator {
     const bottomY = pageHeight - 116;
     const colWidth = 220;
 
-    const sanjanaWidth = 195;
-    const sanjanaY = bottomY - 88;
+    const sanjanaWidth = 245;
+    const sanjanaY = bottomY - 94;
 
     const kpWidth = 118;
-    const kpY = bottomY - 40;
+    const kpY = bottomY - 34;
 
     // Left Signature: Sanjana Ghosh (Founder & Director)
     const leftX = margin + 30;
