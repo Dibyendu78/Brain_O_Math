@@ -679,6 +679,18 @@
                         </select>
                     </div>
 
+                    <div class="filter-group">
+                        <label for="resultsSortFilter">
+                            <i class="fas fa-sort-amount-down"></i> Sort by:
+                        </label>
+                        <select id="resultsSortFilter" onchange="loadStudentResults()">
+                            <option value="highest_marks" selected>Highest Marks First</option>
+                            <option value="lowest_marks">Lowest Marks First</option>
+                            <option value="name">Student Name (A-Z)</option>
+                            <option value="roll">Roll Number</option>
+                        </select>
+                    </div>
+
                     <div class="btn-group-row">
                         <button id="downloadReportCardsBtn" class="btn btn-success" onclick="downloadAllReportCards()">
                             <i class="fas fa-download"></i> Download All Score Cards
@@ -858,15 +870,61 @@
             }
         }
 
+        function getStudentTotalMarks(s, subject) {
+            const marks = s.marks || {};
+            if (subject) {
+                const val = marks[subject];
+                if (val !== null && val !== undefined && val !== '') {
+                    return { hasMarks: true, total: Number(val), max: 60 };
+                }
+                return { hasMarks: false, total: -1, max: 60 };
+            }
+            const valid = [marks.english, marks.math, marks.science, marks.cs].filter(m => m !== null && m !== undefined && m !== '');
+            if (valid.length > 0) {
+                const sum = valid.reduce((acc, v) => acc + Number(v), 0);
+                return { hasMarks: true, total: sum, max: valid.length * 60 };
+            }
+            return { hasMarks: false, total: -1, max: 0 };
+        }
+
+        function sortStudentsByMarks(list, sortType = 'highest_marks', subject = '') {
+            if (!Array.isArray(list)) return [];
+            return [...list].sort((a, b) => {
+                const classA = parseInt(a.class) || 999;
+                const classB = parseInt(b.class) || 999;
+                if (classA !== classB) return classA - classB;
+
+                if (sortType === 'lowest_marks') {
+                    const scoreA = getStudentTotalMarks(a, subject);
+                    const scoreB = getStudentTotalMarks(b, subject);
+                    if (scoreA.hasMarks !== scoreB.hasMarks) return scoreA.hasMarks ? -1 : 1;
+                    if (scoreA.total !== scoreB.total) return scoreA.total - scoreB.total;
+                    return (a.name || '').localeCompare(b.name || '');
+                } else if (sortType === 'roll') {
+                    return (a.rollNumber || '').localeCompare(b.rollNumber || '');
+                } else if (sortType === 'name') {
+                    return (a.name || '').localeCompare(b.name || '');
+                } else {
+                    const scoreA = getStudentTotalMarks(a, subject);
+                    const scoreB = getStudentTotalMarks(b, subject);
+                    if (scoreA.hasMarks !== scoreB.hasMarks) return scoreA.hasMarks ? -1 : 1;
+                    if (scoreB.total !== scoreA.total) return scoreB.total - scoreA.total;
+                    return (a.name || '').localeCompare(b.name || '');
+                }
+            });
+        }
+
         async function loadStudentResults() {
             try {
                 const classFilter = document.getElementById('resultsClassFilter')?.value || '';
                 const subjectFilter = document.getElementById('resultsSubjectFilter')?.value || '';
+                const sortFilter = document.getElementById('resultsSortFilter')?.value || 'highest_marks';
 
                 let url = `${API}/coordinator/student-results`;
                 const params = new URLSearchParams();
                 if (classFilter) params.append('class', classFilter);
                 if (subjectFilter) params.append('subject', subjectFilter);
+                if (sortFilter) params.append('sort', sortFilter);
 
                 if (params.toString()) {
                     url += '?' + params.toString();
@@ -884,7 +942,8 @@
                 console.log('📥 Results Response:', j);
 
                 if (j.success) {
-                    resultsData = j.data || [];
+                    const rawData = j.data || [];
+                    resultsData = sortStudentsByMarks(rawData, sortFilter, subjectFilter);
                     console.log('✓ Loaded', resultsData.length, 'students');
                     currentResultsPage = 1;
                     displayResultsTable();

@@ -80,6 +80,21 @@ def _student_dict(student, index=None):
         "coordinatorEmail": student.coordinator.user.email,
         "schoolName": student.coordinator.school_name,
     }
+    valid_marks = [m for m in [student.english_marks, student.math_marks, student.science_marks, student.cs_marks] if m is not None]
+    if valid_marks:
+        total_score = sum(valid_marks)
+        max_score = len(valid_marks) * 60
+        pct = round((total_score / max_score) * 100, 2)
+        data["totalMarks"] = total_score
+        data["maxMarks"] = max_score
+        data["percentage"] = pct
+        data["hasMarks"] = True
+    else:
+        data["totalMarks"] = None
+        data["maxMarks"] = None
+        data["percentage"] = None
+        data["hasMarks"] = False
+
     if index is not None:
         data["_idx"] = index
     return data
@@ -359,8 +374,39 @@ def api_student_results(request):
     sub = request.GET.get("subject")
     if sub:
         students = students.filter(subjects__icontains=sub)
-    students = students.order_by("student_class", "name")
-    return JsonResponse({"success": True, "data": [_student_dict(student) for student in students]})
+    sort = request.GET.get("sort", "highest_marks")
+
+    def sort_key(s):
+        try:
+            c = int(s.student_class)
+        except (ValueError, TypeError):
+            c = 999
+        if sort == "lowest_marks":
+            valid = [m for m in [s.english_marks, s.math_marks, s.science_marks, s.cs_marks] if m is not None]
+            if valid:
+                return (c, 0, sum(valid), s.name.lower())
+            return (c, 1, 9999, s.name.lower())
+        elif sort == "roll":
+            return (c, s.roll_number or "", s.name.lower())
+        elif sort == "name":
+            return (c, s.name.lower())
+        else:  # highest_marks (default)
+            if sub:
+                sub_low = sub.strip().lower()
+                val = getattr(s, f"{sub_low}_marks", None)
+                if val is not None:
+                    return (c, 0, -val, s.name.lower())
+                return (c, 1, 0, s.name.lower())
+            valid = [m for m in [s.english_marks, s.math_marks, s.science_marks, s.cs_marks] if m is not None]
+            if valid:
+                tot = sum(valid)
+                max_tot = len(valid) * 60
+                pct = (tot / max_tot) * 100
+                return (c, 0, -tot, -pct, s.name.lower())
+            return (c, 1, 0, 0, s.name.lower())
+
+    sorted_students = sorted(students, key=sort_key)
+    return JsonResponse({"success": True, "data": [_student_dict(student) for student in sorted_students]})
 
 
 

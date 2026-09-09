@@ -100,6 +100,7 @@ urlpatterns = [
     path("api/admin/admit-cards/release-school/<int:school_id>", admin_views.api_release_admit_card),
     path("api/admin/export", admin_views.api_export),
     path("api/admin/export-students", admin_views.api_export_students),
+    path("api/admin/export-marks", admin_views.api_export_marks),
     path("api/admin/export-docx", admin_views.api_export_docx),
     path("api/admin/schools", admin_views.api_schools),
     path("api/admin/venues", admin_views.api_venues),

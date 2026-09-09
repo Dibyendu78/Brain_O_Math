@@ -173,8 +173,50 @@ def api_students(request):
             cs_marks__isnull=True
         )
 
+    sort = request.GET.get("sort")
+    if not sort and request.path.startswith("/api/admin/results"):
+        sort = "highest_marks"
+
+    if sort == "highest_marks":
+        def sort_key(s):
+            try:
+                c = int(s.student_class)
+            except (ValueError, TypeError):
+                c = 999
+            if subject:
+                sub_low = subject.strip().lower()
+                val = getattr(s, f"{sub_low}_marks", None)
+                if val is not None:
+                    return (c, 0, -val, s.name.lower())
+                return (c, 1, 0, s.name.lower())
+            valid = [m for m in [s.english_marks, s.math_marks, s.science_marks, s.cs_marks] if m is not None]
+            if valid:
+                tot = sum(valid)
+                max_tot = len(valid) * 60
+                pct = (tot / max_tot) * 100
+                return (c, 0, -tot, -pct, s.name.lower())
+            return (c, 1, 0, 0, s.name.lower())
+        students_list = sorted(qs, key=sort_key)
+    elif sort == "lowest_marks":
+        def sort_key(s):
+            try:
+                c = int(s.student_class)
+            except (ValueError, TypeError):
+                c = 999
+            valid = [m for m in [s.english_marks, s.math_marks, s.science_marks, s.cs_marks] if m is not None]
+            if valid:
+                return (c, 0, sum(valid), s.name.lower())
+            return (c, 1, 9999, s.name.lower())
+        students_list = sorted(qs, key=sort_key)
+    elif sort == "roll":
+        students_list = sorted(qs, key=lambda s: (s.roll_number or ""))
+    elif sort in ("name", "class_name"):
+        students_list = sorted(qs, key=lambda s: (s.student_class, s.name.lower()))
+    else:
+        students_list = qs
+
     data = []
-    for student in qs:
+    for student in students_list:
         item = _student_dict(student)
         item["school"] = _profile_dict(student.coordinator)
         if hasattr(student.coordinator, "payment"):
@@ -444,6 +486,148 @@ def api_export_students(request):
             s.coordinator.user.email,
             payment_status,
             "Yes" if s.admit_card_released else "No",
+        ])
+    return response
+
+
+@jwt_required(roles=[User.ADMIN])
+def api_export_marks(request):
+    from django.db.models import Q
+    qs = Student.objects.select_related("coordinator", "coordinator__user", "coordinator__payment")
+    cls = request.GET.get("class")
+    venue = request.GET.get("venue")
+    subject = request.GET.get("subject")
+    school = request.GET.get("school") or request.GET.get("school_id")
+    search = request.GET.get("search")
+    marks_status = request.GET.get("marks_status")
+    sort = request.GET.get("sort", "highest_marks")
+
+    if cls:
+        qs = qs.filter(student_class=str(cls).strip())
+    if venue:
+        venue_str = venue.strip()
+        if venue_str.lower() == "doon heritage school, siliguri".lower():
+            qs = qs.filter(
+                Q(venue__iexact=venue_str) |
+                Q(coordinator__payment__venue__iexact=venue_str) |
+                Q(venue__isnull=True) |
+                Q(venue="")
+            )
+        else:
+            qs = qs.filter(
+                Q(venue__iexact=venue_str) |
+                Q(coordinator__payment__venue__iexact=venue_str)
+            )
+    if subject:
+        qs = qs.filter(subjects__icontains=subject.strip())
+    if school:
+        school_str = str(school).strip()
+        if school_str.isdigit():
+            qs = qs.filter(coordinator_id=int(school_str))
+        else:
+            qs = qs.filter(coordinator__school_name__icontains=school_str)
+    if search:
+        search_str = search.strip()
+        qs = qs.filter(
+            Q(name__icontains=search_str) |
+            Q(roll_number__icontains=search_str) |
+            Q(student_id__icontains=search_str) |
+            Q(coordinator__school_name__icontains=search_str)
+        )
+    if marks_status in ("completed", "ready"):
+        qs = qs.filter(
+            Q(english_marks__isnull=False) |
+            Q(math_marks__isnull=False) |
+            Q(science_marks__isnull=False) |
+            Q(cs_marks__isnull=False)
+        )
+    elif marks_status == "pending":
+        qs = qs.filter(
+            english_marks__isnull=True,
+            math_marks__isnull=True,
+            science_marks__isnull=True,
+            cs_marks__isnull=True
+        )
+
+    def sort_key(s):
+        try:
+            c = int(s.student_class)
+        except (ValueError, TypeError):
+            c = 999
+        if sort == "lowest_marks":
+            valid = [m for m in [s.english_marks, s.math_marks, s.science_marks, s.cs_marks] if m is not None]
+            if valid:
+                return (c, 0, sum(valid), s.name.lower())
+            return (c, 1, 9999, s.name.lower())
+        elif sort == "roll":
+            return (c, s.roll_number or "", s.name.lower())
+        elif sort in ("name", "class_name"):
+            return (c, s.name.lower())
+        else:  # highest_marks (default)
+            if subject:
+                sub_low = subject.strip().lower()
+                val = getattr(s, f"{sub_low}_marks", None)
+                if val is not None:
+                    return (c, 0, -val, s.name.lower())
+                return (c, 1, 0, s.name.lower())
+            valid = [m for m in [s.english_marks, s.math_marks, s.science_marks, s.cs_marks] if m is not None]
+            if valid:
+                tot = sum(valid)
+                max_tot = len(valid) * 60
+                pct = (tot / max_tot) * 100
+                return (c, 0, -tot, -pct, s.name.lower())
+            return (c, 1, 0, 0, s.name.lower())
+
+    students_list = sorted(qs, key=sort_key)
+
+    filename = f"marks-export-class-{cls}.csv" if cls else "marks-export.csv"
+    response = HttpResponse(content_type="text/csv; charset=utf-8")
+    response["Content-Disposition"] = f'attachment; filename="{filename}"'
+    writer = csv.writer(response)
+    writer.writerow([
+        "Student ID", "Roll Number", "Name", "Class", "Category", "Subjects",
+        "Venue", "School Name", "Coordinator Name", "Coordinator Email",
+        "English (60)", "Math (60)", "Science (60)", "Computer Science (60)",
+        "Total Marks", "Max Marks", "Percentage (%)", "Marks Status"
+    ])
+
+    for s in students_list:
+        eng = s.english_marks if s.english_marks is not None else ""
+        math = s.math_marks if s.math_marks is not None else ""
+        sci = s.science_marks if s.science_marks is not None else ""
+        cs = s.cs_marks if s.cs_marks is not None else ""
+
+        valid = [m for m in [s.english_marks, s.math_marks, s.science_marks, s.cs_marks] if m is not None]
+        if valid:
+            tot = sum(valid)
+            max_tot = len(valid) * 60
+            pct = f"{round((tot / max_tot) * 100, 2)}%"
+            status = "Completed"
+        else:
+            tot = ""
+            max_tot = ""
+            pct = ""
+            status = "Pending"
+
+        writer.writerow([
+            s.student_id,
+            s.roll_number or "N/A",
+            s.name,
+            s.student_class,
+            s.category,
+            s.subjects,
+            s.venue or "Doon Heritage School, Siliguri",
+            s.coordinator.school_name if s.coordinator else "N/A",
+            s.coordinator.coordinator_name if s.coordinator else "N/A",
+            s.coordinator.user.email if (s.coordinator and s.coordinator.user) else "N/A",
+            eng,
+            math,
+            sci,
+            cs,
+            tot,
+            max_tot,
+            pct,
+            status,
         ])
     return response
 

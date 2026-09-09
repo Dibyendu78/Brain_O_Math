@@ -2167,8 +2167,22 @@ select:focus {
             </select>
           </div>
 
+          <div class="filter-group">
+            <i class="fas fa-sort-amount-down"></i>
+            <select id="resultSortFilter">
+              <option value="highest_marks" selected>Highest Marks First</option>
+              <option value="lowest_marks">Lowest Marks First</option>
+              <option value="class_name">Class &amp; Name (A-Z)</option>
+              <option value="roll">Roll Number</option>
+            </select>
+          </div>
+
           <button id="refreshResultStatsBtn" class="btn" style="background: #3b82f6; color: white;">
             <i class="fas fa-sync"></i> Refresh Stats
+          </button>
+
+          <button id="exportMarksCSVBtn" class="btn" style="background: #059669; color: white; display: inline-flex; align-items: center; gap: 6px;">
+            <i class="fas fa-file-csv"></i> Download Marks CSV
           </button>
 
           <button id="saveAllMarksBtn" class="btn" style="margin-left: auto; background: #10b981; color: white;">
@@ -2399,8 +2413,22 @@ select:focus {
             </select>
           </div>
 
+          <div class="filter-group">
+            <i class="fas fa-sort-amount-down"></i>
+            <select id="reportSortFilter">
+              <option value="highest_marks" selected>Highest Marks First</option>
+              <option value="lowest_marks">Lowest Marks First</option>
+              <option value="class_name">Class &amp; Name (A-Z)</option>
+              <option value="roll">Roll Number</option>
+            </select>
+          </div>
+
           <button id="refreshReportStudentsBtn" class="btn" style="background: #3b82f6; color: white;">
             <i class="fas fa-sync"></i> Refresh
+          </button>
+
+          <button id="exportReportCardsCSVBtn" class="btn" style="background: #059669; color: white; display: inline-flex; align-items: center; gap: 6px;">
+            <i class="fas fa-file-csv"></i> Download CSV
           </button>
         </div>
 
@@ -4045,6 +4073,54 @@ if (qs('#exportDocxBtn')) {
 let resultPage = 1;
 let resultClassFilter = '';
 let resultSubjectFilter = '';
+let resultSortFilter = 'highest_marks';
+
+function getStudentTotalMarks(s, subject) {
+  const marks = s.marks || {};
+  if (subject) {
+    const val = marks[subject];
+    if (val !== null && val !== undefined && val !== '') {
+      return { hasMarks: true, total: Number(val), max: 60, pct: (Number(val) / 60) * 100 };
+    }
+    return { hasMarks: false, total: -1, max: 60, pct: -1 };
+  }
+  const valid = [marks.english, marks.math, marks.science, marks.cs].filter(m => m !== null && m !== undefined && m !== '');
+  if (valid.length > 0) {
+    const sum = valid.reduce((acc, v) => acc + Number(v), 0);
+    const max = valid.length * 60;
+    return { hasMarks: true, total: sum, max: max, pct: (sum / max) * 100 };
+  }
+  return { hasMarks: false, total: -1, max: 0, pct: -1 };
+}
+
+function sortStudentsByMarks(list, sortType = 'highest_marks', subject = '') {
+  if (!Array.isArray(list)) return [];
+  return [...list].sort((a, b) => {
+    // Group by class if All Classes
+    const classA = parseInt(a.class) || 999;
+    const classB = parseInt(b.class) || 999;
+    if (classA !== classB) return classA - classB;
+
+    if (sortType === 'lowest_marks') {
+      const scoreA = getStudentTotalMarks(a, subject);
+      const scoreB = getStudentTotalMarks(b, subject);
+      if (scoreA.hasMarks !== scoreB.hasMarks) return scoreA.hasMarks ? -1 : 1;
+      if (scoreA.total !== scoreB.total) return scoreA.total - scoreB.total;
+      return (a.name || '').localeCompare(b.name || '');
+    } else if (sortType === 'roll') {
+      return (a.rollNumber || '').localeCompare(b.rollNumber || '');
+    } else if (sortType === 'class_name') {
+      return (a.name || '').localeCompare(b.name || '');
+    } else {
+      // Default: highest_marks
+      const scoreA = getStudentTotalMarks(a, subject);
+      const scoreB = getStudentTotalMarks(b, subject);
+      if (scoreA.hasMarks !== scoreB.hasMarks) return scoreA.hasMarks ? -1 : 1;
+      if (scoreB.total !== scoreA.total) return scoreB.total - scoreA.total;
+      return (a.name || '').localeCompare(b.name || '');
+    }
+  });
+}
 
 async function loadResultEntryStats() {
   try {
@@ -4068,9 +4144,9 @@ async function loadResultsForEntry() {
   if (tbody) tbody.innerHTML = '<tr><td colspan="11" class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</td></tr>';
 
   try {
-    let url = `${API}/admin/results/students?page=${resultPage}`;
-    if (resultClassFilter) url += `&class=${resultClassFilter}`;
-    if (resultSubjectFilter) url += `&subject=${resultSubjectFilter}`;
+    let url = `${API}/admin/results/students?page=${resultPage}&sort=${encodeURIComponent(resultSortFilter)}`;
+    if (resultClassFilter) url += `&class=${encodeURIComponent(resultClassFilter)}`;
+    if (resultSubjectFilter) url += `&subject=${encodeURIComponent(resultSubjectFilter)}`;
     
     const res = await fetch(url, { headers: headers() });
     const j = await res.json();
@@ -4089,7 +4165,9 @@ async function loadResultsForEntry() {
       return;
     }
 
-    j.data.forEach(s => {
+    const sortedStudents = sortStudentsByMarks(j.data, resultSortFilter, resultSubjectFilter);
+
+    sortedStudents.forEach(s => {
       const tr = document.createElement('tr');
       
       const subjectsText = formatSubjects(s.subjects);
@@ -4437,6 +4515,62 @@ if (qs('#resultSubjectFilter')) {
     resultPage = 1;
     loadResultsForEntry();
   };
+}
+
+if (qs('#resultSortFilter')) {
+  qs('#resultSortFilter').onchange = () => {
+    resultSortFilter = qs('#resultSortFilter').value;
+    resultPage = 1;
+    loadResultsForEntry();
+  };
+}
+
+async function exportMarksCSV() {
+  const btn = qs('#exportMarksCSVBtn');
+  const originalHtml = btn ? btn.innerHTML : '';
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Exporting...';
+  }
+
+  try {
+    let exportUrl = `${API}/admin/export-marks?1=1`;
+    if (resultClassFilter) exportUrl += `&class=${encodeURIComponent(resultClassFilter)}`;
+    if (resultSubjectFilter) exportUrl += `&subject=${encodeURIComponent(resultSubjectFilter)}`;
+    if (resultSortFilter) exportUrl += `&sort=${encodeURIComponent(resultSortFilter)}`;
+
+    const res = await fetch(exportUrl, {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.message || 'Export failed');
+    }
+
+    const blob = await res.blob();
+    const downloadUrl = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = downloadUrl;
+    a.download = resultClassFilter ? `marks-export-class-${resultClassFilter}.csv` : 'marks-export.csv';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(downloadUrl);
+    showToast('Marks CSV exported successfully', 'success');
+  } catch (e) {
+    console.error('Marks CSV export error:', e);
+    showToast('Failed to export marks CSV: ' + e.message, 'error');
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = originalHtml;
+    }
+  }
+}
+
+if (qs('#exportMarksCSVBtn')) {
+  qs('#exportMarksCSVBtn').onclick = exportMarksCSV;
 }
 
 if (qs('#refreshResultStatsBtn')) {
@@ -4835,6 +4969,7 @@ let reportFilterClass = '';
 let reportFilterSubject = '';
 let reportFilterMarksStatus = '';
 let reportFilterSearch = '';
+let reportSortFilter = 'highest_marks';
 
 function updateReportCardsUI(isPublished) {
   const statusDiv = qs('#reportStatusMessage');
@@ -4962,6 +5097,7 @@ async function loadReportCardStudents() {
     if (reportFilterSubject) params.push(`subject=${encodeURIComponent(reportFilterSubject)}`);
     if (reportFilterMarksStatus) params.push(`marks_status=${encodeURIComponent(reportFilterMarksStatus)}`);
     if (reportFilterSearch) params.push(`search=${encodeURIComponent(reportFilterSearch)}`);
+    if (reportSortFilter) params.push(`sort=${encodeURIComponent(reportSortFilter)}`);
 
     url += params.join('&');
 
@@ -4981,7 +5117,7 @@ async function loadReportCardStudents() {
       return;
     }
 
-    reportStudentsList = j.data;
+    reportStudentsList = sortStudentsByMarks(j.data, reportSortFilter, reportFilterSubject);
     renderReportCardStudentsTable();
     renderReportCardPagination(reportStudentsList.length);
   } catch (e) {
@@ -5260,6 +5396,66 @@ if (qs('#reportSearchFilter')) {
       loadReportCardStudents();
     }, 350);
   };
+}
+
+if (qs('#reportSortFilter')) {
+  qs('#reportSortFilter').onchange = (e) => {
+    reportSortFilter = e.target.value;
+    reportCurrentPage = 1;
+    loadReportCardStudents();
+  };
+}
+
+async function exportReportCardsCSV() {
+  const btn = qs('#exportReportCardsCSVBtn');
+  const originalHtml = btn ? btn.innerHTML : '';
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Exporting...';
+  }
+
+  try {
+    let exportUrl = `${API}/admin/export-marks?1=1`;
+    if (reportFilterVenue) exportUrl += `&venue=${encodeURIComponent(reportFilterVenue)}`;
+    if (reportFilterClass) exportUrl += `&class=${encodeURIComponent(reportFilterClass)}`;
+    if (reportFilterSchool) exportUrl += `&school=${encodeURIComponent(reportFilterSchool)}`;
+    if (reportFilterSubject) exportUrl += `&subject=${encodeURIComponent(reportFilterSubject)}`;
+    if (reportFilterMarksStatus) exportUrl += `&marks_status=${encodeURIComponent(reportFilterMarksStatus)}`;
+    if (reportFilterSearch) exportUrl += `&search=${encodeURIComponent(reportFilterSearch)}`;
+    if (reportSortFilter) exportUrl += `&sort=${encodeURIComponent(reportSortFilter)}`;
+
+    const res = await fetch(exportUrl, {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.message || 'Export failed');
+    }
+
+    const blob = await res.blob();
+    const downloadUrl = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = downloadUrl;
+    a.download = reportFilterClass ? `results-class-${reportFilterClass}.csv` : 'results-export.csv';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(downloadUrl);
+    showToast('Results CSV exported successfully', 'success');
+  } catch (e) {
+    console.error('Results CSV export error:', e);
+    showToast('Failed to export CSV: ' + e.message, 'error');
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = originalHtml;
+    }
+  }
+}
+
+if (qs('#exportReportCardsCSVBtn')) {
+  qs('#exportReportCardsCSVBtn').onclick = exportReportCardsCSV;
 }
 
 if (qs('#refreshReportStudentsBtn')) {
