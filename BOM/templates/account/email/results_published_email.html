@@ -1,64 +1,38 @@
-<!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>Results Are Now Published</title>
-  </head>
-  <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #1e293b; background-color: #f8fafc; margin: 0; padding: 24px; line-height: 1.5;">
-    <div style="max-width: 900px; margin: 0 auto; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 28px; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
-      <h2 style="color: #1e40af; margin-top: 0; font-size: 22px;">Results Are Now Published</h2>
-      <p style="font-size: 15px;">Dear {{ coordinator_name }},</p>
-      <p style="font-size: 14px; color: #334155;">
-        The results for your registered students from <strong>{{ school_name }}</strong> have been published. You can view full score cards, download certificates, and view performance analytics from your coordinator dashboard:
-      </p>
-      <p style="margin: 18px 0;">
-        <a href="{{ dashboard_url }}" style="display: inline-block; background-color: #2563eb; color: #ffffff !important; text-decoration: none; padding: 10px 22px; border-radius: 6px; font-weight: 600; font-size: 14px;">View Results on Dashboard</a>
-      </p>
-
-      <h3 style="color: #0f172a; margin-top: 28px; margin-bottom: 12px; font-size: 16px;">Student Results Overview</h3>
-      <div style="overflow-x: auto; margin-bottom: 24px;">
-        <table border="1" cellpadding="8" cellspacing="0" style="width: 100%; border-collapse: collapse; font-size: 13px; border: 1px solid #cbd5e1;">
-          <thead>
-            <tr style="background-color: #f1f5f9; color: #0f172a;">
-              <th style="padding: 10px 8px; text-align: left; border: 1px solid #cbd5e1;">Roll Number</th>
-              <th style="padding: 10px 8px; text-align: left; border: 1px solid #cbd5e1;">Student ID</th>
-              <th style="padding: 10px 8px; text-align: left; border: 1px solid #cbd5e1;">Student Name</th>
-              <th style="padding: 10px 8px; text-align: center; border: 1px solid #cbd5e1;">Class</th>
-              <th style="padding: 10px 8px; text-align: center; border: 1px solid #cbd5e1;">English (60)</th>
-              <th style="padding: 10px 8px; text-align: center; border: 1px solid #cbd5e1;">Math (60)</th>
-              <th style="padding: 10px 8px; text-align: center; border: 1px solid #cbd5e1;">Science (60)</th>
-              <th style="padding: 10px 8px; text-align: center; border: 1px solid #cbd5e1;">CS (60)</th>
-              <th style="padding: 10px 8px; text-align: center; border: 1px solid #cbd5e1;">Total</th>
-              <th style="padding: 10px 8px; text-align: center; border: 1px solid #cbd5e1;">Percentage</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for student in students %}
-            <tr style="{% cycle 'background-color: #ffffff;' 'background-color: #f8fafc;' %}">
-              <td style="padding: 8px 10px; font-family: monospace; font-weight: bold; color: #2563eb; border: 1px solid #e2e8f0; white-space: nowrap;">{{ student.roll_number|default:"-" }}</td>
-              <td style="padding: 8px 10px; border: 1px solid #e2e8f0; white-space: nowrap;">{{ student.student_id }}</td>
-              <td style="padding: 8px 10px; font-weight: 600; color: #0f172a; border: 1px solid #e2e8f0;">{{ student.name }}</td>
-              <td style="padding: 8px 10px; text-align: center; border: 1px solid #e2e8f0;">{{ student.student_class }}</td>
-              <td style="padding: 8px 10px; text-align: center; border: 1px solid #e2e8f0;">{% if student.english_display %}{{ student.english_display }}{% elif student.english_marks is not None %}{{ student.english_marks }}{% else %}-{% endif %}</td>
-              <td style="padding: 8px 10px; text-align: center; border: 1px solid #e2e8f0;">{% if student.math_display %}{{ student.math_display }}{% elif student.math_marks is not None %}{{ student.math_marks }}{% else %}-{% endif %}</td>
-              <td style="padding: 8px 10px; text-align: center; border: 1px solid #e2e8f0;">{% if student.science_display %}{{ student.science_display }}{% elif student.science_marks is not None %}{{ student.science_marks }}{% else %}-{% endif %}</td>
-              <td style="padding: 8px 10px; text-align: center; border: 1px solid #e2e8f0;">{% if student.cs_display %}{{ student.cs_display }}{% elif student.cs_marks is not None %}{{ student.cs_marks }}{% else %}-{% endif %}</td>
-              <td style="padding: 8px 10px; text-align: center; font-weight: 600; border: 1px solid #e2e8f0;">{{ student.total_marks|default:"-" }}</td>
-              <td style="padding: 8px 10px; text-align: center; font-weight: 700; color: #16a34a; border: 1px solid #e2e8f0;">{{ student.percentage|default:"-" }}</td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-
-      <p style="margin-top: 20px; font-size: 13px; color: #64748b;">
-        If you have trouble accessing the link, you can visit your dashboard at:<br/>
-        <a href="{{ dashboard_url }}" style="color: #2563eb;">{{ dashboard_url }}</a>
-      </p>
-
-      <div style="margin-top: 25px; padding-top: 15px; border-top: 1px solid #e2e8f0; font-size: 13px; color: #64748b;">
-        <p style="margin: 0;">Thank you,<br/><strong>Brain-O-Math Team</strong></p>
-      </div>
-    </div>
+  <body>
+    <h2>Results Are Now Published</h2>
+    <p>Dear {{ coordinator_name }},</p>
+    <p>The results for your registered students have been published. You can view them from your dashboard:</p>
+    <p><a href="{{ dashboard_url }}">{{ dashboard_url }}</a></p>
+    <h3>Student results</h3>
+    <table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse;">
+      <thead>
+        <tr>
+          <th>Student ID</th>
+          <th>Name</th>
+          <th>Class</th>
+          <th>Roll Number</th>
+          <th>English Marks</th>
+          <th>Math Marks</th>
+          <th>Science Marks</th>
+          <th>CS Marks</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for student in students %}
+        <tr>
+          <td>{{ student.student_id }}</td>
+          <td>{{ student.name }}</td>
+          <td>{{ student.student_class }}</td>
+          <td>{{ student.roll_number }}</td>
+          <td>{{ student.english_marks }}</td>
+          <td>{{ student.math_marks }}</td>
+          <td>{{ student.science_marks }}</td>
+          <td>{{ student.cs_marks }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <p>Thank you,<br/>Brain-O-Math Team</p>
   </body>
 </html>

@@ -117,58 +117,29 @@ def send_results_published_email(request, profile, venue=None):
     except Exception:
         host = "brainomath.online"
 
-    student_data = []
-    for student in students:
-        active_subs = [s.strip().lower() for s in (student.subjects or "").split(",") if s.strip()]
-
-        def format_mark(sub_code, mark):
-            if sub_code in active_subs or mark is not None:
-                return str(mark) if mark is not None else "-"
-            return "N/A"
-
-        eng_disp = format_mark("english", student.english_marks)
-        math_disp = format_mark("math", student.math_marks)
-        sci_disp = format_mark("science", student.science_marks)
-        cs_disp = format_mark("cs", student.cs_marks)
-
-        valid_marks = [m for m in [student.english_marks, student.math_marks, student.science_marks, student.cs_marks] if m is not None]
-        if valid_marks:
-            tot = sum(valid_marks)
-            max_tot = len(valid_marks) * 60
-            pct = f"{round((tot / max_tot) * 100, 1)}%"
-            tot_disp = f"{tot}/{max_tot}"
-        else:
-            tot_disp = "-"
-            pct = "-"
-
-        student_data.append({
-            "student_id": student.student_id,
-            "name": student.name,
-            "student_class": student.student_class,
-            "subjects": student.subjects,
-            "roll_number": student.roll_number or "-",
-            "english_marks": student.english_marks,
-            "math_marks": student.math_marks,
-            "science_marks": student.science_marks,
-            "cs_marks": student.cs_marks,
-            "english_display": eng_disp,
-            "math_display": math_disp,
-            "science_display": sci_disp,
-            "cs_display": cs_disp,
-            "total_marks": tot_disp,
-            "percentage": pct,
-        })
-
     send_html_email(
         request,
-        "Brain-O-Math Olympiad - Results Declared",
+        "Results are published",
         "account/email/results_published_email.html",
         {
             "coordinator_name": profile.coordinator_name,
             "school_name": profile.school_name,
             "email": profile.user.email,
             "dashboard_url": f"https://{host}/coordinator/dashboard/",
-            "students": student_data,
+            "students": [
+                {
+                    "student_id": student.student_id,
+                    "name": student.name,
+                    "student_class": student.student_class,
+                    "subjects": student.subjects,
+                    "roll_number": student.roll_number,
+                    "english_marks": student.english_marks,
+                    "math_marks": student.math_marks,
+                    "science_marks": student.science_marks,
+                    "cs_marks": student.cs_marks,
+                }
+                for student in students
+            ],
         },
         [profile.user.email],
     )
