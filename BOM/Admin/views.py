@@ -336,7 +336,7 @@ def api_publish_results(request):
         for profile in profiles:
             if profile.user and profile.user.email:
                 try:
-                    send_results_published_email(request, profile)
+                    send_results_published_email(request, profile, venue=venue)
                 except Exception:
                     pass
     threading.Thread(target=_send_emails, daemon=True).start()
