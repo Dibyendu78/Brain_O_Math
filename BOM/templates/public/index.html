@@ -1758,7 +1758,7 @@
     <!-- Header -->
     <div class="header-top">
         <div class="container">
-            <marquee id="topMarquee">{% if event_config.results_published %}<span style="color:#fde047; font-weight: bold;"><i class="fas fa-trophy"></i> 🎉 BRAIN-O-MATH OLYMPIAD {{ event_config.event_year }} RESULTS &amp; SCORE CARDS ARE DECLARED!</span> — <a href="#results" style="color: #fff; text-decoration: underline; font-weight: bold;">Click here to Check Student Results &amp; Download Score Cards</a> &nbsp;|&nbsp; {% endif %}{{ event_config.announcement_message }} Register before {{ event_config.last_date_to_apply|date:"d F Y" }}.</marquee>
+            <marquee id="topMarquee">{% if event_config.results_published %}<span style="color:#fde047; font-weight: bold;"><i class="fas fa-trophy"></i> 🎉 BRAIN-O-MATH OLYMPIAD {{ event_config.event_year }} RESULTS &amp; SCORE CARDS ARE DECLARED!</span> — <a href="/coordinator/results/" style="color: #fff; text-decoration: underline; font-weight: bold;">Click here for School Result Portal</a> &nbsp;|&nbsp; {% endif %}{{ event_config.announcement_message }} Register before {{ event_config.last_date_to_apply|date:"d F Y" }}.</marquee>
         </div>
     </div>
 
@@ -1773,7 +1773,7 @@
             <ul class="nav-links" id="navLinks">
                 <li><a href="#home">Home</a></li>
                 <li><a href="#about">About</a></li>
-                <li id="navResultsItem"><a href="#results" id="navResultsLink" style="font-weight: 700; color: #2563eb; {% if not event_config.results_published %}display: none;{% endif %}"><i class="fas fa-award"></i> Results <span class="badge-pulse" id="resultsBadge">LIVE</span></a></li>
+                <li id="navResultsItem"><a href="/coordinator/results/" id="navResultsLink" style="font-weight: 700; color: #2563eb; {% if not event_config.results_published %}display: none;{% endif %}"><i class="fas fa-award"></i> Results <span class="badge-pulse" id="resultsBadge">LIVE</span></a></li>
                 <li><a href="#details">Exam Details</a></li>
                 <li><a href="#syllabus">Syllabus</a></li>
                 <li><a href="#awards">Awards</a></li>
@@ -1805,11 +1805,8 @@
                     </p>
 
                     <div class="hero-buttons">
-                        <a href="#results" class="cta-button results-cta-btn" id="heroResultsCtaBtn" style="{% if not event_config.results_published %}display: none;{% endif %}">
-                            <i class="fas fa-award"></i> View Results / Score Cards
-                        </a>
-                        <a href="/coordinator/results/" class="cta-button secondary" id="heroCoordPortalBtn" style="background: linear-gradient(135deg, #1e40af, #2563eb); {% if not event_config.results_published %}display: none;{% endif %}">
-                            <i class="fas fa-school"></i> Coordinator Portal
+                        <a href="/coordinator/results/" class="cta-button" id="heroCoordPortalBtn" style="background: linear-gradient(135deg, #1e40af, #2563eb); color: #fff; {% if not event_config.results_published %}display: none;{% endif %}">
+                            <i class="fas fa-award"></i> School Result Portal
                         </a>
                         <a href="/coordinator/signup/" class="cta-button" id="registerNowBtn1">Register Now</a>
                         <a href="/coordinator/login/" class="cta-button">Login</a>
@@ -1818,41 +1815,12 @@
                     </div>
                 </section>
 
-                <!-- Results & Score Cards Section -->
+                <!-- Results Section (For School Coordinators) -->
                 <section class="results-section" id="results" style="{% if not event_config.results_published %}display: none;{% endif %}">
                     <div class="results-header">
                         <div class="results-badge"><i class="fas fa-trophy"></i> Examination Results &amp; Downloads</div>
                         <h2>Brain-O-Math Olympiad {{ event_config.event_year }} Results</h2>
-                        <p>Check student performance, view subject-wise marks, and download official Score Cards and Participation Certificates.</p>
-                    </div>
-
-                    <!-- Result Search Card (For Students & Parents) -->
-                    <div class="result-search-card">
-                        <div class="search-card-header">
-                            <h3><i class="fas fa-search text-accent"></i> Check Student Result &amp; Score Card</h3>
-                            <p>Enter your Roll Number (printed on Admit Card) or Student ID to view your marks and download your score card.</p>
-                        </div>
-                        
-                        <form id="publicResultForm" onsubmit="searchStudentResult(event)" class="search-input-group">
-                            <div class="input-with-icon">
-                                <i class="fas fa-id-card"></i>
-                                <input type="text" id="resultQueryInput" placeholder="Enter Roll Number (e.g. 2600526001) or Student ID" required autocomplete="off" />
-                            </div>
-                            <button type="submit" id="searchResultBtn" class="btn-check-result">
-                                <i class="fas fa-search"></i> Check Result
-                            </button>
-                        </form>
-                        
-                        <!-- Loading State -->
-                        <div id="resultLoading" class="result-feedback" style="display: none;">
-                            <i class="fas fa-spinner fa-spin"></i> Fetching student results...
-                        </div>
-                        
-                        <!-- Error State -->
-                        <div id="resultError" class="result-feedback error-feedback" style="display: none;"></div>
-
-                        <!-- Result Output Card -->
-                        <div id="resultOutput" class="student-result-card" style="display: none;"></div>
+                        <p>School coordinators and teachers can view student results, subject-wise marks, and download official Score Cards and Certificates.</p>
                     </div>
 
                     <!-- Coordinator Portal Access Box -->
@@ -2129,8 +2097,8 @@
                                 <strong style="color: #047857; display: flex; align-items: center; gap: 6px;"><i class="fas fa-check-circle"></i> Results Declared!</strong>
                                 <span style="font-size: 0.88rem; color: #065f46; display: block; margin-top: 4px;">Score cards and certificates are now available for viewing and download.</span>
                             </div>
-                            <a href="#results" style="display: block; width: 100%; text-align: center; background: #16a34a; color: #fff; font-weight: 700; padding: 10px 16px; border-radius: 8px; text-decoration: none; box-shadow: 0 4px 12px rgba(22,163,74,0.25); margin-bottom: 12px;">
-                                <i class="fas fa-search"></i> Check Student Result
+                            <a href="/coordinator/results/" style="display: block; width: 100%; text-align: center; background: #16a34a; color: #fff; font-weight: 700; padding: 10px 16px; border-radius: 8px; text-decoration: none; box-shadow: 0 4px 12px rgba(22,163,74,0.25); margin-bottom: 12px;">
+                                <i class="fas fa-award"></i> School Result Portal
                             </a>
                         </div>
                         <div id="sidebarResultsPending" style="{% if event_config.results_published %}display: none;{% endif %}">
