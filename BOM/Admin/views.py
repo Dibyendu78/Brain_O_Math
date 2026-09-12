@@ -183,19 +183,20 @@ def api_students(request):
                 c = int(s.student_class)
             except (ValueError, TypeError):
                 c = 999
+            student_name = (s.name or "").lower()
             if subject:
                 sub_low = subject.strip().lower()
                 val = getattr(s, f"{sub_low}_marks", None)
                 if val is not None:
-                    return (c, 0, -val, s.name.lower())
-                return (c, 1, 0, s.name.lower())
+                    return (c, 0, -val, student_name)
+                return (c, 1, 0, student_name)
             valid = [m for m in [s.english_marks, s.math_marks, s.science_marks, s.cs_marks] if m is not None]
             if valid:
                 tot = sum(valid)
                 max_tot = len(valid) * 60
                 pct = (tot / max_tot) * 100
-                return (c, 0, -tot, -pct, s.name.lower())
-            return (c, 1, 0, 0, s.name.lower())
+                return (c, 0, -tot, -pct, student_name)
+            return (c, 1, 0, 0, student_name)
         students_list = sorted(qs, key=sort_key)
     elif sort == "lowest_marks":
         def sort_key(s):
@@ -203,25 +204,30 @@ def api_students(request):
                 c = int(s.student_class)
             except (ValueError, TypeError):
                 c = 999
+            student_name = (s.name or "").lower()
             valid = [m for m in [s.english_marks, s.math_marks, s.science_marks, s.cs_marks] if m is not None]
             if valid:
-                return (c, 0, sum(valid), s.name.lower())
-            return (c, 1, 9999, s.name.lower())
+                return (c, 0, sum(valid), student_name)
+            return (c, 1, 9999, student_name)
         students_list = sorted(qs, key=sort_key)
     elif sort == "roll":
         students_list = sorted(qs, key=lambda s: (s.roll_number or ""))
     elif sort in ("name", "class_name"):
-        students_list = sorted(qs, key=lambda s: (s.student_class, s.name.lower()))
+        students_list = sorted(qs, key=lambda s: (s.student_class, (s.name or "").lower()))
     else:
         students_list = qs
 
     data = []
     for student in students_list:
         item = _student_dict(student)
-        item["school"] = _profile_dict(student.coordinator)
-        if hasattr(student.coordinator, "payment"):
-            item["paymentStatus"] = student.coordinator.payment.status
-            item["status"] = student.coordinator.payment.status
+        if getattr(student, "coordinator", None):
+            item["school"] = _profile_dict(student.coordinator)
+            try:
+                if hasattr(student.coordinator, "payment") and student.coordinator.payment:
+                    item["paymentStatus"] = student.coordinator.payment.status
+                    item["status"] = student.coordinator.payment.status
+            except Exception:
+                pass
         data.append(item)
     return JsonResponse({"success": True, "data": data, "pagination": {"total": qs.count(), "page": 1}})
 

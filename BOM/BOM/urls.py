@@ -76,6 +76,7 @@ urlpatterns = [
     path("api/coordinator/admit-cards/download-all", coordinator_views.download_bulk_placeholder),
     path("api/coordinator/results/download-report-cards", coordinator_views.download_bulk_placeholder),
     path("api/coordinator/results/download-certificates", coordinator_views.download_bulk_placeholder),
+    path("api/coordinator/results/publish", coordinator_views.api_coordinator_publish_results),
     path("api/admin/results/download-report-card/<int:student_id>", coordinator_views.download_report_card),
     path("api/admin/results/download-certificate/<int:student_id>", coordinator_views.download_certificate),
     path("api/admin/admit-cards/student/<int:student_id>", coordinator_views.download_admit_card),

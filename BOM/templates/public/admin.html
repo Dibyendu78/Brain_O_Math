@@ -4141,7 +4141,9 @@ async function loadResultEntryStats() {
 
 async function loadResultsForEntry() {
   const tbody = qs('#resultTable tbody');
+  const pager = qs('#resultPager');
   if (tbody) tbody.innerHTML = '<tr><td colspan="11" class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</td></tr>';
+  if (pager) pager.innerHTML = '';
 
   try {
     let url = `${API}/admin/results/students?page=${resultPage}&sort=${encodeURIComponent(resultSortFilter)}`;
@@ -4149,7 +4151,19 @@ async function loadResultsForEntry() {
     if (resultSubjectFilter) url += `&subject=${encodeURIComponent(resultSubjectFilter)}`;
     
     const res = await fetch(url, { headers: headers() });
+    if (!res.ok) {
+      let errMsg = `Server error (${res.status})`;
+      try {
+        const errData = await res.json();
+        if (errData && errData.message) errMsg = errData.message;
+      } catch (_) {}
+      throw new Error(errMsg);
+    }
+
     const j = await res.json();
+    if (j.success === false) {
+      throw new Error(j.message || 'Failed to load students');
+    }
 
     tbody.innerHTML = '';
 
@@ -4221,106 +4235,116 @@ async function loadResultsForEntry() {
 
     // Pagination
     const totalPages = j.pagination?.pages || j.totalPages || 1;
-    const pager = qs('#resultPager');
-    pager.innerHTML = '';
-    
-    const maxPagesToShow = 5;
-    let startPage = Math.max(1, resultPage - Math.floor(maxPagesToShow / 2));
-    let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
-    
-    if (endPage - startPage + 1 < maxPagesToShow) {
-      startPage = Math.max(1, endPage - maxPagesToShow + 1);
-    }
-    
-    const prevBtn = document.createElement('button');
-    prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i> Previous';
-    prevBtn.disabled = resultPage === 1;
-    prevBtn.onclick = () => {
-      if (resultPage > 1) {
-        resultPage--;
-        loadResultsForEntry();
-      }
-    };
-    pager.appendChild(prevBtn);
-    
-    if (startPage > 1) {
-      const btn1 = document.createElement('button');
-      btn1.textContent = '1';
-      btn1.onclick = () => {
-        resultPage = 1;
-        loadResultsForEntry();
-      };
-      pager.appendChild(btn1);
+    const pagerEl = qs('#resultPager');
+    if (pagerEl) {
+      pagerEl.innerHTML = '';
       
-      if (startPage > 2) {
-        const dots = document.createElement('span');
-        dots.textContent = '...';
-        dots.style.padding = '8px 4px';
-        dots.style.display = 'flex';
-        dots.style.alignItems = 'center';
-        pager.appendChild(dots);
-      }
-    }
-    
-    for (let i = startPage; i <= endPage; i++) {
-      const btn = document.createElement('button');
-      btn.textContent = i;
-      btn.className = i === resultPage ? 'active' : '';
-      btn.onclick = () => {
-        resultPage = i;
-        loadResultsForEntry();
-      };
-      pager.appendChild(btn);
-    }
-    
-    if (endPage < totalPages) {
-      if (endPage < totalPages - 1) {
-        const dots = document.createElement('span');
-        dots.textContent = '...';
-        dots.style.padding = '8px 4px';
-        dots.style.display = 'flex';
-        dots.style.alignItems = 'center';
-        pager.appendChild(dots);
+      const maxPagesToShow = 5;
+      let startPage = Math.max(1, resultPage - Math.floor(maxPagesToShow / 2));
+      let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+      
+      if (endPage - startPage + 1 < maxPagesToShow) {
+        startPage = Math.max(1, endPage - maxPagesToShow + 1);
       }
       
-      const btnLast = document.createElement('button');
-      btnLast.textContent = totalPages;
-      btnLast.onclick = () => {
-        resultPage = totalPages;
-        loadResultsForEntry();
+      const prevBtn = document.createElement('button');
+      prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i> Previous';
+      prevBtn.disabled = resultPage === 1;
+      prevBtn.onclick = () => {
+        if (resultPage > 1) {
+          resultPage--;
+          loadResultsForEntry();
+        }
       };
-      pager.appendChild(btnLast);
-    }
-    
-    const nextBtn = document.createElement('button');
-    nextBtn.innerHTML = 'Next <i class="fas fa-chevron-right"></i>';
-    nextBtn.disabled = resultPage === totalPages;
-    nextBtn.onclick = () => {
-      if (resultPage < totalPages) {
-        resultPage++;
-        loadResultsForEntry();
+      pagerEl.appendChild(prevBtn);
+      
+      if (startPage > 1) {
+        const btn1 = document.createElement('button');
+        btn1.textContent = '1';
+        btn1.onclick = () => {
+          resultPage = 1;
+          loadResultsForEntry();
+        };
+        pagerEl.appendChild(btn1);
+        
+        if (startPage > 2) {
+          const dots = document.createElement('span');
+          dots.textContent = '...';
+          dots.style.padding = '8px 4px';
+          dots.style.display = 'flex';
+          dots.style.alignItems = 'center';
+          pagerEl.appendChild(dots);
+        }
       }
-    };
-    pager.appendChild(nextBtn);
-    
-    const pageInfo = document.createElement('div');
-    pageInfo.style.width = '100%';
-    pageInfo.style.textAlign = 'center';
-    pageInfo.style.marginTop = '10px';
-    pageInfo.style.fontSize = '0.9rem';
-    pageInfo.style.color = '#666';
-    pageInfo.innerHTML = `Page <strong>${resultPage}</strong> of <strong>${totalPages}</strong> | Total Students: <strong>${j.pagination?.total || j.count}</strong>`;
-    pager.appendChild(pageInfo);
+      
+      for (let i = startPage; i <= endPage; i++) {
+        const btn = document.createElement('button');
+        btn.textContent = i;
+        btn.className = i === resultPage ? 'active' : '';
+        btn.onclick = () => {
+          resultPage = i;
+          loadResultsForEntry();
+        };
+        pagerEl.appendChild(btn);
+      }
+      
+      if (endPage < totalPages) {
+        if (endPage < totalPages - 1) {
+          const dots = document.createElement('span');
+          dots.textContent = '...';
+          dots.style.padding = '8px 4px';
+          dots.style.display = 'flex';
+          dots.style.alignItems = 'center';
+          pagerEl.appendChild(dots);
+        }
+        
+        const btnLast = document.createElement('button');
+        btnLast.textContent = totalPages;
+        btnLast.onclick = () => {
+          resultPage = totalPages;
+          loadResultsForEntry();
+        };
+        pagerEl.appendChild(btnLast);
+      }
+      
+      const nextBtn = document.createElement('button');
+      nextBtn.innerHTML = 'Next <i class="fas fa-chevron-right"></i>';
+      nextBtn.disabled = resultPage === totalPages;
+      nextBtn.onclick = () => {
+        if (resultPage < totalPages) {
+          resultPage++;
+          loadResultsForEntry();
+        }
+      };
+      pagerEl.appendChild(nextBtn);
+      
+      const pageInfo = document.createElement('div');
+      pageInfo.style.width = '100%';
+      pageInfo.style.textAlign = 'center';
+      pageInfo.style.marginTop = '10px';
+      pageInfo.style.fontSize = '0.9rem';
+      pageInfo.style.color = '#666';
+      pageInfo.innerHTML = `Page <strong>${resultPage}</strong> of <strong>${totalPages}</strong> | Total Students: <strong>${j.pagination?.total || j.count || sortedStudents.length}</strong>`;
+      pagerEl.appendChild(pageInfo);
+    }
   } catch (e) {
     console.error('Load results error:', e);
-    tbody.innerHTML = `
-      <tr>
-        <td colspan="9" class="error">
-          <i class="fas fa-exclamation-triangle"></i>
-          <p>Failed to load students</p>
-        </td>
-      </tr>
-    `;
+    if (tbody) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="11" class="error" style="text-align: center; padding: 24px;">
+            <i class="fas fa-exclamation-triangle" style="font-size: 1.8rem; color: #ef4444; margin-bottom: 8px;"></i>
+            <p style="font-weight: 600; color: #1e293b; margin: 4px 0;">Failed to load students</p>
+            <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 12px;">${escapeHtml(e?.message || 'Network or server issue')}</p>
+            <button class="btn" onclick="loadResultsForEntry()" style="background: #3b82f6; color: white; padding: 6px 16px; font-size: 0.85rem; border-radius: 6px;">
+              <i class="fas fa-redo"></i> Retry
+            </button>
+          </td>
+        </tr>
+      `;
+    }
+    const pagerEl = qs('#resultPager');
+    if (pagerEl) pagerEl.innerHTML = '';
   }
 }
 
@@ -5105,11 +5129,24 @@ async function loadReportCardStudents() {
     const j = await res.json();
 
     if (!j.success || !Array.isArray(j.data) || j.data.length === 0) {
+      const isPendingFilter = reportFilterMarksStatus === 'pending';
       tbody.innerHTML = `
         <tr>
-          <td colspan="11" class="empty">
-            <i class="fas fa-search"></i>
-            <p>No student results found matching your filters</p>
+          <td colspan="11" class="empty" style="text-align: center; padding: 36px 16px;">
+            <i class="fas fa-search" style="font-size: 2rem; color: #94a3b8; margin-bottom: 10px;"></i>
+            <p style="font-size: 1rem; font-weight: 600; color: #1e293b; margin-bottom: 6px;">
+              ${isPendingFilter ? 'No students with pending marks' : 'No student results found matching your filters'}
+            </p>
+            <p style="font-size: 0.88rem; color: #64748b; margin-bottom: 14px;">
+              ${isPendingFilter 
+                ? 'All students for this venue already have marks entered (Pending Marks: 0).' 
+                : 'Try adjusting your venue, school, class, or marks status filters above.'}
+            </p>
+            ${isPendingFilter ? `
+              <button class="btn btn-primary" onclick="clearReportMarksFilter()" style="display: inline-flex; align-items: center; gap: 6px; padding: 7px 16px; font-size: 0.85rem; border-radius: 6px;">
+                <i class="fas fa-check-circle"></i> View Ready / All Students
+              </button>
+            ` : ''}
           </td>
         </tr>
       `;
@@ -5467,20 +5504,18 @@ if (qs('#refreshReportStudentsBtn')) {
   };
 }
 
-// Initialize
+function clearReportMarksFilter() {
+  const el = qs('#reportMarksStatusFilter');
+  if (el) el.value = '';
+  reportFilterMarksStatus = '';
+  reportCurrentPage = 1;
+  loadReportCardStudents();
+}
+
+// Initialize active tab on load
 loadStats();
 loadRegs();
 loadRegistrationStatus();
-loadAdmitCardStats();
-loadAdmitCards();
-loadResultEntryStats();
-loadResultsForEntry();
-loadEditStudentStats();
-loadStudentsForEditing();
-loadReportCardStats();
-loadReportCardVenues();
-loadReportCardSchools();
-loadReportCardStudents();
 </script>
 </body>
 </html>

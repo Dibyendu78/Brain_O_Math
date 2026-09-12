@@ -360,13 +360,25 @@ def api_payment(request):
     return JsonResponse({"success": True, "data": {"utr": payment.utr, "registrationId": payment.registration_id, "venue": payment.venue}})
 
 
+@jwt_required(roles=[User.COORDINATOR, User.ADMIN])
+def api_coordinator_publish_results(request):
+    settings = RegistrationSettings.current()
+    settings.results_published = True
+    if not settings.result_declaration_date:
+        settings.result_declaration_date = timezone.localtime(timezone.now()).date()
+    settings.save(update_fields=["results_published", "result_declaration_date", "updated_at"])
+    return JsonResponse({
+        "success": True,
+        "message": "Results published successfully! Students can now view their official score cards on the website.",
+        "data": {"resultsPublished": True}
+    })
+
+
 @jwt_required(roles=[User.COORDINATOR])
 def api_student_results(request):
     settings = RegistrationSettings.current()
-    if not settings.results_published:
-        return JsonResponse({"success": False, "message": "Results are not published yet."}, status=403)
     if not hasattr(request.user, "coordinator_profile"):
-        return JsonResponse({"success": True, "data": []})
+        return JsonResponse({"success": True, "data": [], "resultsPublished": settings.results_published})
     students = request.user.coordinator_profile.students.all()
     cls = request.GET.get("class")
     if cls:
@@ -406,7 +418,7 @@ def api_student_results(request):
             return (c, 1, 0, 0, s.name.lower())
 
     sorted_students = sorted(students, key=sort_key)
-    return JsonResponse({"success": True, "data": [_student_dict(student) for student in sorted_students]})
+    return JsonResponse({"success": True, "data": [_student_dict(student) for student in sorted_students], "resultsPublished": settings.results_published})
 
 
 

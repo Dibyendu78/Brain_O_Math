@@ -597,6 +597,332 @@
                 opacity: 0;
             }
         }
+        /* Official NTA Style Score Card */
+        .nta-scorecard {
+            background: #ffffff;
+            border: 2px solid #1e3a8a;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+            overflow: hidden;
+            margin: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: #0f172a;
+            text-align: left;
+        }
+
+        .nta-header-top-bar {
+            background: linear-gradient(90deg, #ff9933 0%, #ffffff 50%, #138808 100%);
+            height: 5px;
+            width: 100%;
+        }
+
+        .nta-header {
+            background: #ffffff;
+            padding: 18px 24px;
+            border-bottom: 2px solid #1e3a8a;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .nta-header-brand {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .nta-logo-img {
+            width: 58px;
+            height: 58px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            padding: 2px;
+            background: #fff;
+        }
+
+        .nta-header-titles {
+            text-align: left;
+        }
+
+        .nta-main-title {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #1e3a8a;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .nta-sub-title {
+            font-size: 0.82rem;
+            color: #475569;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            margin-top: 3px;
+        }
+
+        .nta-badge-pill {
+            display: inline-block;
+            background: #eff6ff;
+            color: #1d4ed8;
+            font-size: 0.74rem;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 4px;
+            border: 1px solid #bfdbfe;
+            margin-top: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nta-header-emblem {
+            text-align: right;
+        }
+
+        .nta-emblem-badge {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 1.5px solid #1e3a8a;
+            border-radius: 6px;
+            padding: 6px 14px;
+            background: #f8fafc;
+            color: #1e3a8a;
+        }
+
+        .nta-emblem-badge i {
+            font-size: 1.3rem;
+            color: #1e3a8a;
+            margin-bottom: 2px;
+        }
+
+        .nta-emblem-text {
+            font-size: 0.65rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .nta-section-heading {
+            background: #f1f5f9;
+            padding: 8px 16px;
+            font-size: 0.84rem;
+            font-weight: 700;
+            color: #1e293b;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            border-bottom: 1px solid #cbd5e1;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nta-details-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            border-bottom: 2px solid #1e3a8a;
+        }
+
+        @media (max-width: 680px) {
+            .nta-details-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .nta-detail-cell {
+            display: flex;
+            border-bottom: 1px solid #e2e8f0;
+            border-right: 1px solid #e2e8f0;
+            font-size: 0.86rem;
+        }
+
+        .nta-detail-label {
+            width: 42%;
+            background: #f8fafc;
+            padding: 9px 12px;
+            font-weight: 600;
+            color: #475569;
+            border-right: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            font-size: 0.82rem;
+        }
+
+        .nta-detail-value {
+            width: 58%;
+            padding: 9px 12px;
+            font-weight: 700;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            word-break: break-word;
+            font-size: 0.88rem;
+        }
+
+        .nta-table-wrapper {
+            overflow-x: auto;
+        }
+
+        .nta-marks-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+            text-align: left;
+        }
+
+        .nta-marks-table th {
+            background: #f8fafc;
+            color: #1e293b;
+            padding: 10px 14px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            border-bottom: 2px solid #cbd5e1;
+            border-right: 1px solid #e2e8f0;
+        }
+
+        .nta-marks-table th:last-child {
+            border-right: none;
+        }
+
+        .nta-marks-table td {
+            padding: 11px 14px;
+            border-bottom: 1px solid #e2e8f0;
+            border-right: 1px solid #e2e8f0;
+            color: #1e293b;
+        }
+
+        .nta-marks-table td:last-child {
+            border-right: none;
+        }
+
+        .nta-marks-table tr.grand-total-row {
+            background: #eff6ff;
+            font-weight: 800;
+        }
+
+        .nta-marks-table tr.grand-total-row td {
+            border-top: 2px solid #1e3a8a;
+            border-bottom: 2px solid #1e3a8a;
+            color: #1e3a8a;
+            font-size: 0.92rem;
+        }
+
+        .nta-status-banner {
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            border-bottom: 1px solid #e2e8f0;
+            background: #ffffff;
+        }
+
+        .nta-status-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-weight: 800;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nta-status-chip.qualified {
+            background: #ecfdf5;
+            color: #047857;
+            border: 1.5px solid #10b981;
+        }
+
+        .nta-status-chip.pending {
+            background: #fffbeb;
+            color: #b45309;
+            border: 1.5px solid #f59e0b;
+        }
+
+        .nta-notes {
+            padding: 14px 20px;
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 0.78rem;
+            color: #64748b;
+            line-height: 1.5;
+            text-align: left;
+        }
+
+        .nta-notes ol {
+            margin: 4px 0 0 0;
+            padding-left: 20px;
+        }
+
+        .nta-notes li {
+            margin-bottom: 3px;
+        }
+
+        .nta-actions-toolbar {
+            padding: 16px 20px;
+            background: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .nta-btn {
+            padding: 9px 18px;
+            border-radius: 6px;
+            font-size: 0.86rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .nta-btn-primary {
+            background: #16a34a;
+            color: #ffffff;
+            box-shadow: 0 2px 8px rgba(22, 163, 74, 0.25);
+        }
+
+        .nta-btn-primary:hover {
+            background: #15803d;
+        }
+
+        .nta-btn-secondary {
+            background: #1e40af;
+            color: #ffffff;
+            box-shadow: 0 2px 8px rgba(30, 64, 175, 0.25);
+        }
+
+        .nta-btn-secondary:hover {
+            background: #1d4ed8;
+        }
+
+        .nta-btn-outline {
+            background: #ffffff;
+            color: #334155;
+            border: 1px solid #cbd5e1;
+        }
+
+        .nta-btn-outline:hover {
+            background: #f8fafc;
+            color: #0f172a;
+        }
     </style>
 </head>
 
@@ -692,6 +1018,10 @@
                     </div>
 
                     <div class="btn-group-row">
+                        <button id="publishResultsBtn" class="btn" style="background: linear-gradient(135deg, #059669, #10b981); color: white; display: inline-flex; align-items: center; gap: 6px;" onclick="coordinatorPublishResults()">
+                            <i class="fas fa-paper-plane"></i> Publish Results
+                        </button>
+
                         <button id="downloadReportCardsBtn" class="btn btn-success" onclick="downloadAllReportCards()">
                             <i class="fas fa-download"></i> Download All Score Cards
                         </button>
@@ -944,6 +1274,11 @@
                 if (j.success) {
                     const rawData = j.data || [];
                     resultsData = sortStudentsByMarks(rawData, sortFilter, subjectFilter);
+                    const pubBtn = document.getElementById('publishResultsBtn');
+                    if (pubBtn && j.resultsPublished) {
+                        pubBtn.innerHTML = '<i class="fas fa-check-circle"></i> Results Live &amp; Published';
+                        pubBtn.style.background = '#047857';
+                    }
                     console.log('✓ Loaded', resultsData.length, 'students');
                     currentResultsPage = 1;
                     displayResultsTable();
@@ -1029,6 +1364,9 @@
                     <td style="text-align: center;">${csDisplay}</td>
                     <td>
                         <div class="action-buttons">
+                            <button onclick="viewStudentNtaModal('${student._id}')" class="download-btn" style="background: linear-gradient(135deg, #1e40af, #2563eb); color: #fff;" title="View official NTA Score Card">
+                                <i class="fas fa-eye"></i> NTA View
+                            </button>
                             <button onclick="downloadReportCard('${student._id}')" class="download-btn" title="${isAbsent ? 'Student was absent - cannot download' : 'Download Score Card'}" ${isAbsent ? 'disabled' : ''}>
                                 <i class="fas fa-download"></i> Score Card
                             </button>
@@ -1229,6 +1567,261 @@
             }
         }
 
+        async function coordinatorPublishResults() {
+            if (!confirm("Are you sure you want to publish student results? Once published, results and score cards will be immediately viewable by students on the homepage by entering their roll number.")) {
+                return;
+            }
+            const btn = document.getElementById('publishResultsBtn');
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Publishing...';
+            }
+            try {
+                const res = await fetch(`${API}/coordinator/results/publish`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${coordinatorToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showNotification(data.message || 'Results published successfully!', 'success');
+                    if (btn) {
+                        btn.innerHTML = '<i class="fas fa-check-circle"></i> Results Live &amp; Published';
+                        btn.style.background = '#047857';
+                    }
+                } else {
+                    showNotification(data.message || 'Failed to publish results', 'error');
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.innerHTML = '<i class="fas fa-paper-plane"></i> Publish Results';
+                    }
+                }
+            } catch (err) {
+                showNotification('Network error: ' + err.message, 'error');
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-paper-plane"></i> Publish Results';
+                }
+            }
+        }
+
+        function closeNtaModal() {
+            const modal = document.getElementById('ntaScoreCardModal');
+            if (modal) modal.style.display = 'none';
+        }
+
+        function escapeHtml(s) {
+            if (!s && s !== 0) return '';
+            return String(s).replace(/[&<>"']/g, function (c) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+            });
+        }
+
+        function viewStudentNtaModal(studentId) {
+            const student = resultsData.find(s => String(s._id) === String(studentId));
+            if (!student) {
+                showNotification('Student record not found', 'error');
+                return;
+            }
+
+            const marks = student.marks || {};
+            const rawSubs = String(student.subjects || '').split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
+
+            const subjectsMap = {
+                'english': { code: 'ENG-01', name: 'English', mark: marks.english, max: 60, icon: 'fa-book-open' },
+                'math': { code: 'MAT-02', name: 'Mathematics', mark: marks.math, max: 60, icon: 'fa-calculator' },
+                'science': { code: 'SCI-03', name: 'Science', mark: marks.science, max: 60, icon: 'fa-flask' },
+                'cs': { code: 'CS-04', name: 'Computer Science', mark: marks.cs, max: 60, icon: 'fa-desktop' }
+            };
+
+            let activeList = rawSubs.filter(s => subjectsMap[s]);
+            if (activeList.length === 0) {
+                for (const [key, val] of Object.entries(subjectsMap)) {
+                    if (val.mark !== null && val.mark !== undefined) activeList.push(key);
+                }
+            }
+            if (activeList.length === 0) activeList = ['math', 'science', 'english'];
+
+            let rowsHtml = '';
+            let totalScored = 0;
+            let totalMax = 0;
+            let hasAnyMarks = false;
+
+            activeList.forEach(key => {
+                const sub = subjectsMap[key] || { code: 'GEN-00', name: key.toUpperCase(), mark: null, max: 60, icon: 'fa-award' };
+                const hasScore = sub.mark !== null && sub.mark !== undefined;
+                if (hasScore) {
+                    totalScored += Number(sub.mark);
+                    totalMax += sub.max;
+                    hasAnyMarks = true;
+                } else {
+                    totalMax += sub.max;
+                }
+                const scoreText = hasScore ? `${sub.mark} / ${sub.max}` : '<span style="color:#94a3b8; font-weight:500;">Pending</span>';
+                const percentText = hasScore ? `${((sub.mark / sub.max) * 100).toFixed(1)}%` : '—';
+                
+                rowsHtml += `
+                    <tr>
+                        <td style="text-align: center; font-family: monospace; font-weight: 700; color: #1e40af;">${sub.code}</td>
+                        <td><i class="fas ${sub.icon}" style="color: #2563eb; width: 18px; margin-right: 6px;"></i> <strong>${sub.name}</strong></td>
+                        <td style="text-align: center; font-weight: 600;">${sub.max}</td>
+                        <td style="text-align: center; font-weight: 700; color: #0f172a;">${scoreText}</td>
+                        <td style="text-align: center; font-weight: 700; color: #16a34a;">${percentText}</td>
+                    </tr>
+                `;
+            });
+
+            const overallPercentage = (hasAnyMarks && totalMax > 0) ? ((totalScored / totalMax) * 100).toFixed(1) : 0;
+            let overallStatusText = 'MARKS UNDER EVALUATION';
+            let overallStatusClass = 'pending';
+            let overallStatusIcon = 'fa-clock';
+
+            if (hasAnyMarks) {
+                if (Number(overallPercentage) >= 40) {
+                    overallStatusText = 'QUALIFIED FOR MERIT RECOGNITION';
+                    overallStatusClass = 'qualified';
+                    overallStatusIcon = 'fa-check-circle';
+                } else {
+                    overallStatusText = 'PARTICIPATION CERTIFIED';
+                    overallStatusClass = 'qualified';
+                    overallStatusIcon = 'fa-certificate';
+                }
+            }
+
+            const html = `
+                <div class="nta-scorecard">
+                    <div class="nta-header-top-bar"></div>
+                    <div class="nta-header">
+                        <div class="nta-header-brand">
+                            <img src="{% static 'public/logo.jpg' %}" alt="Brain-O-Math" class="nta-logo-img">
+                            <div class="nta-header-titles">
+                                <h2 class="nta-main-title">Brain-O-Math Olympiad 2026</h2>
+                                <div class="nta-sub-title">National Level Interschool Competitive Examination</div>
+                                <div class="nta-badge-pill"><i class="fas fa-shield-alt"></i> Official Score Card &amp; Performance Sheet (Provisional)</div>
+                            </div>
+                        </div>
+                        <div class="nta-header-emblem">
+                            <div class="nta-emblem-badge">
+                                <i class="fas fa-award"></i>
+                                <span class="nta-emblem-text">Official</span>
+                                <span style="font-size: 0.6rem; color: #64748b; font-weight: 600;">Declared</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="nta-section-heading">
+                        <i class="fas fa-id-card"></i> Candidate &amp; Examination Details
+                    </div>
+                    <div class="nta-details-grid">
+                        <div class="nta-detail-cell">
+                            <div class="nta-detail-label">Roll Number</div>
+                            <div class="nta-detail-value"><span style="font-family: monospace; font-size: 1.05rem; color: #1e40af; font-weight: 800;">${escapeHtml(student.rollNumber || student.studentId)}</span></div>
+                        </div>
+                        <div class="nta-detail-cell">
+                            <div class="nta-detail-label">Application / Student ID</div>
+                            <div class="nta-detail-value"><span style="font-family: monospace; color: #475569;">${escapeHtml(student.studentId || '—')}</span></div>
+                        </div>
+                        <div class="nta-detail-cell">
+                            <div class="nta-detail-label">Candidate's Full Name</div>
+                            <div class="nta-detail-value" style="text-transform: uppercase; font-size: 0.96rem;">${escapeHtml(student.name)}</div>
+                        </div>
+                        <div class="nta-detail-cell">
+                            <div class="nta-detail-label">Class &amp; Category</div>
+                            <div class="nta-detail-value">Class ${escapeHtml(student.class)} (Category ${escapeHtml(student.category)})</div>
+                        </div>
+                        <div class="nta-detail-cell">
+                            <div class="nta-detail-label">Father's / Parent Name</div>
+                            <div class="nta-detail-value">${escapeHtml(student.parentName || '—')}</div>
+                        </div>
+                        <div class="nta-detail-cell">
+                            <div class="nta-detail-label">School / Institution</div>
+                            <div class="nta-detail-value">${escapeHtml(student.schoolName || '—')}</div>
+                        </div>
+                        <div class="nta-detail-cell">
+                            <div class="nta-detail-label">Examination Venue</div>
+                            <div class="nta-detail-value">${escapeHtml(student.venue || 'Doon Heritage School, Siliguri')}</div>
+                        </div>
+                        <div class="nta-detail-cell">
+                            <div class="nta-detail-label">Date of Declaration</div>
+                            <div class="nta-detail-value">10 September 2026</div>
+                        </div>
+                    </div>
+
+                    <div class="nta-section-heading">
+                        <i class="fas fa-chart-line"></i> Subject-Wise Performance &amp; Evaluation
+                    </div>
+                    <div class="nta-table-wrapper">
+                        <table class="nta-marks-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 14%; text-align: center;">SUB CODE</th>
+                                    <th style="width: 34%;">SUBJECT NAME</th>
+                                    <th style="width: 16%; text-align: center;">MAX MARKS</th>
+                                    <th style="width: 18%; text-align: center;">MARKS SCORED</th>
+                                    <th style="width: 18%; text-align: center;">PERCENTAGE</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${rowsHtml}
+                                <tr class="grand-total-row">
+                                    <td colspan="2" style="padding-left: 16px;">
+                                        <i class="fas fa-trophy" style="color: #d97706; margin-right: 6px;"></i> <strong>GRAND TOTAL &amp; AGGREGATE</strong>
+                                    </td>
+                                    <td style="text-align: center;"><strong>${totalMax}</strong></td>
+                                    <td style="text-align: center;"><strong style="font-size: 1.05rem; color: #1e40af;">${hasAnyMarks ? totalScored : '—'}</strong></td>
+                                    <td style="text-align: center;"><strong style="color: #16a34a; font-size: 1.05rem;">${hasAnyMarks ? overallPercentage + '%' : '—'}</strong></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="nta-status-banner">
+                        <div>
+                            <span style="font-size: 0.78rem; color: #64748b; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 4px;">Overall Examination Status</span>
+                            <span class="nta-status-chip ${overallStatusClass}">
+                                <i class="fas ${overallStatusIcon}"></i> ${overallStatusText}
+                            </span>
+                        </div>
+                        <div style="text-align: right;">
+                            <span style="font-size: 0.78rem; color: #64748b; font-weight: 700; display: block; margin-bottom: 2px;">Verification Status</span>
+                            <strong style="color: #047857; font-size: 0.88rem;"><i class="fas fa-check-circle"></i> Official &amp; Authenticated Record</strong>
+                        </div>
+                    </div>
+
+                    <div class="nta-notes">
+                        <strong>Important Notes &amp; Examination Authority Instructions:</strong>
+                        <ol>
+                            <li>This electronically generated Score Card is provisional and officially issued by the Brain-O-Math Olympiad Examination Authority.</li>
+                            <li>Subject scores and percentage are calculated on standardized evaluation metrics across registered examination centers.</li>
+                            <li>Qualifying candidates are eligible for official Merit Certificates, Participation Badges, and National/State awards.</li>
+                            <li>To verify authenticity, scan the security QR code on the official downloaded certificate.</li>
+                        </ol>
+                    </div>
+
+                    <div class="nta-actions-toolbar">
+                        <button onclick="downloadReportCard('${student._id}')" class="nta-btn nta-btn-primary">
+                            <i class="fas fa-file-pdf"></i> Download Official Score Card (PDF)
+                        </button>
+                        <button onclick="downloadCertificate('${student._id}')" class="nta-btn nta-btn-secondary">
+                            <i class="fas fa-award"></i> Download Certificate (PDF)
+                        </button>
+                        <button onclick="window.print()" class="nta-btn nta-btn-outline">
+                            <i class="fas fa-print"></i> Print Result
+                        </button>
+                        <button onclick="closeNtaModal()" class="nta-btn nta-btn-outline">
+                            <i class="fas fa-times"></i> Close
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('ntaModalContent').innerHTML = html;
+            const modal = document.getElementById('ntaScoreCardModal');
+            if (modal) modal.style.display = 'flex';
+        }
+
         function logout() {
             localStorage.removeItem('coordinatorToken');
             localStorage.removeItem('coordinatorData');
@@ -1240,6 +1833,17 @@
             loadStudentResults();
         });
     </script>
+
+    <!-- NTA Score Card Modal for Coordinator -->
+    <div id="ntaScoreCardModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.65); z-index:99999; overflow-y:auto; padding:20px 12px; align-items:flex-start; justify-content:center;">
+        <div style="background:#fff; border-radius:12px; max-width:860px; width:100%; margin:20px auto; box-shadow:0 20px 40px rgba(0,0,0,0.25); overflow:hidden; position:relative;">
+            <div style="background:#1e3a8a; color:#fff; padding:12px 20px; display:flex; justify-content:space-between; align-items:center;">
+                <span style="font-weight:700; font-size:0.95rem;"><i class="fas fa-award"></i> Student NTA Score Card View</span>
+                <button onclick="closeNtaModal()" style="background:none; border:none; color:#fff; font-size:1.4rem; cursor:pointer; padding:0 6px;">&times;</button>
+            </div>
+            <div id="ntaModalContent" style="padding:16px;"></div>
+        </div>
+    </div>
 </body>
 
 </html>

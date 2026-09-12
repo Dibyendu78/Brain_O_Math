@@ -94,6 +94,11 @@ def api_public_student_result(request):
     coordinator_user = getattr(coordinator_profile, "user", None) if coordinator_profile else None
     payment = getattr(coordinator_profile, "payment", None) if coordinator_profile else None
 
+    d_date = ""
+    if settings.result_declaration_date:
+        d = settings.result_declaration_date
+        d_date = f"{d.day} {d.strftime('%B %Y')}"
+
     return JsonResponse(
         {
             "success": True,
@@ -105,11 +110,14 @@ def api_public_student_result(request):
                 "class": student.student_class,
                 "category": student.category,
                 "subjects": student.subjects,
+                "venue": student.venue or "Doon Heritage School, Siliguri",
+                "parentName": student.parent_name or "",
                 "schoolName": coordinator_profile.school_name if coordinator_profile else "",
                 "coordinatorName": coordinator_profile.coordinator_name if coordinator_profile else "",
                 "coordinatorEmail": coordinator_user.email if coordinator_user else "",
                 "registrationId": getattr(payment, "registration_id", "") if payment else "",
                 "resultsPublished": settings.results_published,
+                "declarationDate": d_date or "10 September 2026",
                 "marks": marks_data,
             },
         }
