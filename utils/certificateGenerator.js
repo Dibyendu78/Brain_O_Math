@@ -184,7 +184,7 @@ class CertificateGenerator {
        });
 
     const body =
-      "for participating in the Brain-O-Math Olympiad Examination 2026 and in appreciation of curiosity, a quest for knowledge, and a spirit of learning.";
+      "for participating in the Brain-O-Math Olympiad Examination 2026 and in recognition of your curiosity, quest for knowledge, and spirit of learning.";
 
     doc.font('Times-Roman')
        .fontSize(15)
