@@ -710,6 +710,8 @@
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             color: #0f172a;
             text-align: left;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .nta-header-top-bar {
@@ -743,6 +745,7 @@
             border: 1px solid #cbd5e1;
             padding: 2px;
             background: #fff;
+            flex-shrink: 0;
         }
 
         .nta-header-titles {
@@ -831,17 +834,12 @@
             border-bottom: 2px solid #1e3a8a;
         }
 
-        @media (max-width: 680px) {
-            .nta-details-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
         .nta-detail-cell {
             display: flex;
             border-bottom: 1px solid #e2e8f0;
             border-right: 1px solid #e2e8f0;
             font-size: 0.86rem;
+            box-sizing: border-box;
         }
 
         .nta-detail-label {
@@ -854,6 +852,8 @@
             display: flex;
             align-items: center;
             font-size: 0.82rem;
+            flex-shrink: 0;
+            box-sizing: border-box;
         }
 
         .nta-detail-value {
@@ -865,10 +865,13 @@
             align-items: center;
             word-break: break-word;
             font-size: 0.88rem;
+            box-sizing: border-box;
         }
 
         .nta-table-wrapper {
+            width: 100%;
             overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         .nta-marks-table {
@@ -888,6 +891,7 @@
             letter-spacing: 0.4px;
             border-bottom: 2px solid #cbd5e1;
             border-right: 1px solid #e2e8f0;
+            box-sizing: border-box;
         }
 
         .nta-marks-table th:last-child {
@@ -899,6 +903,7 @@
             border-bottom: 1px solid #e2e8f0;
             border-right: 1px solid #e2e8f0;
             color: #1e293b;
+            box-sizing: border-box;
         }
 
         .nta-marks-table td:last-child {
@@ -926,6 +931,7 @@
             gap: 12px;
             border-bottom: 1px solid #e2e8f0;
             background: #ffffff;
+            box-sizing: border-box;
         }
 
         .nta-status-chip {
@@ -960,6 +966,7 @@
             color: #64748b;
             line-height: 1.5;
             text-align: left;
+            box-sizing: border-box;
         }
 
         .nta-notes ol {
@@ -979,6 +986,7 @@
             justify-content: flex-end;
             gap: 10px;
             flex-wrap: wrap;
+            box-sizing: border-box;
         }
 
         .nta-btn {
@@ -993,6 +1001,7 @@
             text-decoration: none;
             transition: all 0.2s ease;
             border: none;
+            box-sizing: border-box;
         }
 
         .nta-btn-primary {
@@ -1027,6 +1036,223 @@
             background: #f8fafc;
             color: #0f172a;
             transform: translateY(-1px);
+        }
+
+        /* Responsive Mobile Optimizations for Score Card */
+        @media (max-width: 768px) {
+            .results-header h2 {
+                font-size: 1.5rem !important;
+            }
+            .results-header p {
+                font-size: 0.92rem !important;
+            }
+            .result-search-card {
+                padding: 20px 14px !important;
+                border-radius: 12px !important;
+                margin-bottom: 20px !important;
+            }
+            .search-card-header h3 {
+                font-size: 1.15rem !important;
+            }
+            .search-card-header p {
+                font-size: 0.85rem !important;
+            }
+            .student-result-card {
+                padding: 0 !important;
+                background: transparent !important;
+                border: none !important;
+                margin-top: 16px !important;
+            }
+            .nta-scorecard {
+                margin-top: 10px !important;
+                border-width: 1.5px !important;
+                border-radius: 8px !important;
+            }
+            .nta-header {
+                padding: 14px 12px !important;
+                gap: 12px !important;
+            }
+            .nta-header-brand {
+                gap: 10px !important;
+            }
+            .nta-logo-img {
+                width: 46px !important;
+                height: 46px !important;
+            }
+            .nta-main-title {
+                font-size: 1.05rem !important;
+                line-height: 1.25 !important;
+            }
+            .nta-sub-title {
+                font-size: 0.74rem !important;
+            }
+            .nta-badge-pill {
+                font-size: 0.68rem !important;
+                padding: 2px 7px !important;
+                white-space: normal !important;
+                line-height: 1.3 !important;
+            }
+            .nta-header-emblem {
+                display: none !important;
+            }
+            .nta-section-heading {
+                padding: 8px 12px !important;
+                font-size: 0.78rem !important;
+            }
+            .nta-details-grid {
+                grid-template-columns: 1fr !important;
+            }
+            .nta-detail-label {
+                width: 40% !important;
+                font-size: 0.78rem !important;
+                padding: 8px 10px !important;
+            }
+            .nta-detail-value {
+                width: 60% !important;
+                font-size: 0.85rem !important;
+                padding: 8px 10px !important;
+            }
+            .nta-marks-table th {
+                padding: 8px 6px !important;
+                font-size: 0.72rem !important;
+                letter-spacing: 0.2px !important;
+            }
+            .nta-marks-table td {
+                padding: 9px 6px !important;
+                font-size: 0.82rem !important;
+            }
+            .nta-marks-table tr.grand-total-row td {
+                font-size: 0.86rem !important;
+                padding: 10px 6px !important;
+            }
+            .nta-status-banner {
+                padding: 12px 14px !important;
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 10px !important;
+            }
+            .nta-status-banner > div:last-child {
+                text-align: left !important;
+                width: 100% !important;
+                border-top: 1px dashed #e2e8f0 !important;
+                padding-top: 8px !important;
+            }
+            .nta-notes {
+                padding: 12px 14px !important;
+                font-size: 0.74rem !important;
+            }
+            .nta-notes ol {
+                padding-left: 18px !important;
+            }
+            .nta-actions-toolbar {
+                padding: 14px 12px !important;
+                flex-direction: column !important;
+                align-items: stretch !important;
+                width: 100% !important;
+                gap: 8px !important;
+            }
+            .nta-btn {
+                width: 100% !important;
+                justify-content: center !important;
+                padding: 12px 16px !important;
+                font-size: 0.88rem !important;
+                border-radius: 8px !important;
+                min-height: 44px !important;
+            }
+            .coordinator-results-box {
+                padding: 18px 14px !important;
+            }
+            .coord-box-content {
+                flex-direction: column !important;
+                align-items: center !important;
+                text-align: center !important;
+                gap: 14px !important;
+            }
+            .btn-coord-results {
+                width: 100% !important;
+                justify-content: center !important;
+            }
+        }
+
+        @media (max-width: 540px) {
+            .result-search-card {
+                padding: 16px 10px !important;
+            }
+            .search-input-group {
+                flex-direction: column !important;
+                gap: 10px !important;
+            }
+            .input-with-icon {
+                width: 100% !important;
+                min-width: 100% !important;
+            }
+            .input-with-icon input {
+                padding: 12px 14px 12px 42px !important;
+                font-size: 0.92rem !important;
+            }
+            .btn-check-result {
+                width: 100% !important;
+                justify-content: center !important;
+                padding: 12px !important;
+                font-size: 0.95rem !important;
+            }
+            .nta-header {
+                flex-direction: column !important;
+                text-align: center !important;
+                align-items: center !important;
+                padding: 12px 10px !important;
+            }
+            .nta-header-brand {
+                flex-direction: column !important;
+                align-items: center !important;
+                text-align: center !important;
+            }
+            .nta-header-titles {
+                text-align: center !important;
+            }
+            .nta-main-title {
+                font-size: 0.98rem !important;
+            }
+            .nta-detail-cell {
+                flex-direction: column !important;
+                padding: 7px 10px !important;
+                border-right: none !important;
+            }
+            .nta-detail-label {
+                width: 100% !important;
+                background: transparent !important;
+                padding: 0 0 2px 0 !important;
+                border-right: none !important;
+                font-size: 0.7rem !important;
+                color: #64748b !important;
+                text-transform: uppercase !important;
+                letter-spacing: 0.4px !important;
+                font-weight: 700 !important;
+            }
+            .nta-detail-value {
+                width: 100% !important;
+                padding: 0 !important;
+                font-size: 0.88rem !important;
+                font-weight: 700 !important;
+                word-break: break-word !important;
+            }
+            .nta-marks-table th, 
+            .nta-marks-table td {
+                padding: 7px 4px !important;
+                font-size: 0.76rem !important;
+            }
+            .nta-marks-table th:first-child, 
+            .nta-marks-table td:first-child {
+                padding-left: 6px !important;
+            }
+            .nta-marks-table th:last-child, 
+            .nta-marks-table td:last-child {
+                padding-right: 6px !important;
+            }
+            .nta-status-chip {
+                font-size: 0.76rem !important;
+                padding: 5px 10px !important;
+            }
         }
 
         @media print {
@@ -3009,15 +3235,15 @@
                 } else {
                     totalMax += sub.max;
                 }
-                const scoreText = hasScore ? `${sub.mark} / ${sub.max}` : '<span style="color:#94a3b8; font-weight:500;">Pending</span>';
+                const scoreText = hasScore ? `<strong style="color: #0f172a;">${sub.mark}</strong>` : '<span style="color:#94a3b8; font-weight:500;">Pending</span>';
                 const percentText = hasScore ? `${((sub.mark / sub.max) * 100).toFixed(1)}%` : '—';
                 
                 rowsHtml += `
                     <tr>
                         <td style="text-align: center; font-family: monospace; font-weight: 700; color: #1e40af;">${sub.code}</td>
-                        <td><i class="fas ${sub.icon}" style="color: #2563eb; width: 18px; margin-right: 6px;"></i> <strong>${sub.name}</strong></td>
-                        <td style="text-align: center; font-weight: 600;">${sub.max}</td>
-                        <td style="text-align: center; font-weight: 700; color: #0f172a;">${scoreText}</td>
+                        <td><i class="fas ${sub.icon}" style="color: #2563eb; width: 16px; margin-right: 4px;"></i> <strong>${sub.name}</strong></td>
+                        <td style="text-align: center; font-weight: 600; color: #475569;">${sub.max}</td>
+                        <td style="text-align: center; font-weight: 700;">${scoreText}</td>
                         <td style="text-align: center; font-weight: 700; color: #16a34a;">${percentText}</td>
                     </tr>
                 `;
@@ -3111,18 +3337,18 @@
                         <table class="nta-marks-table">
                             <thead>
                                 <tr>
-                                    <th style="width: 14%; text-align: center;">SUB CODE</th>
-                                    <th style="width: 34%;">SUBJECT NAME</th>
-                                    <th style="width: 16%; text-align: center;">MAX MARKS</th>
-                                    <th style="width: 18%; text-align: center;">MARKS SCORED</th>
-                                    <th style="width: 18%; text-align: center;">PERCENTAGE</th>
+                                    <th style="width: 15%; text-align: center;">CODE</th>
+                                    <th style="width: 37%;">SUBJECT</th>
+                                    <th style="width: 14%; text-align: center;">MAX</th>
+                                    <th style="width: 17%; text-align: center;">SCORED</th>
+                                    <th style="width: 17%; text-align: center;">PERCENT</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 ${rowsHtml}
                                 <tr class="grand-total-row">
-                                    <td colspan="2" style="padding-left: 16px;">
-                                        <i class="fas fa-trophy" style="color: #d97706; margin-right: 6px;"></i> <strong>GRAND TOTAL &amp; AGGREGATE</strong>
+                                    <td colspan="2" style="padding-left: 14px;">
+                                        <i class="fas fa-trophy" style="color: #d97706; margin-right: 6px;"></i> <strong>GRAND TOTAL</strong>
                                     </td>
                                     <td style="text-align: center;"><strong>${totalMax}</strong></td>
                                     <td style="text-align: center;"><strong style="font-size: 1.05rem; color: #1e40af;">${hasAnyMarks ? totalScored : '—'}</strong></td>
